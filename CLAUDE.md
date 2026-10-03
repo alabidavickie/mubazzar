@@ -24,7 +24,7 @@ Next.js (App Router, TS strict) · Tailwind v4 (`@theme` tokens in `globals.css`
 - `src/server/db/` — `getDb()` returns a `Db` (`query`, `tx`). Driver: `postgres` (postgres.js, `prepare:false`) when `DATABASE_URL` is set, else PGlite persisted at `.data/pglite` (auto-migrated + seeded on first open). RLS is enforced by running user-context queries inside a transaction with `set local role authenticated|anon` + `request.jwt.claims` (exactly how Supabase PostgREST does it): use `asUser(session, fn)` / `asAnon(fn)`; `asService(fn)` bypasses RLS and is only for trusted server code (cron, seed, webhooks).
 - Business-critical writes are Postgres functions (`create_order`, `record_payment`, `set_order_status`, `cancel_stale_orders`, …) with row locks — identical behaviour in PGlite and Supabase.
 - `src/server/db/types.ts` — generated row types (`pnpm db:types`). Do not edit by hand.
-- `src/server/adapters/<service>/{index,mock,live}.ts` — auth, storage, notify (sms/email/whatsapp-cloud), meta (CAPI), rateLimit. `index.ts` picks live when env keys are present.
+- `src/server/adapters/*.ts` — `auth.ts` (mock JWT-cookie+scrypt / live Supabase Auth REST), `storage.ts` (local `.data/uploads` / Supabase Storage), `notify.ts` (outbox + Termii/Resend/WhatsApp Cloud), `meta.ts` (CAPI + Purchase outbox flush), `rate-limit.ts` (Postgres). Each picks the live provider only when its env keys exist (`src/server/env.ts` → `services`).
 - `src/server/services/` — domain logic used by server actions/route handlers.
 - `src/lib/` — pure, isomorphic, unit-tested helpers: `money`, `phone`, `delivery`, `pricing`, `order-number`, `chat/links`, `chat/templates`, `payments/status`, `schemas/*` (shared Zod).
 - `src/app/(shop)` storefront (header + bottom nav + floating WhatsApp) · `src/app/lp/[slug]` ad landing (logo + WhatsApp only) · `src/app/admin` · `src/app/dispatch` · `src/app/supplier` · `src/app/account` · `src/app/login`.
@@ -43,6 +43,17 @@ Stock: reserved on create, released on cancel/fail, deducted on deliver; per hub
 - `pnpm db:reset` — wipe local PGlite and re-migrate + seed · `pnpm db:types` — regenerate `src/server/db/types.ts` · `pnpm db:seed-sql` — write `supabase/seed.sql` for Supabase CLI
 - `pnpm lint` · `pnpm typecheck` · `pnpm test` (Vitest unit+integration) · `pnpm test:e2e` (Playwright, builds + starts app on port 3100 with a fresh DB) · `pnpm build`
 - `pnpm lhci` — Lighthouse CI against a production build; reports to `/reports`
+
+## Patterns (follow these)
+- Pages: async server components that call `src/server/services/*` (reads run `asAnon` so RLS applies). Storefront pages `export const revalidate = 60`; admin/dispatch/supplier/account pages are dynamic and call `requireRole([...])` from `src/server/session.ts` first.
+- Mutations: server actions in `src/app/actions/*.ts` ("use server") → validate with Zod → call SQL functions via `asUser(session.userId, …)` (so RLS + role checks run as that user) → `revalidatePath` affected pages. Map SQL errors with `parseAppError`.
+- UI kit: `src/components/ui/*` (Button, Field/Input/Select/Textarea, Badge, Chip, Sheet, Accordion, Skeleton, EmptyState, SectionHeader, Card), commerce (`ProductCard`, `ProductRow`, `Price`, `DiscountBadge`, `RatingInline`, `Stars`, `Countdown`, `StockMeter`, `ReviewCard`, `StandardSection`, `QuickOrderButton`, `AddToCartButton`), order (`OrderForm`, `BundleSelector`, `QuantityStepper`, `QuickOrderSheet`), layout (`SiteHeader`, `BottomNav`, `SiteFooter`, `FloatingWhatsApp`).
+- Icons: `<Icon name="…" filled? />`. To add an icon, append its Material Symbols name to `ICONS` in `scripts/gen-icons.mjs` and run `pnpm icons` (fetches ~1KB SVGs from jsDelivr).
+- Tailwind v4: CSS-var arbitrary values use parentheses, e.g. `max-w-(--container-site)`. Grid children with truncating text need `min-w-0` / `grid-cols-1`.
+- Horizontal scrollers without links need `tabIndex={0} role="region" aria-label` (axe `scrollable-region-focusable`).
+- E2E: helpers in `tests/e2e/helpers.ts` (`expectNoA11yViolations`, `login(page, role)`, `fillOrderForm`, `placeQuickOrderFromHome`, `saveScreenshot`). Login page contract: `/login` has inputs labelled "Email" and "Password" and a "Sign in" button for staff roles; customers use phone/email OTP (mock code `123456` in E2E).
+- Local E2E uses installed Google Chrome (`channel: "chrome"`); run one project while iterating: `pnpm test:e2e --project=pixel-7 tests/e2e/x.spec.ts`. After code changes run `pnpm build` first (or `E2E_REBUILD=1`). Use `E2E_PORT` to avoid port clashes.
+- Machine constraints: 4 CPU cores and a very slow network (~14 KB/s). Install packages with `pnpm install --offline` when possible; avoid adding new dependencies.
 
 ## Conventions
 - Server components by default; `"use client"` only for interactivity. Keep `/lp/[slug]` client JS minimal.

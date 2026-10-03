@@ -102,7 +102,7 @@ export function ProductCard({
 export function ProductRow({ product }: { product: ProductCardData }) {
   const href = `/p/${product.slug}`;
   return (
-    <article className="flex items-center gap-3 rounded-xl bg-card p-3 shadow-card" data-testid="product-row">
+    <article className="flex min-w-0 items-center gap-3 rounded-xl bg-card p-3 shadow-card" data-testid="product-row">
       <Link href={href} className="relative size-24 shrink-0 overflow-hidden rounded-lg bg-surface-high">
         {product.imageUrl ? (
           <Image src={product.imageUrl} alt={product.imageAlt} fill sizes="96px" className="object-cover" />

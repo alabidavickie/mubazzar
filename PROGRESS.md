@@ -6,31 +6,31 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Study every file in `/design` (Home, Catalog, Landing HTML+PNG, DESIGN.md, logo)
 - [x] `CLAUDE.md`, `PROGRESS.md`, `DECISIONS.md`, `KNOWN_ISSUES.md`, `docs/BRIEF.md`
 - [x] Subagent role files in `.claude/agents/` (architect, ui-builder, backend-engineer, integrations-engineer, qa-engineer, cro-reviewer, security-auditor)
-- [ ] 👉 NEXT Scaffold Next.js (TS strict, App Router, Tailwind v4, pnpm) at repo root
-- [ ] Brand tokens (`@theme` + CSS vars), fonts (Syne, Plus Jakarta Sans via next/font), icon subset generator
-- [ ] Tooling: ESLint, Prettier, Husky pre-commit (lint + typecheck), Vitest, Playwright, GitHub Actions CI
-- [ ] Adapter interfaces + mocks (auth, storage, notify sms/email/whatsapp, meta capi, rate limit) + `.env.example`
-- [ ] Brand assets: favicon, app icons, OG image generated from `design/logo.png`
-- [ ] Exit check: app runs; `pnpm lint`, `pnpm typecheck`, `pnpm test` pass; CI file present
+- [x] Scaffold Next.js (TS strict, App Router, Tailwind v4, pnpm) at repo root
+- [x] Brand tokens (`@theme` + CSS vars), fonts (Syne, Plus Jakarta Sans via next/font), icon subset generator
+- [x] Tooling: ESLint, Prettier, Husky pre-commit (lint + typecheck), Vitest, Playwright, GitHub Actions CI
+- [x] Adapter interfaces + mocks (auth, storage, notify sms/email/whatsapp, meta capi, rate limit) + `.env.example`
+- [x] Brand assets: favicon, app icons, OG image generated from `design/logo.png`
+- [x] Exit check: app runs; `pnpm lint`, `pnpm typecheck`, `pnpm test` pass; CI file present
 
 ## Phase 1 — Data layer
-- [ ] DB access layer (`src/server/db`): PGlite/postgres.js drivers, `asUser`/`asAnon`/`asService`, migration runner
-- [ ] Local Supabase shim (auth schema, roles)
-- [ ] Migrations: all tables from brief §6 + enums, indexes, FTS
-- [ ] RLS policies for every table and role
-- [ ] SQL functions: create_order, set_order_status, record_payment, assign_dispatcher, mark_delivered/failed, cancel_stale_orders, stock reserve/release/deduct
-- [ ] Generated TS types (`pnpm db:types`)
-- [ ] Seed: ~40 products (all design products), categories, bundles, gifts, hubs, inventory, 36 states + FCT zones, flash deal, car-vacuum LP, sample reviews, one account per role
-- [ ] Exit check: seed runs cleanly; RLS tests pass for every role
+- [x] DB access layer (`src/server/db`): PGlite/postgres.js drivers, `asUser`/`asAnon`/`asService`, migration runner
+- [x] Local Supabase shim (auth schema, roles)
+- [x] Migrations: all tables from brief §6 + enums, indexes, FTS
+- [x] RLS policies for every table and role
+- [x] SQL functions: create_order, set_order_status, record_payment, assign_dispatcher, mark_delivered/failed, cancel_stale_orders, stock reserve/release/deduct
+- [x] Generated TS types (`pnpm db:types`)
+- [x] Seed: ~40 products (all design products), categories, bundles, gifts, hubs, inventory, 36 states + FCT zones, flash deal, car-vacuum LP, sample reviews, one account per role
+- [x] Exit check: seed runs cleanly; RLS tests pass for every role
 
 ## Phase 2 — Design system & layout
-- [ ] Primitives: Button, Chip, Badge, Input/Select/Textarea/Field, Sheet (bottom sheet), Accordion, Skeleton
-- [ ] Commerce components: ProductCard (grid + list), PriceTag, DiscountBadge, Rating, Countdown (real `ends_at`), StockMeter, StickyBuyBar, BundleSelector, FreeGiftCard, ReviewCard, TrustStrip
-- [ ] Layout: Header (promo strip, logo, search, delivery badge, cart count, category pills), BottomNav, Footer, FloatingWhatsApp
-- [ ] Exit check: component tests pass; visual match reviewed
+- [x] Primitives: Button, Chip, Badge, Input/Select/Textarea/Field, Sheet (bottom sheet), Accordion, Skeleton
+- [x] Commerce components: ProductCard (grid + list), PriceTag, DiscountBadge, Rating, Countdown (real `ends_at`), StockMeter, StickyBuyBar, BundleSelector, FreeGiftCard, ReviewCard, TrustStrip
+- [x] Layout: Header (promo strip, logo, search, delivery badge, cart count, category pills), BottomNav, Footer, FloatingWhatsApp
+- [ ] 👉 NEXT (parallel subagents) Exit check: component tests pass; visual match reviewed
 
 ## Phase 3 — Storefront
-- [ ] Home (hero from settings, categories, flash deals + Quick Order sheet, Viral Problem Solvers, reviews, supplier CTA, MUBAZZAR Standard)
+- [x] Home (hero from settings, categories, flash deals + Quick Order sheet, Viral Problem Solvers, reviews, supplier CTA, MUBAZZAR Standard)
 - [ ] Catalog `/shop` (URL filters: price chips/custom, POD, category, sort; live counts; Load More; skeletons; empty state)
 - [ ] Product detail `/p/[slug]` (gallery, price, hub stock, gift, bundles, features, specs, FAQ, reviews, related, sticky bar, JSON-LD)
 - [ ] Search with instant suggestions (FTS) `/search`
