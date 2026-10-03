@@ -37,8 +37,8 @@ export async function login(page: Page, role: Exclude<keyof typeof ACCOUNTS, "cu
   const acct = ACCOUNTS[role];
   await page.goto(`/login`);
   await page.getByRole("tab", { name: /staff|email/i }).click().catch(() => undefined);
-  await page.getByLabel("Email").fill(acct.email);
-  await page.getByLabel("Password").fill(acct.password);
+  await page.getByLabel("Email", { exact: true }).fill(acct.email);
+  await page.getByLabel("Password", { exact: true }).fill(acct.password);
   await page.getByRole("button", { name: /^sign in$/i }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 30_000 });
 }
