@@ -27,7 +27,7 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Primitives: Button, Chip, Badge, Input/Select/Textarea/Field, Sheet (bottom sheet), Accordion, Skeleton
 - [x] Commerce components: ProductCard (grid + list), PriceTag, DiscountBadge, Rating, Countdown (real `ends_at`), StockMeter, StickyBuyBar, BundleSelector, FreeGiftCard, ReviewCard, TrustStrip
 - [x] Layout: Header (promo strip, logo, search, delivery badge, cart count, category pills), BottomNav, Footer, FloatingWhatsApp
-- [ ] 👉 NEXT (parallel subagents) Exit check: component tests pass; visual match reviewed
+- [ ] Exit check: component tests pass; visual match reviewed (Home reviewed at 375px; Catalog/LP pending)
 
 ## Phase 3 — Storefront
 - [x] Home (hero from settings, categories, flash deals + Quick Order sheet, Viral Problem Solvers, reviews, supplier CTA, MUBAZZAR Standard)
@@ -39,6 +39,7 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [ ] Exit check: E2E 4–6 pass; Lighthouse targets met
 
 ## Phase 4 — Ad Landing Page template + order form
+- [ ] 👉 NEXT (in progress: integrations-engineer) `/lp/[slug]`, `/order/[token]` handoff, `/track`, auto-cancel cron, E2E 1, 2, 7, 11, 12
 - [ ] `/lp/[slug]` fully DB-driven (hook banner, headline, 5-image gallery, price module, countdown, nearest-hub stock, gift, bundles, features, FAQ, reviews, sticky bar)
 - [ ] Shared OrderForm (RHF + Zod): name, WhatsApp, alt phone, state, LGA/city, address, landmark, bundle, chat channel, honeypot; live summary with state delivery fee
 - [ ] UTM + fbclid capture
@@ -88,6 +89,11 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [ ] README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
 - [ ] Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
 - [ ] Final summary below
+
+## Execution notes
+- Machine has 7.9 GB RAM: run ONE workstream (one build/Playwright) at a time. Four parallel worktree agents crashed the machine on 2026-10-03.
+- Queue after Phase 4: (A) storefront pages → (C) admin orders/payments/dispatch → (D) catalogue admin, LP builder, suppliers, accounts → Phase 9 hardening → Phase 10.
+- Done & verified so far: data layer (89 unit+integration tests), Home, login (password + OTP), admin shell, function-privilege lockdown.
 
 ## Final Summary
 _(written at the end of Phase 10)_
