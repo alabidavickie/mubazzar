@@ -21,6 +21,7 @@ const eslintConfig = defineConfig([
     "reports/**",
     "test-results/**",
     ".data/**",
+    ".claude/**",
     "src/server/db/types.ts",
     "src/components/icons/paths.ts",
   ]),
