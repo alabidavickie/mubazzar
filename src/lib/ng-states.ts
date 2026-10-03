@@ -1,0 +1,91 @@
+/** The 36 Nigerian states + the Federal Capital Territory, keyed exactly as stored in delivery_zones.state. */
+export const NG_STATES = [
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "FCT",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
+] as const;
+
+export type NgState = (typeof NG_STATES)[number];
+
+export function isNgState(value: string): value is NgState {
+  return (NG_STATES as readonly string[]).includes(value);
+}
+
+export function stateDisplayName(state: string): string {
+  return state === "FCT" ? "Abuja (FCT)" : `${state} State`;
+}
+
+/** Vercel geo header region codes (ISO 3166-2:NG) → state key. */
+export const NG_REGION_CODES: Record<string, NgState> = {
+  AB: "Abia",
+  AD: "Adamawa",
+  AK: "Akwa Ibom",
+  AN: "Anambra",
+  BA: "Bauchi",
+  BY: "Bayelsa",
+  BE: "Benue",
+  BO: "Borno",
+  CR: "Cross River",
+  DE: "Delta",
+  EB: "Ebonyi",
+  ED: "Edo",
+  EK: "Ekiti",
+  EN: "Enugu",
+  FC: "FCT",
+  GO: "Gombe",
+  IM: "Imo",
+  JI: "Jigawa",
+  KD: "Kaduna",
+  KN: "Kano",
+  KT: "Katsina",
+  KE: "Kebbi",
+  KO: "Kogi",
+  KW: "Kwara",
+  LA: "Lagos",
+  NA: "Nasarawa",
+  NI: "Niger",
+  OG: "Ogun",
+  ON: "Ondo",
+  OS: "Osun",
+  OY: "Oyo",
+  PL: "Plateau",
+  RI: "Rivers",
+  SO: "Sokoto",
+  TA: "Taraba",
+  YO: "Yobe",
+  ZA: "Zamfara",
+};

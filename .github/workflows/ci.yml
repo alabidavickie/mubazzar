@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit + integration tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+        env:
+          AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: E2E (iPhone 13, Pixel 7, desktop)
+        run: pnpm test:e2e
+        env:
+          CI: "1"
+      - name: Lighthouse CI
+        run: pnpm lhci
+        continue-on-error: false
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports
+          path: |
+            reports/
+            test-results/
+            tests/screenshots/

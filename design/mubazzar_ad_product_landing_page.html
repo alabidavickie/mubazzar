@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Syne:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-dim": "#d4daea", "surface-container-high": "#e3e8f9", "primary": "#00142f", "on-primary-container": "#7991b9", "error-container": "#ffdad6", "on-tertiary-container": "#00a472", "surface-variant": "#dde2f3", "surface-container": "#e8eeff", "on-primary-fixed": "#001b3c", "on-secondary-container": "#745c00", "tertiary": "#00190e", "on-primary": "#ffffff", "on-error-container": "#93000a", "on-background": "#161c27", "inverse-surface": "#2a303d", "secondary-fixed": "#ffe088", "inverse-on-surface": "#ecf0ff", "on-surface-variant": "#44474e", "surface-container-lowest": "#ffffff", "background": "#f9f9ff", "error": "#ba1a1a", "surface-bright": "#f9f9ff", "tertiary-fixed-dim": "#4edea3", "on-secondary-fixed": "#241a00", "primary-container": "#0e294b", "secondary": "#735c00", "surface": "#f9f9ff", "secondary-fixed-dim": "#e9c349", "surface-container-highest": "#dde2f3", "tertiary-container": "#00301e", "on-surface": "#161c27", "surface-container-low": "#f1f3ff", "on-tertiary": "#ffffff", "on-primary-fixed-variant": "#30476b", "secondary-container": "#fed65b", "on-tertiary-fixed": "#002113", "primary-fixed": "#d5e3ff", "on-secondary-fixed-variant": "#574500", "surface-tint": "#485f84", "on-secondary": "#ffffff", "on-tertiary-fixed-variant": "#005236", "inverse-primary": "#b0c8f2", "primary-fixed-dim": "#b0c8f2", "outline-variant": "#c4c6cf", "tertiary-fixed": "#6ffbbe", "on-error": "#ffffff", "outline": "#74777f" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-sm": "0.5rem", "space-3xl": "3.5rem", "space-md": "0.75rem", "margin": "1rem", "space-xl": "1.75rem", "space-base": "1rem", "gutter-tablet": "1.25rem", "space-2xs": "0.125rem", "space-lg": "1.25rem", "space-2xl": "2.5rem", "gutter-desktop": "1.5rem", "space-xs": "0.25rem", "margin-desktop": "2rem", "margin-tablet": "1.5rem", "gutter": "1rem" }, fontFamily: { "body-lg": ["Plus Jakarta Sans"], "display-lg": ["Syne"], "headline-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-xl": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-md": ["Syne"], "display-lg-mobile": ["Syne"], "headline-xl": ["Syne"], "price-hero": ["Plus Jakarta Sans"], "headline-lg": ["Syne"], "label-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Syne"] }, fontSize: { "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }], "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }], "headline-sm": ["18px", { lineHeight: "26px", fontWeight: "700" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "label-lg": ["15px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "700" }], "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "600" }], "body-xl": ["18px", { lineHeight: "28px", fontWeight: "400" }], "body-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }], "headline-md": ["22px", { lineHeight: "30px", letterSpacing: "-0.005em", fontWeight: "600" }], "display-lg-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.015em", fontWeight: "700" }], "headline-xl": ["36px", { lineHeight: "44px", letterSpacing: "-0.015em", fontWeight: "700" }], "price-hero": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "800" }], "headline-lg": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600" }], "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.03em", fontWeight: "700" }], "headline-xl-mobile": ["26px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-background font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-14 px-space-base flex items-center justify-between"><div class="flex items-center gap-space-xs"><button aria-label="Go back" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors" onclick="history.back()"><span class="material-symbols-outlined">arrow_back_ios_new</span></button><h1 class="font-headline-sm text-headline-sm text-primary-container truncate font-bold">Product Detail</h1></div><div class="flex items-center gap-space-xs"><button aria-label="Share" class="w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">share</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover ml-space-xs" src="https://lh3.googleusercontent.com/aida/AEtjO1WDnQ5U0jecvKgO6CyoeDdGeEeESANZ7rWcu1ijFTTD1bMGf1CMEGdD5Zj8CJ4cvySGBU-49N9F-8sw3kvbITEFmLNof8VuOKRfNlpOtVdeAt99Pzl1vX84STsQ_dALE1CqW65KDMtz3tFkJPlpr7klX1v5gsBHjE-mo0PMhPOxA922-ODtVwvdWmfjsqIb5QSpySVqn1bxA89rzSq-I72kXaIrPcV5NoEnv-0RVBQTJ58ZoZ-QP1Gd-xeT_OKk0dJKnUs4SqguZQ"/></div></div></header><main class="flex flex-col relative w-full pt-14 pb-safe bg-background min-h-screen"><div class="flex flex-col w-full pb-24">
+<!-- Urgent Flash Deal Ticker -->
+<div class="w-full bg-primary-container text-on-primary px-space-base py-space-sm shadow-md">
+<div class="flex items-center justify-between gap-space-xs text-center">
+<span class="flex items-center gap-1.5 text-secondary-container font-label-md text-label-md shrink-0">
+<span class="material-symbols-outlined text-base animate-pulse">bolt</span>
+        PROMO ALERT
+      </span>
+<p class="font-label-sm text-label-sm truncate">
+        ⚡ 48% OFF + Free Luxury Car Perfume | Nationwide Pay on Delivery
+      </p>
+<span class="material-symbols-outlined text-sm text-secondary-fixed shrink-0">local_shipping</span>
+</div>
+</div>
+<!-- Mubazzar Verified Brand Ribbon -->
+<div class="w-full bg-surface-container-low px-space-base py-space-xs flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2">
+<img alt="Mubazzar Official Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAr9fps2JQdmcxY0oM6xdVKAT1bWBzD7O_0YDWy1QlRD30pT0xVdc9dxs9kF-T95kpaUtO6tQtF-xl6ue5729Flqsw4wogqhYxeV0292hIR3nr2G23UeVGUSSeG9A4zWV5Yc07oDB3MQ6G0K0OPoYLxmM4CypIpyz8ffCA-qFQOQbk9D-UXbaOtGawMu7uLEf69BOhQE25DGc8g3KusfPQnkiOlF-IBo3-qBP02Hot9y8b78NvuDBDMHv1CsCF6mt12-A"/>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Official Store</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-xs text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">100% Authentic Guarantee</span>
+</div>
+</div>
+<div class="px-space-base pt-space-md flex flex-col gap-space-md">
+<!-- High-Converting Ad Headline -->
+<div class="flex flex-col gap-1.5">
+<div class="inline-flex items-center gap-1 self-start bg-secondary-container/30 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-sm text-secondary">trending_up</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider">#1 Trending Car Gadget in Nigeria</span>
+</div>
+<h2 class="font-headline-xl-mobile text-headline-xl-mobile text-primary tracking-tight leading-tight font-extrabold">
+        Stop Paying Car Wash <span class="text-error line-through font-bold">₦4,000</span> Every Week!
+      </h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-snug">
+        Blow stubborn AC sand, pull deep coin crumbs, and inflate car tires in 60 seconds with the <strong class="text-primary">Mubazzar 4-in-1 Turbo Cordless Handheld Jet Vacuum</strong>.
+      </p>
+</div>
+<!-- Rating & Verification Pill Strip -->
+<div class="flex flex-wrap items-center gap-2">
+<div class="flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-full">
+<div class="flex text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-primary">4.9/5</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(640+ Verified Buyers)</span>
+</div>
+<span class="bg-surface-container-high text-primary font-label-sm text-label-sm px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-on-tertiary-container">location_on</span> Lagos • Abuja • PH • Kano
+      </span>
+</div>
+<!-- Interactive Visual Showcase Gallery -->
+<div class="flex flex-col gap-space-xs">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container shadow-md">
+<img class="w-full h-full object-cover" data-alt="Close up photograph of sleek metallic black and navy Mubazzar 4-in-1 cordless mini handheld car vacuum with high-speed turbine motor suctioning sand and biscuits from black leather car seats with intense vacuum vortex studio lighting" id="mainGalleryImage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASqPrdeGM9Xiz_aV1SYhU3-XiekYcEKdEs1zqb_aggHiy-cjrGbraG4l8to104rtodVWjLT-ddR1nSGnjn6KYV7liendQxFRHkN3md75X5VyimRIAZ_Lt6IUxh4BZTwyaWsCTlWYOG2o0M3d50mFrED3xcb4A71BaY9huZi9RIPpe0l81_NPyPNk9aoiTOC8cU4qqSYBHeuNOSExn02NdRBN17ai3JhBS73LQVnAz2zo2ptiMiEBfR"/>
+<!-- Live Discount Tag -->
+<div class="absolute top-3 left-3 bg-error text-on-error font-label-md text-label-md px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">local_fire_department</span> -48% OFF PROMO
+        </div>
+<div class="absolute top-3 right-3 bg-primary/80 backdrop-blur-md text-on-primary font-label-sm text-label-sm px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-secondary-container">shield_with_heart</span> 1-Year Warranty
+        </div>
+<div class="absolute bottom-3 left-3 right-3 bg-primary-container/85 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center justify-between text-on-primary text-xs">
+<span class="flex items-center gap-1 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-tertiary-fixed">electric_meter</span> 9,000Pa Turbo Vortex Engine
+          </span>
+<span class="font-body-sm text-body-sm text-secondary-fixed">Tap thumbnails below</span>
+</div>
+</div>
+<!-- Thumbnails Selector -->
+<div class="grid grid-cols-5 gap-2 pt-1">
+<button class="thumb-btn aspect-square rounded-lg overflow-hidden bg-surface-container shadow-sm p-0.5 bg-secondary" data-index="0" onclick="switchPhoto(0)">
+<img class="w-full h-full object-cover rounded-md" data-alt="Handheld sleek cordless vacuum cleaning car interior seats picking crumbs and fine red sand on modern SUV floor mat" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvQlFWIFfXCmoYOso0MqRVMFLHEqmpJJ7-AkV7IfbuaTQtlILpBRjodi-MzAqTL-KOs8sFnmqlZwQ_HdY66ASB0LQsOR-ViaoQV4nxolgQS7okTWDE1TWEf0G7vIu2NhSDUVUkbJN2SlSKr2VeFmXD4Fxdwi_DVKcV-i2zXD3RYwckAWlvazRjUkuZXK0g1SW0TYPO7j--AJ08szaxjB1_tA5vJwxyKtRL4bodtIWrtP30gG0OLRfC"/>
+</button>
+<button class="thumb-btn aspect-square rounded-lg overflow-hidden bg-surface-container shadow-sm p-0.5" data-index="1" onclick="switchPhoto(1)">
+<img class="w-full h-full object-cover rounded-md" data-alt="Reverse blow nozzle mode of car vacuum blasting intense air jet blowing dust particles from car AC dashboard vent grille" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1Wa1C36tHSwlHIrXA-QgQJh3GXPp1Y0uDUMsmRJOVxyIutoQza-IQyV_o0O37D3f71ydjUe3ZBMo81tI-oiLf9droNPRHFbgMqVJzGF0bI3DSo-Mm9YbiloVhkR-SQUBXWBo-ujlpysCWVI4XxDTrToXK1pP94wwEq3--tDrxSJwPs7ABPpvVzs30CAky_SvTBaesqedQKr-DwbRImERtDNJJt8aPb5lV3Z0wjDF5RroneYDjXBAr"/>
+</button>
+<button class="thumb-btn aspect-square rounded-lg overflow-hidden bg-surface-container shadow-sm p-0.5" data-index="2" onclick="switchPhoto(2)">
+<img class="w-full h-full object-cover rounded-md" data-alt="Handheld turbo blower inflating an outdoor swimming float and air mattress with narrow cone nozzle attachment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYf4HvbrlImSXqvl0Z8Gbuz94-wdxiBB2lMYWo9qrVQBPDvbB61RyhOJTMxp42B7-4cCXMV2Gis3VnruXMJdLvbU9SCjvbN2cUVw_1ExyhjyEaZu_ExKeOHw_xBYzfj0oPRMrLiwP-LNzKx7sGRTViUYDysbLwNIskm60gOggsx6fRwVQhj6sY6Ez0zUbWm1amYF62SyaDof8nVJXQ05zt_Kc5K7SVhggOPz3MlzMeT3CQ4dNvn4Zl"/>
+</button>
+<button class="thumb-btn aspect-square rounded-lg overflow-hidden bg-surface-container shadow-sm p-0.5" data-index="3" onclick="switchPhoto(3)">
+<img class="w-full h-full object-cover rounded-md" data-alt="Close up of washable steel and nanotech HEPA double air filter under clean flowing tap water with clear water droplets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1wOXxKMZffiwPrHEBKbD_qSNX9OsZnQycuw22QJIhRgNQk1xFQXGHfblKIZcNQpOIBkQcpBlSAmbhOpIEmMBQ523YqliD34AssqDNUi0P-meOq43onovlOEJhdR13n_2d7V4DkuljQZWvmBnceMkLUjegCZpwvy9NWVuod88J91P4VEUlaBvYpd9d28WqboCXk8yXpb-i6LYATTEwBYC6fhSoQcwGc9Hk5lrhxQrSYAE2Xkxfxr0O"/>
+</button>
+<button class="thumb-btn aspect-square rounded-lg overflow-hidden bg-surface-container shadow-sm p-0.5" data-index="4" onclick="switchPhoto(4)">
+<img class="w-full h-full object-cover rounded-md" data-alt="Full luxury unboxing package layout with sleek navy box, Type-C charging cable, 4 nozzle heads, extra HEPA filter, and velvet carry pouch" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpln_tiIbVqm5GDm9GxJHlGn-e5xs7kEkCoLqhCcFsl2O-FvvtHnCg7uKQMsm1SWvu9rL7pb1gUepuOksMJnBiKyTAfsLA0Y_meoike3HIXVVxvNgx9Rm-ytjSEJ06JppU4sUpV_JXlD67GHMTB1K0oB-wwEg4M-MzJ0pka17R6A2nN_lcpwHE5R88iIl14KDhjvG9ktOAuns2lLg9lzjGuyYZop9HBXbVn5X9oERzIJNh-3V9RY7u"/>
+</button>
+</div>
+</div>
+<!-- Price Hero Box & Scarcity Countdown -->
+<div class="bg-surface-container-lowest rounded-xl p-space-base shadow-md flex flex-col gap-space-sm relative overflow-hidden">
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Special Promo Today</span>
+<div class="flex items-center gap-2">
+<span class="font-price-hero text-price-hero text-primary font-extrabold tracking-tight">₦19,500</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant line-through opacity-70">₦38,000</span>
+</div>
+</div>
+<div class="bg-surface-container-highest px-3 py-1.5 rounded-lg text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">You Save</span>
+<span class="font-label-lg text-label-lg font-bold text-error">₦18,500 (48%)</span>
+</div>
+</div>
+<!-- Live Urgency Countdown Bar -->
+<div class="bg-primary text-on-primary rounded-lg p-2.5 flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-error animate-spin" style="animation-duration: 3s;">timer</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wide text-secondary-fixed">Deal Expires In:</span>
+</div>
+<div class="flex items-center gap-1 font-headline-sm text-headline-sm font-bold tracking-widest text-secondary-container">
+<span class="bg-primary-container px-1.5 py-0.5 rounded" id="hours">02</span>:
+          <span class="bg-primary-container px-1.5 py-0.5 rounded" id="minutes">14</span>:
+          <span class="bg-primary-container px-1.5 py-0.5 rounded" id="seconds">49</span>
+</div>
+</div>
+<!-- Stock Meter Tracker -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-xs">
+<span class="font-label-sm text-label-sm text-error font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">warning</span> Only 9 Units Remaining in Lagos Hub!
+          </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">91% Sold Out</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 91%;"></div>
+</div>
+</div>
+</div>
+<!-- Free Gift Card Incentive -->
+<div class="bg-secondary-container/20 rounded-xl p-space-base shadow-sm flex items-center gap-3">
+<div class="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-surface-container-lowest shadow-inner">
+<img class="w-full h-full object-cover" data-alt="Luxury gold metallic solar rotating aromatherapy car air freshener diffuser bottle with natural cedar wood scent ring on dashboard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP0TObuXUaG47g_7aa0QQrF_Zy5e-WwfcXeGHp_1EpG0mhucvHE81lI40Ox0k_uWvleatGqX8wXTcyB3Cr0NJK_PK5UywWROKAepS6earqZ5la8ZkS2m0RJWVstOFuxELYhTwbNcO0fde-Fid37dJ1prHpVIEaghaeAfIvv3dNOYHRNIDIC975v8n-0LjQfnhlDsZS_-LLRjqGFBTQ5LRZqQ5YLI9WWxLp8ySIAEuEr0ifNwNRj9fp"/>
+</div>
+<div class="flex flex-col flex-1">
+<span class="font-label-sm text-label-sm uppercase text-secondary font-bold tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">redeem</span> Free Bonus Gift (Worth ₦4,500)
+        </span>
+<h4 class="font-label-lg text-label-lg text-primary font-bold">1x Luxury Aromatherapy Car Diffuser</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Dispatched free inside every package ordered before timer ends!</p>
+</div>
+</div>
+<!-- Quick Purchase Jump CTA -->
+<a class="w-full bg-primary-container text-on-primary py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg text-center hover:opacity-95 transition-all" href="#order-form-section">
+<span class="material-symbols-outlined text-secondary-container">inventory_2</span>
+<span class="font-label-lg text-label-lg uppercase tracking-wide">Select Your Bundle &amp; Pay On Delivery</span>
+</a>
+<!-- Key Performance Value Points (Bento Grid) -->
+<div class="flex flex-col gap-2 pt-space-xs">
+<h3 class="font-headline-md text-headline-md text-primary font-bold">Why Nigerian Drivers Love This 4-in-1 Beast</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Designed to handle dusty dry harmattan seasons, roadside potholes sand, and everyday quick interior touchups.</p>
+</div>
+<div class="grid grid-cols-1 gap-space-sm">
+<!-- Feature 1 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex gap-space-md items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-2xl">tornado</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-lg text-label-lg text-primary font-bold">Extreme 9,000Pa Suction Power</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Lifts heavy coins, spilled groundnuts, pet hair, and coarse street sand trapped deep inside carpet fibers effortlessly.</p>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex gap-space-md items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined text-2xl">air</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-lg text-label-lg text-primary font-bold">Reverse High-Pressure Blower</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Flip it over to blast hidden dust from deep AC vents, steering column crevices, laptop keyboards, or light your weekend BBQ grill.</p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex gap-space-md items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center shrink-0 text-on-tertiary-container">
+<span class="material-symbols-outlined text-2xl">battery_charging_full</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-lg text-label-lg text-primary font-bold">Heavy-Duty Type-C Fast Charging</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Dual 2,000mAh lithium cells give 45 minutes of continuous cordless cleaning. Power it up directly from your car cigarette lighter adapter or powerbank.</p>
+</div>
+</div>
+<!-- Feature 4 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex gap-space-md items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center shrink-0 text-primary">
+<span class="material-symbols-outlined text-2xl">water_drop</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-lg text-label-lg text-primary font-bold">Washable Dual HEPA Filter</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">No costly refills. Simply rinse with tap water, dry, and snap back. Captures 99.9% of micro dust mites and allergens.</p>
+</div>
+</div>
+<!-- Feature 5 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex gap-space-md items-start">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined text-2xl">sports_volleyball</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-lg text-label-lg text-primary font-bold">Inflator &amp; Deflator Pump Mode</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Includes custom nozzles to pump party balloons, swimming rings, and air mattresses, or vacuum-seal storage bags for luggage space.</p>
+</div>
+</div>
+</div>
+<!-- Demonstration Video Teaser Card -->
+<div class="relative w-full rounded-xl overflow-hidden bg-primary-container shadow-md">
+<div class="relative aspect-video w-full">
+<img class="w-full h-full object-cover opacity-90" data-alt="Nigerian man demonstrating cordless handheld vacuum cleaning dusty dashboard and car seats inside a Toyota Camry with bright daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXiDIMwzuZJwbmO7amucODAg8oh6FbGW6RNVIwqq_1x_PV-HGTM5H0wOHstrSP4w6C1KALW-TnNVSTCh3jrBWsT4Hm4cAlLiOMWpauEG3_h41bpTORJP-0rw8OoOVbD08Rft7z5oD1jRSr7OpMvYwqh-7N02zLgT4ADNwxDA-5y7enpfjPExVE9MrEx96YDtU-Fm2Ah6dXhchH-hABSejy0jA6qjgQOsovQFCoSlj3EwGWCKCS8KjT"/>
+<div class="absolute inset-0 bg-primary/40 flex flex-col items-center justify-center p-4 text-center">
+<button class="w-16 h-16 rounded-full bg-secondary-container text-on-secondary-fixed flex items-center justify-center shadow-2xl hover:scale-105 transition-transform mb-2" onclick="document.getElementById('demo-feedback').classList.toggle('hidden')">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<span class="font-label-lg text-label-lg text-on-primary font-bold">Watch 45-Second Real Nigerian Test</span>
+<span class="font-body-sm text-body-sm text-secondary-container">See it lift 50 Naira coins &amp; dry cassava flour</span>
+</div>
+</div>
+<div class="hidden p-3 bg-surface-container-lowest text-on-surface text-center" id="demo-feedback">
+<p class="font-body-sm text-body-sm text-on-surface-variant">🎬 Video playing in high definition preview. Tested on Toyota, Lexus &amp; Mercedes interiors.</p>
+</div>
+</div>
+<!-- Tiered Bundle Offer Selector (High AOV Driver) -->
+<div class="flex flex-col gap-space-sm pt-space-xs" id="packages-section">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider">Step 1: Choose Your Money-Saving Package</span>
+<h3 class="font-headline-md text-headline-md text-primary font-bold">Exclusive Bundle Discounts</h3>
+</div>
+<!-- Bundle Option 1 -->
+<div class="bundle-card cursor-pointer bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex items-center justify-between transition-all" id="pkg-card-1" onclick="selectPackage(1, 19500)">
+<div class="flex items-center gap-3">
+<input checked="" class="w-5 h-5 accent-primary" id="radio-1" name="bundle" type="radio" value="1"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-primary font-bold">1x Turbo Vacuum Set</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Includes 1 Free Filter + 1 Gift Perfume</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm text-primary font-bold block">₦19,500</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦38,000</span>
+</div>
+</div>
+<!-- Bundle Option 2 (POPULAR) -->
+<div class="bundle-card cursor-pointer bg-surface-container-lowest p-space-base rounded-xl shadow-md flex flex-col gap-2 relative transition-all" id="pkg-card-2" onclick="selectPackage(2, 35000)">
+<div class="absolute -top-3 right-4 bg-secondary text-on-secondary font-label-sm text-label-sm font-extrabold px-3 py-0.5 rounded-full shadow">
+          MOST POPULAR • SAVE EXTRA ₦4,000
+        </div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-3">
+<input class="w-5 h-5 accent-secondary" id="radio-2" name="bundle" type="radio" value="2"/>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-primary font-bold">2x Turbo Vacuum Sets (His &amp; Hers)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2 Vacuums + 2 Extra HEPA Filters + Free Gift</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm text-secondary font-extrabold block">₦35,000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦70,000</span>
+</div>
+</div>
+<div class="bg-secondary-container/20 px-2.5 py-1 rounded text-center">
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Perfect for 2 cars or 1 for Car + 1 for Home</span>
+</div>
+</div>
+<!-- Bundle Option 3 (Family / Reseller) -->
+<div class="bundle-card cursor-pointer bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex items-center justify-between transition-all" id="pkg-card-3" onclick="selectPackage(3, 49000)">
+<div class="flex items-center gap-3">
+<input class="w-5 h-5 accent-primary" id="radio-3" name="bundle" type="radio" value="3"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-label-lg text-label-lg text-primary font-bold">3x Turbo Family Pack</span>
+<span class="bg-surface-container-high text-primary font-label-sm text-label-sm px-1.5 py-0.2 rounded font-bold">Best Value</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">3 Vacuums + 3 Filters + Premium Tyre Gauge</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm text-primary font-bold block">₦49,000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦105,000</span>
+</div>
+</div>
+</div>
+<!-- 100% Trust & Guarantee Matrix -->
+<div class="bg-surface-container-low rounded-xl p-space-base flex flex-col gap-3 shadow-inner">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-tertiary-container shadow-sm">
+<span class="material-symbols-outlined text-xl">payments</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-primary font-bold">Pay On Delivery (No Risk)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Inspect, test, and verify before paying cash or transfer to dispatch rider.</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-xl">rocket_launch</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-primary font-bold">Express Delivery Time</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">24 to 48 Hours in Lagos &amp; Abuja. 2 to 4 days across all 36 Nigerian states.</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-secondary shadow-sm">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-primary font-bold">12 Months Mubazzar Warranty</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Any factory fault? We replace it completely free with no hassle.</span>
+</div>
+</div>
+</div>
+<!-- Authentic Nigerian Customer Reviews Carousel/Cards -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider">Honest Feedback</span>
+<h3 class="font-headline-md text-headline-md text-primary font-bold">What Real Buyers Say</h3>
+</div>
+<span class="bg-surface-container px-2 py-1 rounded text-primary font-label-sm text-label-sm font-semibold">Verified Orders</span>
+</div>
+<!-- Review Card 1 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center text-sm">
+              CO
+            </div>
+<div>
+<h5 class="font-label-md text-label-md text-primary font-bold">Chidi O.</h5>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs text-on-tertiary-container">check_circle</span> Lekki Phase 1, Lagos
+              </span>
+</div>
+</div>
+<div class="flex text-secondary text-sm">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic">
+          "Abeg this thing na fire! I was skeptical because of fake things online. The suction power strong well-well. It pulled out all the gala crumbs and sand my children left under the Prado back seats. Rider arrived in 24hrs."
+        </p>
+</div>
+<!-- Review Card 2 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-secondary text-on-secondary font-bold flex items-center justify-center text-sm">
+              FA
+            </div>
+<div>
+<h5 class="font-label-md text-label-md text-primary font-bold">Hajiya Fatima A.</h5>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs text-on-tertiary-container">check_circle</span> Gwarinpa, Abuja
+              </span>
+</div>
+</div>
+<div class="flex text-secondary text-sm">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic">
+          "Delivered in less than 2 days here in Abuja. The delivery guy allowed me to unbox and switch it on before I paid cash. The air blower cleared all the dust in my AC vents that car wash boys always ignore."
+        </p>
+</div>
+<!-- Review Card 3 -->
+<div class="bg-surface-container-lowest p-space-base rounded-xl shadow-sm flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-surface-container-highest text-primary font-bold flex items-center justify-center text-sm">
+              EB
+            </div>
+<div>
+<h5 class="font-label-md text-label-md text-primary font-bold">Engr. Bamidele K.</h5>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs text-on-tertiary-container">check_circle</span> GRA, Port Harcourt
+              </span>
+</div>
+</div>
+<div class="flex text-secondary text-sm">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic">
+          "I bought the 2-pack bundle to give my wife one. Battery lasts very well. Fits right inside the front door pocket. Solid build quality from Mubazzar."
+        </p>
+</div>
+</div>
+<!-- Embedded Fast Checkout Form (Zero Friction) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-base shadow-xl flex flex-col gap-space-md" id="order-form-section">
+<div class="flex flex-col text-center items-center">
+<span class="inline-block bg-primary-container text-on-primary font-label-sm text-label-sm uppercase px-3 py-1 rounded-full mb-1">
+          Fast One-Page Order Form
+        </span>
+<h3 class="font-headline-md text-headline-md text-primary font-bold">Fill Your Delivery Information</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">No registration or card details required. Pay when you receive!</p>
+</div>
+<form class="flex flex-col gap-space-sm" id="orderForm" onsubmit="handleOrderSubmit(event)">
+<!-- Selected Package Summary Box -->
+<div class="bg-surface-container p-3 rounded-lg flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Selected Package:</span>
+<span class="font-label-lg text-label-lg text-primary font-bold" id="form-pkg-name">1x Turbo Vacuum Single Set</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-primary font-extrabold" id="form-pkg-price">₦19,500</span>
+</div>
+<!-- Full Name -->
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">person</span> Full Name *
+          </label>
+<input class="w-full bg-surface-container-low text-on-surface font-body-md px-3.5 py-3 rounded-lg outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="e.g. Babatunde Adeyemi" required="" type="text"/>
+</div>
+<!-- WhatsApp Phone -->
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">phone</span> Active WhatsApp Phone Number *
+          </label>
+<div class="flex gap-2">
+<span class="bg-surface-container-high px-3 py-3 rounded-lg font-label-md text-label-md flex items-center gap-1 text-primary">
+              🇳🇬 +234
+            </span>
+<input class="flex-1 bg-surface-container-low text-on-surface font-body-md px-3.5 py-3 rounded-lg outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="801 234 5678" required="" type="tel"/>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Our dispatch agent will call/WhatsApp this number to confirm delivery.</span>
+</div>
+<!-- Alternative Phone -->
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">phone_iphone</span> Alternative Phone (In case 1st is unreachable)
+          </label>
+<input class="w-full bg-surface-container-low text-on-surface font-body-md px-3.5 py-3 rounded-lg outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="e.g. 08123456789" type="tel"/>
+</div>
+<!-- State Dropdown -->
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">map</span> Delivery State *
+          </label>
+<select class="w-full bg-surface-container-low text-on-surface font-body-md px-3.5 py-3 rounded-lg outline-none focus:bg-surface-container-lowest shadow-sm" required="">
+<option value="">-- Choose Your State --</option>
+<option value="Lagos">Lagos State (Express 24hrs Delivery)</option>
+<option value="Abuja">Abuja FCT (Express 24-48hrs)</option>
+<option value="Rivers">Rivers (Port Harcourt)</option>
+<option value="Oyo">Oyo (Ibadan)</option>
+<option value="Kano">Kano State</option>
+<option value="Delta">Delta (Asaba, Warri)</option>
+<option value="Edo">Edo (Benin City)</option>
+<option value="Enugu">Enugu State</option>
+<option value="Ogun">Ogun State</option>
+<option value="Kaduna">Kaduna State</option>
+<option value="Anambra">Anambra (Onitsha, Awka)</option>
+<option value="Other">Other States (2-4 Days)</option>
+</select>
+</div>
+<!-- Delivery Address -->
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-primary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">home_pin</span> Full Street Address / Office Address *
+          </label>
+<textarea class="w-full bg-surface-container-low text-on-surface font-body-md px-3.5 py-3 rounded-lg outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="House number, Street name, Landmark or Bus-stop" required="" rows="2"></textarea>
+</div>
+<!-- Payment Method Selection -->
+<div class="flex flex-col gap-2 pt-1">
+<label class="font-label-md text-label-md text-primary font-semibold">Payment Option:</label>
+<label class="bg-surface-container-low p-3 rounded-lg flex items-center gap-3 cursor-pointer">
+<input checked="" class="w-4 h-4 accent-primary" name="payment_method" type="radio" value="pod"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-primary font-bold">Pay On Delivery (Cash or Transfer)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Pay our dispatch courier only when you inspect the product.</span>
+</div>
+</label>
+<label class="bg-surface-container-low p-3 rounded-lg flex items-center gap-3 cursor-pointer opacity-90">
+<input class="w-4 h-4 accent-secondary" name="payment_method" type="radio" value="prepaid"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md text-primary font-bold">Instant Online Transfer / Card</span>
+<span class="bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm px-1.5 py-0.2 rounded font-bold">Save Extra 5%</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Instant receipt generated via safe Paystack gateway.</span>
+</div>
+</label>
+</div>
+<!-- Strict Scarcity & Order Verification Warning -->
+<div class="bg-error-container/60 p-3 rounded-lg flex items-start gap-2 text-on-error-container">
+<span class="material-symbols-outlined text-error text-lg shrink-0 mt-0.5">report_problem</span>
+<p class="font-body-sm text-body-sm">
+<strong>CRITICAL NOTE:</strong> Please only submit this order if you have the cash/transfer ready and will be available to receive your delivery within 1 to 3 working days. We spend heavy delivery fees upfront to ship out items.
+          </p>
+</div>
+<!-- Huge Primary CTA Button -->
+<button class="w-full bg-primary-container text-on-primary py-4 px-4 rounded-xl flex flex-col items-center justify-center gap-0.5 shadow-xl hover:opacity-95 active:scale-[0.99] transition-all" type="submit">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container">local_shipping</span>
+<span class="font-label-lg text-label-lg uppercase tracking-wide" id="submit-btn-text">CONFIRM ORDER - PAY ON DELIVERY (₦19,500)</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary-fixed">Free Shipping Nationwide • No Hidden Charges</span>
+</button>
+</form>
+<!-- Instant Success State Modal Notification -->
+<div class="hidden p-4 bg-tertiary-container text-on-tertiary rounded-xl flex flex-col items-center text-center gap-2 shadow-2xl" id="orderSuccessModal">
+<span class="material-symbols-outlined text-4xl text-tertiary-fixed">task_alt</span>
+<h4 class="font-headline-sm text-headline-sm font-bold text-tertiary-fixed">Order Placed Successfully!</h4>
+<p class="font-body-md text-body-md">Thank you! Your Mubazzar package reference #MBZ-981 has been recorded. Our Lagos logistics desk will call you shortly to confirm dispatch.</p>
+<button class="mt-2 bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md px-4 py-2 rounded-lg" onclick="document.getElementById('orderSuccessModal').classList.add('hidden')">
+          Done
+        </button>
+</div>
+</div>
+<!-- Frequently Asked Questions Accordion -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<h3 class="font-headline-md text-headline-md text-primary font-bold">Frequently Asked Questions</h3>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<details class="group p-4">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-label-lg text-label-lg text-primary font-bold">How long does delivery take to my state?</span>
+<span class="material-symbols-outlined text-primary group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="font-body-md text-body-md text-on-surface-variant pt-2 leading-relaxed">
+            Orders within Lagos and Abuja arrive in 24 hours (next-day delivery). Deliveries to Port Harcourt, Ibadan, Benin, Kano, Enugu, and all other states take 2 to 4 business days via our partner dispatch fleet.
+          </p>
+</details>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<details class="group p-4">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-label-lg text-label-lg text-primary font-bold">Can I really open and check it before paying?</span>
+<span class="material-symbols-outlined text-primary group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="font-body-md text-body-md text-on-surface-variant pt-2 leading-relaxed">
+            Yes, 100%! You have the complete right to unseal the outer carton, turn on the vacuum to feel the suction and air blower power, before handing over cash or sending a bank transfer to the delivery rider.
+          </p>
+</details>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<details class="group p-4">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-label-lg text-label-lg text-primary font-bold">What is inside the complete package?</span>
+<span class="material-symbols-outlined text-primary group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="font-body-md text-body-md text-on-surface-variant pt-2 leading-relaxed">
+            Every set includes: 1x Mubazzar 4-in-1 Turbo Handheld Device, 1x Long Flat Crevice Suction Nozzle, 1x Brush Head for seat carpets, 1x Reverse Air Blow Jet Tip, 1x Air Inflator nozzle, 1x Washable HEPA Filter (plus extra free bonus filter), 1x High-Speed Type-C USB Charging Cable, User Manual, plus your Free ₦4,500 Aromatherapy Car Diffuser.
+          </p>
+</details>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<details class="group p-4">
+<summary class="flex justify-between items-center cursor-pointer list-none">
+<span class="font-label-lg text-label-lg text-primary font-bold">How do I charge it? Can I use my car charger?</span>
+<span class="material-symbols-outlined text-primary group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="font-body-md text-body-md text-on-surface-variant pt-2 leading-relaxed">
+            Yes! It features a universal modern Type-C port. You can charge it inside your car using your USB port/adapter, or plug it into any normal mobile phone charger or power bank at home. Full charge takes around 2 hours and lasts for up to 45 minutes of cleaning.
+          </p>
+</details>
+</div>
+</div>
+<!-- Footer Trust Mark -->
+<div class="text-center py-6 flex flex-col items-center gap-2 text-on-surface-variant">
+<img alt="Mubazzar" class="h-5 w-auto object-contain opacity-70" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAAxKF2GYZLS2L8Q5Dfhr6Bm_vaOtt2wTGFiv8gc-OzdSR9BZAdLKBc-lX1QKrTS3qlIknttLu7zz0HLBHRz0yg8XW_M5YDOeUQiaVpKYBFbGc_xhVwTu-gztKvZ4lgz0HPHYlDu7j9gVuT0fL1A4uNlsWtgk-DdzezyJ0CgTzi2WoDPil9fwDmpFuxYae_B1tibyNNb1DowI2V_RNlojVPWhao7pPqT88fR-HARgk8w7mD39ZEOPzb0pVj6uGNfYyJg"/>
+<p class="font-body-sm text-body-sm">
+        Mubazzar Brand Official Nigerian Store. Registered CAC Enterprise.
+        <br/>Lekki Expressway, Victoria Island, Lagos, Nigeria.
+      </p>
+<div class="flex items-center gap-4 text-xs font-semibold pt-1">
+<span>Privacy Policy</span>
+<span>•</span>
+<span>Delivery Terms</span>
+<span>•</span>
+<span>Return Warranty</span>
+</div>
+</div>
+</div>
+<!-- Sticky Purchase Dock Bar (Pinned to Mobile Bottom Viewport) -->
+<div class="fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md shadow-2xl p-space-sm flex items-center justify-between gap-3">
+<div class="flex flex-col pl-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant leading-none">Total Promo Price</span>
+<span class="font-headline-sm text-headline-sm text-primary font-extrabold" id="dock-price">₦19,500</span>
+<span class="font-label-sm text-label-sm text-on-tertiary-container font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs">local_shipping</span> Free Pay on Delivery
+      </span>
+</div>
+<a class="flex-1 bg-primary-container text-on-primary py-3 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-lg active:scale-95 transition-all text-center" href="#order-form-section">
+<span class="material-symbols-outlined text-secondary-container text-base">shopping_cart_checkout</span>
+<span class="font-label-lg text-label-lg uppercase tracking-tight truncate">Order Now (Pay on Delivery)</span>
+</a>
+</div>
+<!-- WhatsApp Floating Agent Helper -->
+<a aria-label="Chat with Nigerian Sales Rep on WhatsApp" class="fixed bottom-20 right-4 z-40 w-12 h-12 bg-on-tertiary-container text-on-tertiary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-90 transition-transform" href="https://wa.me/2348000000000?text=Hello%20Mubazzar,%20I%20want%20to%20inquire%20about%20the%204-in-1%20Car%20Vacuum" target="_blank">
+<span class="material-symbols-outlined text-2xl">chat</span>
+</a>
+</div>
+<!-- Client-side Interactive Script -->
+<script>
+  // Dynamic Photo Gallery Switcher
+  const galleryImages = [
+    "Close up photograph of sleek metallic black and navy Mubazzar 4-in-1 cordless mini handheld car vacuum with high-speed turbine motor suctioning sand and biscuits from black leather car seats with intense vacuum vortex studio lighting",
+    "Reverse blow nozzle mode of car vacuum blasting intense air jet blowing dust particles from car AC dashboard vent grille",
+    "Handheld turbo blower inflating an outdoor swimming float and air mattress with narrow cone nozzle attachment",
+    "Close up of washable steel and nanotech HEPA double air filter under clean flowing tap water with clear water droplets",
+    "Full luxury unboxing package layout with sleek navy box, Type-C charging cable, 4 nozzle heads, extra HEPA filter, and velvet carry pouch"
+  ];
+
+  function switchPhoto(index) {
+    const mainImg = document.getElementById('mainGalleryImage');
+    if (mainImg) {
+      mainImg.setAttribute('data-alt', galleryImages[index]);
+      mainImg.src = 'placeholder';
+    }
+    const thumbs = document.querySelectorAll('.thumb-btn');
+    thumbs.forEach((t, i) => {
+      if (i === index) {
+        t.classList.add('bg-secondary');
+      } else {
+        t.classList.remove('bg-secondary');
+      }
+    });
+  }
+
+  // Package Tier Selector Logic
+  let currentPrice = 19500;
+  let currentPackageName = "1x Turbo Vacuum Single Set";
+
+  function selectPackage(tier, price) {
+    currentPrice = price;
+    const formatted = "₦" + price.toLocaleString();
+
+    document.querySelectorAll('.bundle-card').forEach((card, idx) => {
+      card.classList.remove('bg-surface-container-high', 'shadow-lg');
+      const radio = document.getElementById('radio-' + (idx + 1));
+      if (radio) radio.checked = false;
+    });
+
+    const activeCard = document.getElementById('pkg-card-' + tier);
+    const activeRadio = document.getElementById('radio-' + tier);
+    if (activeCard) {
+      activeCard.classList.add('bg-surface-container-high', 'shadow-lg');
+    }
+    if (activeRadio) activeRadio.checked = true;
+
+    if (tier === 1) currentPackageName = "1x Turbo Vacuum Single Set";
+    if (tier === 2) currentPackageName = "2x Turbo Vacuums (Popular Set)";
+    if (tier === 3) currentPackageName = "3x Turbo Family Pack";
+
+    // Update Form Display
+    const formName = document.getElementById('form-pkg-name');
+    const formPrice = document.getElementById('form-pkg-price');
+    const submitBtn = document.getElementById('submit-btn-text');
+    const dockPrice = document.getElementById('dock-price');
+
+    if (formName) formName.textContent = currentPackageName;
+    if (formPrice) formPrice.textContent = formatted;
+    if (submitBtn) submitBtn.textContent = "CONFIRM ORDER - PAY ON DELIVERY (" + formatted + ")";
+    if (dockPrice) dockPrice.textContent = formatted;
+  }
+
+  // Handle Form Submission
+  function handleOrderSubmit(e) {
+    e.preventDefault();
+    const modal = document.getElementById('orderSuccessModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  // Live Real-Time Urgency Countdown (Simulated Persistent Timer)
+  (function initTimer() {
+    let totalSeconds = 2 * 3600 + 14 * 60 + 49;
+    const hElem = document.getElementById('hours');
+    const mElem = document.getElementById('minutes');
+    const sElem = document.getElementById('seconds');
+
+    setInterval(() => {
+      if (totalSeconds > 0) {
+        totalSeconds--;
+        const hours = Math.floor(totalSeconds / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+        const secs = totalSeconds % 60;
+
+        if (hElem) hElem.textContent = String(hours).padStart(2, '0');
+        if (mElem) mElem.textContent = String(mins).padStart(2, '0');
+        if (sElem) sElem.textContent = String(secs).padStart(2, '0');
+      }
+    }, 1000);
+  })();
+</script></main></body></html>

@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+/*
+ * MUBAZZAR design tokens. Components use these utilities only — never raw hex values.
+ * Brand: navy #0E294B · gold #D4AF37 · ivory #FBF9F5 · emerald #10B981 (+ AA-safe text shades).
+ * Surface/ink scales follow the /design mocks (Material 3 roles) re-anchored on ivory.
+ */
+@theme {
+  /* Brand */
+  --color-navy: #0e294b;
+  --color-navy-deep: #00142f;
+  --color-navy-ink: #0b1e36;
+  --color-navy-muted: #30476b;
+  --color-navy-tint: #7991b9;
+  --color-gold: #d4af37;
+  --color-gold-deep: #c59a27;
+  --color-gold-soft: #fed65b;
+  --color-gold-pale: #ffe088;
+  --color-gold-dim: #e9c349;
+  --color-bronze: #735c00; /* gold-family text on light surfaces (AA) */
+  --color-bronze-ink: #241a00; /* text on gold fills */
+  --color-bronze-muted: #574500;
+  --color-ivory: #fbf9f5;
+  --color-emerald: #10b981; /* fills, dots, icons */
+  --color-emerald-ink: #047857; /* emerald text on light (AA) */
+  --color-emerald-deep: #00301e;
+  --color-emerald-mint: #6ffbbe;
+  --color-emerald-soft: #d1fae5;
+
+  /* Urgency & status */
+  --color-urgent: #ba1a1a; /* discount badges, low stock */
+  --color-urgent-soft: #ffdad6;
+  --color-urgent-ink: #93000a;
+  --color-coral: #e11d48; /* countdown digits on navy */
+  --color-coral-soft: #ffb3c0;
+  --color-amber: #b45309;
+
+  /* Surfaces */
+  --color-surface: #fbf9f5;
+  --color-card: #ffffff;
+  --color-surface-low: #f1f3ff;
+  --color-surface-container: #e8eeff;
+  --color-surface-high: #e3e8f9;
+  --color-surface-highest: #dde2f3;
+  --color-surface-dim: #d4daea;
+
+  /* Ink */
+  --color-ink: #161c27;
+  --color-ink-muted: #44474e;
+  --color-ink-subtle: #686b73; /* AA on white (≥4.5:1) */
+  --color-on-dark: #ffffff;
+  --color-on-dark-muted: #d4daea;
+
+  /* Lines */
+  --color-line: #e7e2d8;
+  --color-line-soft: #ece7de;
+  --color-line-strong: #c4c6cf;
+
+  /* Typography */
+  --font-display: var(--font-syne), "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: 2rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--letter-spacing: -0.015em;
+  --text-display--font-weight: 700;
+  --text-headline-xl: 1.625rem;
+  --text-headline-xl--line-height: 2.125rem;
+  --text-headline-xl--letter-spacing: -0.01em;
+  --text-headline-xl--font-weight: 700;
+  --text-headline-md: 1.375rem;
+  --text-headline-md--line-height: 1.875rem;
+  --text-headline-md--letter-spacing: -0.005em;
+  --text-headline-md--font-weight: 600;
+  --text-headline-sm: 1.125rem;
+  --text-headline-sm--line-height: 1.625rem;
+  --text-headline-sm--font-weight: 700;
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.5rem;
+  --text-body-md: 0.875rem;
+  --text-body-md--line-height: 1.375rem;
+  --text-body-sm: 0.75rem;
+  --text-body-sm--line-height: 1.125rem;
+  --text-label-lg: 0.9375rem;
+  --text-label-lg--line-height: 1.25rem;
+  --text-label-lg--letter-spacing: 0.01em;
+  --text-label-lg--font-weight: 700;
+  --text-label-md: 0.8125rem;
+  --text-label-md--line-height: 1.125rem;
+  --text-label-md--letter-spacing: 0.01em;
+  --text-label-md--font-weight: 600;
+  --text-label-sm: 0.6875rem;
+  --text-label-sm--line-height: 1rem;
+  --text-label-sm--letter-spacing: 0.03em;
+  --text-label-sm--font-weight: 700;
+  --text-price-hero: 1.75rem;
+  --text-price-hero--line-height: 2.125rem;
+  --text-price-hero--letter-spacing: -0.02em;
+  --text-price-hero--font-weight: 800;
+
+  /* Radii (DESIGN.md: cards 16px, buttons/inputs 12px, pills full) */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Elevation */
+  --shadow-card: 0 2px 8px -1px rgb(14 41 75 / 0.06);
+  --shadow-raised: 0 8px 24px -4px rgb(14 41 75 / 0.1);
+  --shadow-dock: 0 -4px 20px 0 rgb(14 41 75 / 0.12);
+  --shadow-float: 0 16px 36px -6px rgb(11 30 54 / 0.24);
+
+  --breakpoint-xs: 22rem;
+  --container-site: 80rem;
+
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 7.5rem;
+  }
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}

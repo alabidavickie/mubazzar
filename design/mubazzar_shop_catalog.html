@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Syne:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-dim": "#d4daea", "surface-container-high": "#e3e8f9", "primary": "#00142f", "on-primary-container": "#7991b9", "error-container": "#ffdad6", "on-tertiary-container": "#00a472", "surface-variant": "#dde2f3", "surface-container": "#e8eeff", "on-primary-fixed": "#001b3c", "on-secondary-container": "#745c00", "tertiary": "#00190e", "on-primary": "#ffffff", "on-error-container": "#93000a", "on-background": "#161c27", "inverse-surface": "#2a303d", "secondary-fixed": "#ffe088", "inverse-on-surface": "#ecf0ff", "on-surface-variant": "#44474e", "surface-container-lowest": "#ffffff", "background": "#f9f9ff", "error": "#ba1a1a", "surface-bright": "#f9f9ff", "tertiary-fixed-dim": "#4edea3", "on-secondary-fixed": "#241a00", "primary-container": "#0e294b", "secondary": "#735c00", "surface": "#f9f9ff", "secondary-fixed-dim": "#e9c349", "surface-container-highest": "#dde2f3", "tertiary-container": "#00301e", "on-surface": "#161c27", "surface-container-low": "#f1f3ff", "on-tertiary": "#ffffff", "on-primary-fixed-variant": "#30476b", "secondary-container": "#fed65b", "on-tertiary-fixed": "#002113", "primary-fixed": "#d5e3ff", "on-secondary-fixed-variant": "#574500", "surface-tint": "#485f84", "on-secondary": "#ffffff", "on-tertiary-fixed-variant": "#005236", "inverse-primary": "#b0c8f2", "primary-fixed-dim": "#b0c8f2", "outline-variant": "#c4c6cf", "tertiary-fixed": "#6ffbbe", "on-error": "#ffffff", "outline": "#74777f" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-sm": "0.5rem", "space-3xl": "3.5rem", "space-md": "0.75rem", "margin": "1rem", "space-xl": "1.75rem", "space-base": "1rem", "gutter-tablet": "1.25rem", "space-2xs": "0.125rem", "space-lg": "1.25rem", "space-2xl": "2.5rem", "gutter-desktop": "1.5rem", "space-xs": "0.25rem", "margin-desktop": "2rem", "margin-tablet": "1.5rem", "gutter": "1rem" }, fontFamily: { "body-lg": ["Plus Jakarta Sans"], "display-lg": ["Syne"], "headline-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-xl": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-md": ["Syne"], "display-lg-mobile": ["Syne"], "headline-xl": ["Syne"], "price-hero": ["Plus Jakarta Sans"], "headline-lg": ["Syne"], "label-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Syne"] }, fontSize: { "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }], "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }], "headline-sm": ["18px", { lineHeight: "26px", fontWeight: "700" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "label-lg": ["15px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "700" }], "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "600" }], "body-xl": ["18px", { lineHeight: "28px", fontWeight: "400" }], "body-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }], "headline-md": ["22px", { lineHeight: "30px", letterSpacing: "-0.005em", fontWeight: "600" }], "display-lg-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.015em", fontWeight: "700" }], "headline-xl": ["36px", { lineHeight: "44px", letterSpacing: "-0.015em", fontWeight: "700" }], "price-hero": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "800" }], "headline-lg": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600" }], "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.03em", fontWeight: "700" }], "headline-xl-mobile": ["26px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-background font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-28 flex flex-col justify-between"><div class="bg-primary text-secondary-fixed px-space-base py-space-2xs text-center flex items-center justify-center gap-space-xs overflow-hidden whitespace-nowrap"><span class="material-symbols-outlined text-sm text-secondary-fixed shrink-0">verified_user</span><p class="font-label-sm text-label-sm truncate tracking-tight">🇳🇬 Fast Nationwide Delivery | Payment on Delivery in Lagos, Abuja &amp; PH | 24/7 WhatsApp Support</p></div><div class="h-12 px-space-base flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm"><a class="flex items-center gap-space-xs" data-path="home" href="#"><span class="font-headline-sm text-headline-sm text-primary-container tracking-wider font-extrabold">MUBAZZAR</span></a><span class="hidden sm:inline-block font-label-sm text-label-sm text-on-surface-variant font-bold px-space-xs py-space-2xs bg-surface-container rounded">Shop Categories</span></div><div class="flex items-center gap-space-xs"><button aria-label="Search Deals" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors"><span class="material-symbols-outlined">search</span></button><a aria-label="WhatsApp Support" class="w-11 h-11 flex items-center justify-center text-on-tertiary-container hover:opacity-80 transition-opacity" data-path="whatsapp-support" href="#"><span class="material-symbols-outlined">chat</span></a><a aria-label="Cart" class="w-11 h-11 relative flex items-center justify-center text-on-surface hover:text-primary transition-colors" data-path="checkout" href="#"><span class="material-symbols-outlined">shopping_bag</span><span class="absolute top-1.5 right-1.5 w-4 h-4 bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm rounded-full flex items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.12)]">2</span></a><img alt="Profile" class="w-8 h-8 rounded-full object-cover ml-space-xs" src="https://lh3.googleusercontent.com/aida/AEtjO1WDnQ5U0jecvKgO6CyoeDdGeEeESANZ7rWcu1ijFTTD1bMGf1CMEGdD5Zj8CJ4cvySGBU-49N9F-8sw3kvbITEFmLNof8VuOKRfNlpOtVdeAt99Pzl1vX84STsQ_dALE1CqW65KDMtz3tFkJPlpr7klX1v5gsBHjE-mo0PMhPOxA922-ODtVwvdWmfjsqIb5QSpySVqn1bxA89rzSq-I72kXaIrPcV5NoEnv-0RVBQTJ58ZoZ-QP1Gd-xeT_OKk0dJKnUs4SqguZQ"/></div></div><div class="h-9 px-space-base flex items-center gap-space-sm overflow-x-auto no-scrollbar pb-space-2xs"><a class="shrink-0 px-space-md py-space-2xs rounded-full bg-secondary-container text-on-secondary-fixed font-label-md text-label-md flex items-center gap-space-2xs" data-path="hot-deals" href="#"><span class="material-symbols-outlined text-sm">local_fire_department</span>Hot Deals</a><a class="shrink-0 px-space-md py-space-2xs rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md" data-path="shop-categories" href="#">Gadgets</a><a class="shrink-0 px-space-md py-space-2xs rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md" data-path="shop-categories" href="#">Kitchen</a><a class="shrink-0 px-space-md py-space-2xs rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md" data-path="shop-categories" href="#">Car Tech</a><a class="shrink-0 px-space-md py-space-2xs rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md" data-path="shop-categories" href="#">Trending</a><a class="shrink-0 px-space-md py-space-2xs rounded-full bg-surface-container text-secondary font-label-md text-label-md font-bold" data-path="sell-on-mubazzar" href="#">Sell on Mubazzar</a></div></div></header><main class="flex flex-col relative w-full pt-28 pb-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Brand Showcase & Search Context Bar -->
+<div class="px-space-base pt-space-sm pb-space-xs">
+<div class="bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex items-center gap-space-md">
+<img alt="Mubazzar Premium Brand" class="h-10 w-auto object-contain rounded-lg shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5q4X5RJDSjQfTRxRyg1ZRPd4eLIo2VLUfaA93EI0tLNJhghIfYCdTUjEwNsqGIe-axFizLUEVDpPURBtTaJk7wqIL9K_3zOSbpSOn052eiCX0IPGH-BRyJwpSLMy7OssbiepJEy10_veWkKizkaK8s4ACEQ9vpbzFruPFgeRWYuHKPbMXPBrqpE_aTqqJYKMN3-5HNE9mg1l-Q_-oGL2WCxIfY__MqotkuojXCnbz4aS7zLVQ9vUgDirwGLF_qdP0VA"/>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-space-2xs">
+<span class="font-headline-sm text-headline-sm text-primary-container truncate font-bold">Uncommon Finds</span>
+<span class="material-symbols-outlined text-secondary text-sm shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Direct dispatch from Ikeja &amp; Wuse II hubs</p>
+</div>
+<div class="bg-secondary-container px-space-xs py-space-2xs rounded-lg text-center shrink-0">
+<span class="font-label-sm text-label-sm text-on-secondary-fixed block font-extrabold uppercase">Pods</span>
+<span class="font-label-md text-label-md text-on-secondary-fixed font-bold leading-none">100%</span>
+</div>
+</div>
+</div>
+<!-- Dynamic Search & Filter Drawer Trigger Bar -->
+<div class="px-space-base py-space-xs flex flex-col gap-space-xs">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+<input class="w-full h-11 pl-11 pr-space-md bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-xl shadow-sm placeholder:text-on-surface-variant/70 focus:outline-none focus:shadow-md transition-shadow" placeholder="Search gadgets, problem solvers, kitchen tech..." type="text"/>
+<button class="absolute right-space-xs top-1/2 -translate-y-1/2 px-space-sm py-1 bg-surface-container text-primary font-label-md text-label-md rounded-lg flex items-center gap-1 active:scale-95 transition-transform" onclick="document.getElementById('filter-drawer').classList.toggle('hidden')">
+<span class="material-symbols-outlined text-sm">tune</span>
+<span>Filter</span>
+</button>
+</div>
+<!-- Collapsible Quick Filter Drawer -->
+<div class="bg-surface-container-low p-space-md rounded-xl shadow-inner flex flex-col gap-space-sm" id="filter-drawer">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">Fast Refinements</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold cursor-pointer" onclick="document.getElementById('filter-drawer').classList.add('hidden')">Done</span>
+</div>
+<!-- Price Range Chips -->
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Price Range</span>
+<div class="flex items-center gap-space-xs overflow-x-auto no-scrollbar">
+<button class="px-space-sm py-1 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm whitespace-nowrap">All Prices</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm whitespace-nowrap active:bg-primary-container active:text-on-primary">Under ₦15k</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm whitespace-nowrap active:bg-primary-container active:text-on-primary">₦15k - ₦30k</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm whitespace-nowrap active:bg-primary-container active:text-on-primary">₦30k - ₦60k</button>
+</div>
+</div>
+<!-- Trust & Delivery Refinements -->
+<div class="grid grid-cols-2 gap-space-xs pt-space-2xs">
+<div class="bg-surface-container-lowest p-space-xs rounded-lg flex items-center gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-on-tertiary-container text-base">payments</span>
+<div class="min-w-0">
+<p class="font-label-sm text-label-sm font-bold text-on-surface truncate">Pay on Delivery</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Zero risk order</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-xs rounded-lg flex items-center gap-space-xs shadow-sm">
+<span class="material-symbols-outlined text-secondary text-base">bolt</span>
+<div class="min-w-0">
+<p class="font-label-sm text-label-sm font-bold text-on-surface truncate">Same-Day Hub</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Lagos &amp; Abuja</p>
+</div>
+</div>
+</div>
+<!-- Sorting Select Strip -->
+<div class="flex items-center justify-between pt-space-2xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sort by:</span>
+<div class="flex items-center gap-space-xs">
+<span class="px-space-sm py-0.5 rounded-md bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm font-bold">Popular</span>
+<span class="px-space-sm py-0.5 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Discount %</span>
+<span class="px-space-sm py-0.5 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Newest</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Horizontal Scrolling Category Pills -->
+<div class="w-full overflow-x-auto no-scrollbar px-space-base py-space-xs flex items-center gap-space-xs">
+<button class="shrink-0 px-space-md py-1.5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-1 shadow-sm">
+<span>All</span>
+<span class="bg-secondary text-on-secondary text-[10px] px-1.5 py-0.2 rounded-full font-bold">128</span>
+</button>
+<button class="shrink-0 px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm active:bg-surface-container">
+      🚗 Car Gadgets
+    </button>
+<button class="shrink-0 px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm active:bg-surface-container">
+      🍳 Kitchen Tools
+    </button>
+<button class="shrink-0 px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm active:bg-surface-container">
+      ⚡ Power &amp; Solar
+    </button>
+<button class="shrink-0 px-space-md py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm active:bg-surface-container">
+      🏠 Home Tech
+    </button>
+<button class="shrink-0 px-space-md py-1.5 rounded-full bg-secondary-container text-on-secondary-fixed font-label-md text-label-md flex items-center gap-1 font-bold shadow-sm">
+      🎁 Free Gift
+    </button>
+</div>
+<!-- Live Urgency & Trust Micro-Banner -->
+<div class="px-space-base py-space-xs">
+<div class="bg-surface-container p-space-sm rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-lg">verified_user</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Verified Direct Sourcing • 100% Transit Insured</span>
+</div>
+<div class="flex items-center gap-1 text-on-tertiary-container">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-extrabold uppercase">Live POD</span>
+</div>
+</div>
+</div>
+<!-- 2-Column Product Grid -->
+<div class="px-space-base py-space-xs">
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xs shadow-sm flex flex-col justify-between group">
+<div>
+<div class="relative w-full aspect-square rounded-lg overflow-hidden bg-surface-container-high mb-space-xs">
+<img class="w-full h-full object-cover" data-alt="Futuristic 3-in-1 retractable car charger adapter plugged into vehicle console with glowing LED digital voltage meter display in deep navy and cyber gold accents studio product shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp2LG2HyhH3Q85hlIUpoUkDgllpP8BQZrZn-rn1XLZlKboYWIkuir4vTTfUgFCWibr8dqhiHx8io7jMBp_9eO6YWIACzp60g_s_-6w2LT0m2Mvwhu1IlAR3k5wUcHhj7Xff81jQbetWRHy1ltZhInKiQUjOOd4uF6lDVCeE5PYJC2p1tr0SQWE8d8fK3sjQY9a5coptwpsPlIVsrtPt-WUQP0-ZDd-pJHrKAEQ40EVoDG9bXwqyfdU"/>
+<span class="absolute top-1.5 left-1.5 bg-error text-on-error font-label-sm text-label-sm px-1.5 py-0.5 rounded shadow font-extrabold">-36%</span>
+<span class="absolute top-1.5 right-1.5 bg-primary/80 backdrop-blur-md text-secondary-fixed p-1 rounded-full shadow flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</span>
+<div class="absolute bottom-1.5 left-1.5 right-1.5 bg-primary-container/90 backdrop-blur-sm px-1.5 py-0.5 rounded flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-secondary-fixed">local_fire_department</span>
+<span class="font-label-sm text-label-sm text-secondary-fixed font-bold truncate">Selling Fast</span>
+</div>
+</div>
+<div class="px-1 flex flex-col gap-1">
+<div class="flex items-center gap-1">
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">4.9</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">(412 sold)</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">
+              High-Speed 3-in-1 Retractable Car Charger &amp; Voltage Display
+            </h3>
+<!-- Promotional Chip -->
+<div class="bg-secondary-container/30 px-1.5 py-0.5 rounded flex items-center gap-1 my-0.5 w-fit">
+<span class="material-symbols-outlined text-[12px] text-secondary">card_giftcard</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold truncate">Free Air Freshener</span>
+</div>
+<!-- Price Area -->
+<div class="flex items-baseline gap-1.5 flex-wrap pt-0.5">
+<span class="font-price-hero text-price-hero text-primary font-extrabold">₦11,500</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦18,000</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full h-10 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-transform" onclick="alert('Added Car Charger to your POD Cart!')">
+<span class="material-symbols-outlined text-sm">flash_on</span>
+<span>Order Now</span>
+</button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xs shadow-sm flex flex-col justify-between group">
+<div>
+<div class="relative w-full aspect-square rounded-lg overflow-hidden bg-surface-container-high mb-space-xs">
+<img class="w-full h-full object-cover" data-alt="Ultrasonic pest and mosquito repeller pack of two electronic socket plugins with faint glowing emerald indicators clean luxury home interior setting white aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfWAamtwvu3EyTCZgyF-BVAl-OjdTR0OoBciJ3j2C7UOU1HjqreUYQuQ1DPFfw9ey11qMzAf_8nnPmISRy4NUw_sOsghfp77G2KjbpdoIPM4nR1gguPd_CYyEJtn3qAPhW6E9PXkHYZOCwv6S9WSbqRHPXjtkVZJiXlFWL-XTlu8Cs0xcgSzBJrLFAuPtWVxgohjq8kkhKmtdObtiU-zA6_PopQMQoZMvCskzegdIapxxhWa39aBGM"/>
+<span class="absolute top-1.5 left-1.5 bg-error text-on-error font-label-sm text-label-sm px-1.5 py-0.5 rounded shadow font-extrabold">-44%</span>
+<span class="absolute top-1.5 right-1.5 bg-primary/80 backdrop-blur-md text-secondary-fixed p-1 rounded-full shadow flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</span>
+<div class="absolute bottom-1.5 left-1.5 right-1.5 bg-on-tertiary-container/90 backdrop-blur-sm px-1.5 py-0.5 rounded flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-on-tertiary">verified</span>
+<span class="font-label-sm text-label-sm text-on-tertiary font-bold truncate">Pay On Delivery</span>
+</div>
+</div>
+<div class="px-1 flex flex-col gap-1">
+<div class="flex items-center gap-1">
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">4.8</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">(834 sold)</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">
+              Ultrasonic Pest &amp; Mosquito Repeller (Pack of 2)
+            </h3>
+<!-- Micro delivery perk -->
+<div class="bg-surface-container px-1.5 py-0.5 rounded flex items-center gap-1 my-0.5 w-fit">
+<span class="material-symbols-outlined text-[12px] text-on-tertiary-container">schedule</span>
+<span class="font-label-sm text-label-sm text-on-surface font-medium truncate">Lagos Hub Ready</span>
+</div>
+<!-- Price Area -->
+<div class="flex items-baseline gap-1.5 flex-wrap pt-0.5">
+<span class="font-price-hero text-price-hero text-primary font-extrabold">₦13,500</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦24,000</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full h-10 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-transform" onclick="alert('Added Repeller Pack to your POD Cart!')">
+<span class="material-symbols-outlined text-sm">flash_on</span>
+<span>Order Now</span>
+</button>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xs shadow-sm flex flex-col justify-between group">
+<div>
+<div class="relative w-full aspect-square rounded-lg overflow-hidden bg-surface-container-high mb-space-xs">
+<img class="w-full h-full object-cover" data-alt="Pocket sized portable mini thermal bluetooth mobile printer printing mini stickers and receipts directly beside an iPhone pastel modern desk studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtSmXgKP-kMZdSJxZE5X8BOI88mo80wnSJdQ3qPQe-wQtvYXQCfo-3Fv9HWkbS8ftq3qnvrp1S9UtEV1buEGjeM2XSO_FXuiHedpqfW0gx8hKKqptpQTLOlgzMfADvnB60GApIkzgNG_ONBZItDPcxW4X2lq1lJdu01heQ-gl_d6BkJRWjvaCGXqs4TQx9y3gUBpn5wpHCM6Bvha0kWZMQoU-XSaH1PJQrX_vZVWWxE149HCDpdOdu"/>
+<span class="absolute top-1.5 left-1.5 bg-error text-on-error font-label-sm text-label-sm px-1.5 py-0.5 rounded shadow font-extrabold">-38%</span>
+<span class="absolute top-1.5 right-1.5 bg-primary/80 backdrop-blur-md text-secondary-fixed p-1 rounded-full shadow flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</span>
+<div class="absolute bottom-1.5 left-1.5 right-1.5 bg-secondary-container px-1.5 py-0.5 rounded flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-on-secondary-fixed">redeem</span>
+<span class="font-label-sm text-label-sm text-on-secondary-fixed font-bold truncate">3 Rolls Free</span>
+</div>
+</div>
+<div class="px-1 flex flex-col gap-1">
+<div class="flex items-center gap-1">
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">5.0</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">(229 sold)</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">
+              Portable Mini Thermal Printer for Phone (No Ink Needed)
+            </h3>
+<!-- Promotional Chip -->
+<div class="bg-secondary-container/30 px-1.5 py-0.5 rounded flex items-center gap-1 my-0.5 w-fit">
+<span class="material-symbols-outlined text-[12px] text-secondary">check_circle</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold truncate">Zero Ink System</span>
+</div>
+<!-- Price Area -->
+<div class="flex items-baseline gap-1.5 flex-wrap pt-0.5">
+<span class="font-price-hero text-price-hero text-primary font-extrabold">₦21,500</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦35,000</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full h-10 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-transform" onclick="alert('Added Pocket Thermal Printer to Cart!')">
+<span class="material-symbols-outlined text-sm">flash_on</span>
+<span>Order Now</span>
+</button>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xs shadow-sm flex flex-col justify-between group">
+<div>
+<div class="relative w-full aspect-square rounded-lg overflow-hidden bg-surface-container-high mb-space-xs">
+<img class="w-full h-full object-cover" data-alt="Heavy duty 100W braided multi charging cable with gold alloy connectors lighting Type C and Micro USB pins displayed dynamically on dark blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3PCTg1yUR6SpkTr4nE-WKenUL1PKOBkOx0XADQoBif1pPe17VogbVDunoBstHpbpOpcx8RJkNO09ULtnq1Dq6Q4vmSA-bMDQ-pUjtpukj6kG0NlE47wroySnB5pb66bea-DMQtBgbB1AvQf-uXD2Z8zqZhsKmM2mA2kEhq2NHg-e8pZb6AKPQQm6ZRBOAKJWZ6zF-RhRPFAuvp53Gi2bD_vAEUvzBSal8cAD6URzfEXU4LxSLLLA4"/>
+<span class="absolute top-1.5 left-1.5 bg-error text-on-error font-label-sm text-label-sm px-1.5 py-0.5 rounded shadow font-extrabold">-43%</span>
+<span class="absolute top-1.5 right-1.5 bg-primary/80 backdrop-blur-md text-secondary-fixed p-1 rounded-full shadow flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</span>
+<div class="absolute bottom-1.5 left-1.5 right-1.5 bg-secondary text-on-secondary px-1.5 py-0.5 rounded flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[12px]">grade</span>
+<span class="font-label-sm text-label-sm font-bold truncate">Best Seller</span>
+</div>
+</div>
+<div class="px-1 flex flex-col gap-1">
+<div class="flex items-center gap-1">
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">4.9</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">(1,120 sold)</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">
+              100W Super Fast Charging Braided Multi-Cable
+            </h3>
+<!-- Micro delivery perk -->
+<div class="bg-surface-container px-1.5 py-0.5 rounded flex items-center gap-1 my-0.5 w-fit">
+<span class="material-symbols-outlined text-[12px] text-secondary">verified</span>
+<span class="font-label-sm text-label-sm text-on-surface font-medium truncate">Universal All-in-1</span>
+</div>
+<!-- Price Area -->
+<div class="flex items-baseline gap-1.5 flex-wrap pt-0.5">
+<span class="font-price-hero text-price-hero text-primary font-extrabold">₦8,500</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦15,000</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full h-10 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-transform" onclick="alert('Added Multi-Cable to your POD Cart!')">
+<span class="material-symbols-outlined text-sm">flash_on</span>
+<span>Order Now</span>
+</button>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xs shadow-sm flex flex-col justify-between group">
+<div>
+<div class="relative w-full aspect-square rounded-lg overflow-hidden bg-surface-container-high mb-space-xs">
+<img class="w-full h-full object-cover" data-alt="Automatic electric rechargeable water dispenser pump mounted securely on a 20 liter water bottle dispensing crystal clear water in modern kitchen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBskDQt8f4d3Q-BGdgxWpR2muWtUp06u1sd5GAYIhxS3cRAa6DJWua9r3QWB-t1i4Hw8c8U8xrguDz3lNSQyTcl4D-GeRoe4CmhJNXsVLJf1eqkpqGbKSE16oKxBqpga_nc6DRjoDHS9-LXig9EMDWhz07fhzYquu9JFGmMWSzL0bDkA4uwh9JAbXdsBh1M2blYxjM2uYE7JHc81a5v_lXzrMvmMu32MLqYQmphgJ_uvCIDI6dwczuD"/>
+<span class="absolute top-1.5 left-1.5 bg-error text-on-error font-label-sm text-label-sm px-1.5 py-0.5 rounded shadow font-extrabold">-40%</span>
+<span class="absolute top-1.5 right-1.5 bg-primary/80 backdrop-blur-md text-secondary-fixed p-1 rounded-full shadow flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</span>
+<div class="absolute bottom-1.5 left-1.5 right-1.5 bg-primary-container/90 backdrop-blur-sm px-1.5 py-0.5 rounded flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-secondary-fixed">bolt</span>
+<span class="font-label-sm text-label-sm text-secondary-fixed font-bold truncate">USB Rechargeable</span>
+</div>
+</div>
+<div class="px-1 flex flex-col gap-1">
+<div class="flex items-center gap-1">
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">4.7</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">(620 sold)</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">
+              Automatic Water Dispenser Pump for Big Bottles
+            </h3>
+<!-- Micro delivery perk -->
+<div class="bg-secondary-container/30 px-1.5 py-0.5 rounded flex items-center gap-1 my-0.5 w-fit">
+<span class="material-symbols-outlined text-[12px] text-secondary">battery_charging_full</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold truncate">30 Days On 1 Charge</span>
+</div>
+<!-- Price Area -->
+<div class="flex items-baseline gap-1.5 flex-wrap pt-0.5">
+<span class="font-price-hero text-price-hero text-primary font-extrabold">₦9,500</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦16,000</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full h-10 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-transform" onclick="alert('Added Water Pump to your POD Cart!')">
+<span class="material-symbols-outlined text-sm">flash_on</span>
+<span>Order Now</span>
+</button>
+</div>
+</div>
+<!-- Item 6 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xs shadow-sm flex flex-col justify-between group">
+<div>
+<div class="relative w-full aspect-square rounded-lg overflow-hidden bg-surface-container-high mb-space-xs">
+<img class="w-full h-full object-cover" data-alt="Magnetic wireless security anti-theft window and door alarm sensor chime mounted cleanly on glass door high security apartment photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgIttpPib1rvrfACQX40Ql6bn8CHBXcQkulwpgh6wWmgcZqmwHbfl1Cxypk0kfzb4hdizLL2zBB7i-yITbyUkx2j9WrZYll_AOfEihYJ1xf04uqJFNVMwg36J0MnE7BfGgq2MxI6rxQvB8KgEHtEcLrEJqHwzc20FEg1RIO2tfrHxRhXoi3ImsuAM1BPRtD_7X29ZgYwfSTFr9vuj1NT-LKq5E1p5Fz1QsA1SOvDKi27MWLFU1S9XG"/>
+<span class="absolute top-1.5 left-1.5 bg-error text-on-error font-label-sm text-label-sm px-1.5 py-0.5 rounded shadow font-extrabold">-40%</span>
+<span class="absolute top-1.5 right-1.5 bg-primary/80 backdrop-blur-md text-secondary-fixed p-1 rounded-full shadow flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">favorite</span>
+</span>
+<div class="absolute bottom-1.5 left-1.5 right-1.5 bg-error-container text-on-error-container px-1.5 py-0.5 rounded flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[12px]">security</span>
+<span class="font-label-sm text-label-sm font-bold truncate">120dB Siren</span>
+</div>
+</div>
+<div class="px-1 flex flex-col gap-1">
+<div class="flex items-center gap-1">
+<div class="flex text-secondary text-xs">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">4.8</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">(341 sold)</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">
+              Magnetic Anti-Theft Door &amp; Window Alarm
+            </h3>
+<!-- Micro delivery perk -->
+<div class="bg-surface-container px-1.5 py-0.5 rounded flex items-center gap-1 my-0.5 w-fit">
+<span class="material-symbols-outlined text-[12px] text-primary">build</span>
+<span class="font-label-sm text-label-sm text-on-surface font-medium truncate">No Drilling Needed</span>
+</div>
+<!-- Price Area -->
+<div class="flex items-baseline gap-1.5 flex-wrap pt-0.5">
+<span class="font-price-hero text-price-hero text-primary font-extrabold">₦12,000</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant line-through">₦20,000</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full h-10 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-transform" onclick="alert('Added Security Alarm to your POD Cart!')">
+<span class="material-symbols-outlined text-sm">flash_on</span>
+<span>Order Now</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination & Live Stock Progress Counter -->
+<div class="px-space-base py-space-md flex flex-col items-center gap-space-sm text-center">
+<div class="w-full max-w-xs flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Showing 12 of 148 verified products</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">8% viewed</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="bg-secondary-container h-full rounded-full" style="width: 14%;"></div>
+</div>
+</div>
+<button class="w-full max-w-xs h-12 bg-surface-container-lowest text-primary font-label-lg text-label-lg rounded-xl shadow-sm flex items-center justify-center gap-space-xs active:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-secondary">autorenew</span>
+<span>Load More Uncommon Gadgets</span>
+</button>
+</div>
+<!-- Reassurance / Trust Seal Footer Card -->
+<div class="px-space-base pb-space-lg">
+<div class="bg-surface-container-low rounded-xl p-space-md flex items-start gap-space-sm shadow-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+</div>
+<div class="min-w-0 flex-1">
+<h4 class="font-headline-sm text-headline-sm text-primary font-bold">100% Quality &amp; Testing Promise</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant pt-0.5 leading-snug">
+          All items are unboxed, verified, and tested before dispatch. 100% money-back guarantee if defective. Pay with total confidence upon delivery.
+        </p>
+<div class="flex items-center gap-space-md pt-space-xs">
+<div class="flex items-center gap-1 text-on-tertiary-container">
+<span class="material-symbols-outlined text-sm">local_shipping</span>
+<span class="font-label-sm text-label-sm font-bold">Fast State Dispatch</span>
+</div>
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">currency_exchange</span>
+<span class="font-label-sm text-label-sm font-bold">7-Day Swap Guarantee</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_-2px_12px_rgba(14,41,75,0.06)]" data-active-classes="text-primary-container font-bold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center gap-space-2xs min-w-[56px] min-h-[44px] text-on-surface-variant transition-colors" data-path="home" href="#"><span class="material-symbols-outlined">storefront</span><span class="font-label-sm text-label-sm">Home</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-space-2xs min-w-[56px] min-h-[44px] transition-colors text-primary-container font-bold" data-path="shop-categories" href="#"><span class="material-symbols-outlined">grid_view</span><span class="font-label-sm text-label-sm">Shop</span></a><a class="flex flex-col items-center justify-center gap-space-2xs min-w-[56px] min-h-[44px] text-on-surface-variant transition-colors relative" data-path="deals" href="#"><span class="material-symbols-outlined text-secondary">sell</span><span class="font-label-sm text-label-sm text-secondary font-bold">Deals</span><span class="absolute -top-1 px-1.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-fixed text-[9px] font-extrabold leading-none">-60%</span></a><a class="flex flex-col items-center justify-center gap-space-2xs min-w-[56px] min-h-[44px] text-on-surface-variant transition-colors" data-path="track-order" href="#"><span class="material-symbols-outlined">local_shipping</span><span class="font-label-sm text-label-sm">Track</span></a><a class="flex flex-col items-center justify-center gap-space-2xs min-w-[56px] min-h-[44px] text-on-surface-variant transition-colors" data-path="whatsapp-support" href="#"><span class="material-symbols-outlined text-on-tertiary-container">support_agent</span><span class="font-label-sm text-label-sm">WhatsApp</span></a></div></nav></body></html>

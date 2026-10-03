@@ -1,0 +1,9 @@
+.next
+node_modules
+pnpm-lock.yaml
+design
+reports
+test-results
+.data
+supabase/seed.sql
+public

@@ -1,0 +1,385 @@
+import "server-only";
+import { cache } from "react";
+import { asAnon } from "../db";
+import type { Queryable } from "../db";
+
+/** Read models for the storefront. All queries run as `anon` so RLS decides what is public. */
+
+export interface ProductCardData {
+  id: string;
+  slug: string;
+  name: string;
+  shortDescription: string | null;
+  priceKobo: number;
+  compareAtKobo: number | null;
+  ratingAvg: number;
+  reviewCount: number;
+  soldCount: number;
+  imageUrl: string | null;
+  imageAlt: string;
+  imageBadge: string | null;
+  imageBadgeStyle: "navy" | "emerald" | "gold" | "bronze" | "red";
+  imageBadgeIcon: string | null;
+  perkText: string | null;
+  perkIcon: string | null;
+  perkStyle: "gold" | "neutral";
+  deliveryNote: string | null;
+  deliveryNoteIcon: string | null;
+  podAvailable: boolean;
+  giftName: string | null;
+  categorySlug: string | null;
+  categoryName: string | null;
+  curatedLabel: string | null;
+  availableUnits: number;
+  createdAt: string;
+  defaultBundleId: string | null;
+}
+
+const CARD_SELECT = `
+  p.id, p.slug, p.name, p.short_description as "shortDescription",
+  public.effective_unit_price(p.id) as "priceKobo",
+  p.compare_at_kobo as "compareAtKobo",
+  p.rating_avg::float8 as "ratingAvg", p.review_count as "reviewCount", p.sold_count as "soldCount",
+  (select url from public.product_images i where i.product_id = p.id order by sort_order limit 1) as "imageUrl",
+  coalesce((select alt from public.product_images i where i.product_id = p.id order by sort_order limit 1), p.name) as "imageAlt",
+  p.image_badge as "imageBadge", p.image_badge_style as "imageBadgeStyle", p.image_badge_icon as "imageBadgeIcon",
+  p.perk_text as "perkText", p.perk_icon as "perkIcon", p.perk_style as "perkStyle",
+  p.delivery_note as "deliveryNote", p.delivery_note_icon as "deliveryNoteIcon",
+  p.pod_available as "podAvailable",
+  (select g.name from public.free_gifts g where g.product_id = p.id and g.is_active limit 1) as "giftName",
+  c.slug as "categorySlug", c.name as "categoryName", p.curated_label as "curatedLabel",
+  coalesce((select sum(greatest(on_hand - reserved, 0)) from public.inventory inv where inv.product_id = p.id), 0)::int as "availableUnits",
+  p.created_at as "createdAt",
+  (select b.id from public.bundles b where b.product_id = p.id and b.is_active order by b.sort_order limit 1) as "defaultBundleId"
+`;
+
+export type SortKey = "popular" | "discount" | "newest" | "price_asc" | "price_desc";
+
+export interface CatalogFilters {
+  category?: string | null;
+  minKobo?: number | null;
+  maxKobo?: number | null;
+  pod?: boolean;
+  gift?: boolean;
+  sameDay?: boolean;
+  q?: string | null;
+  sort?: SortKey;
+  limit?: number;
+  offset?: number;
+}
+
+const ORDER_BY: Record<SortKey, string> = {
+  popular: `p.sold_count desc, p.review_count desc, p.rating_avg desc, p.created_at desc`,
+  discount: `case when p.compare_at_kobo > 0 then (p.compare_at_kobo - p.price_kobo)::float8 / p.compare_at_kobo else 0 end desc, p.created_at desc`,
+  newest: `p.created_at desc`,
+  price_asc: `public.effective_unit_price(p.id) asc, p.created_at desc`,
+  price_desc: `public.effective_unit_price(p.id) desc, p.created_at desc`,
+};
+
+export function toTsQuery(q: string): string | null {
+  const words = q
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 0)
+    .slice(0, 6);
+  if (!words.length) return null;
+  return words.map((w) => `${w.replace(/-/g, "")}:*`).filter((w) => w !== ":*").join(" & ") || null;
+}
+
+function buildWhere(f: CatalogFilters): { where: string; params: unknown[] } {
+  const clauses = ["p.is_active"];
+  const params: unknown[] = [];
+  const add = (sql: string, v: unknown) => {
+    params.push(v);
+    clauses.push(sql.replace("?", `$${params.length}`));
+  };
+  if (f.category) add("c.slug = ?", f.category);
+  if (f.minKobo != null) add("public.effective_unit_price(p.id) >= ?", f.minKobo);
+  if (f.maxKobo != null) add("public.effective_unit_price(p.id) <= ?", f.maxKobo);
+  if (f.pod) clauses.push("p.pod_available");
+  if (f.gift) clauses.push("exists (select 1 from public.free_gifts g where g.product_id = p.id and g.is_active)");
+  if (f.sameDay)
+    clauses.push(
+      `exists (select 1 from public.inventory inv join public.hubs h on h.id = inv.hub_id
+                where inv.product_id = p.id and h.code in ('lagos','abuja') and inv.on_hand - inv.reserved > 0)`,
+    );
+  if (f.q) {
+    const ts = toTsQuery(f.q);
+    if (ts) {
+      params.push(ts, `%${f.q.trim().slice(0, 60)}%`);
+      clauses.push(
+        `(p.search_vector @@ to_tsquery('english', $${params.length - 1}) or p.name ilike $${params.length})`,
+      );
+    }
+  }
+  return { where: clauses.join(" and "), params };
+}
+
+export async function listProducts(f: CatalogFilters): Promise<{ items: ProductCardData[]; total: number }> {
+  const { where, params } = buildWhere(f);
+  const limit = Math.min(Math.max(f.limit ?? 12, 1), 48);
+  const offset = Math.max(f.offset ?? 0, 0);
+  return asAnon(async (q) => {
+    const items = await q.query<ProductCardData>(
+      `select ${CARD_SELECT}
+         from public.products p left join public.categories c on c.id = p.category_id
+        where ${where}
+        order by ${ORDER_BY[f.sort ?? "popular"]}
+        limit ${limit} offset ${offset}`,
+      params as never[],
+    );
+    const total = await q.query<{ n: number }>(
+      `select count(*)::int as n from public.products p left join public.categories c on c.id = p.category_id where ${where}`,
+      params as never[],
+    );
+    return { items, total: total[0]?.n ?? 0 };
+  });
+}
+
+export interface CategoryData {
+  id: string;
+  slug: string;
+  name: string;
+  shortName: string | null;
+  emoji: string | null;
+  icon: string;
+  description: string | null;
+  productCount: number;
+}
+
+export const getCategories = cache(async (): Promise<CategoryData[]> =>
+  asAnon((q) =>
+    q.query<CategoryData>(
+      `select c.id, c.slug, c.name, c.short_name as "shortName", c.emoji, c.icon, c.description,
+              (select count(*)::int from public.products p where p.category_id = c.id and p.is_active) as "productCount"
+         from public.categories c where c.is_active order by c.sort_order, c.name`,
+    ),
+  ),
+);
+
+export async function countActiveProducts(): Promise<number> {
+  const r = await asAnon((q) => q.query<{ n: number }>("select count(*)::int as n from public.products where is_active"));
+  return r[0]?.n ?? 0;
+}
+
+export interface FlashDealCard extends ProductCardData {
+  dealId: string;
+  dealTitle: string | null;
+  promoText: string | null;
+  endsAt: string;
+  lowStockUnits: number | null;
+}
+
+export async function getActiveFlashDeals(): Promise<FlashDealCard[]> {
+  return asAnon((q) =>
+    q.query<FlashDealCard>(
+      `select ${CARD_SELECT}, fd.id as "dealId", fd.title as "dealTitle", fd.promo_text as "promoText", fd.ends_at as "endsAt",
+              (select min(greatest(inv.on_hand - inv.reserved, 0)) from public.inventory inv
+                 where inv.product_id = p.id and greatest(inv.on_hand - inv.reserved, 0) <= inv.low_stock_threshold
+                   and greatest(inv.on_hand - inv.reserved, 0) > 0)::int as "lowStockUnits"
+         from public.flash_deals fd
+         join public.products p on p.id = fd.product_id
+         left join public.categories c on c.id = p.category_id
+        where fd.is_active and p.is_active and now() >= fd.starts_at and now() < fd.ends_at
+        order by fd.sort_order, fd.ends_at`,
+    ),
+  );
+}
+
+export async function getCuratedProducts(limit = 6): Promise<ProductCardData[]> {
+  return asAnon((q) =>
+    q.query<ProductCardData>(
+      `select ${CARD_SELECT} from public.products p left join public.categories c on c.id = p.category_id
+        where p.is_active and p.curated_rank is not null order by p.curated_rank limit ${Math.min(limit, 24)}`,
+    ),
+  );
+}
+
+export interface ReviewData {
+  id: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  authorName: string;
+  location: string | null;
+  rating: number;
+  body: string;
+  isVerifiedPurchase: boolean;
+  isSample: boolean;
+  createdAt: string;
+}
+
+async function sampleReviewsVisible(q: Queryable): Promise<boolean> {
+  const r = await q.query<{ value: unknown }>("select value from public.settings where key = 'show_sample_reviews'");
+  return r[0]?.value === true;
+}
+
+export async function getRecentReviews(opts: { productId?: string; limit?: number } = {}): Promise<ReviewData[]> {
+  return asAnon(async (q) => {
+    const showSamples = await sampleReviewsVisible(q);
+    const params: unknown[] = [];
+    let where = "r.status = 'approved'";
+    if (!showSamples) where += " and not r.is_sample";
+    if (opts.productId) {
+      params.push(opts.productId);
+      where += ` and r.product_id = $${params.length}`;
+    }
+    return q.query<ReviewData>(
+      `select r.id, r.product_id as "productId", p.name as "productName", p.slug as "productSlug",
+              r.author_name as "authorName", r.location, r.rating, r.body,
+              r.is_verified_purchase as "isVerifiedPurchase", r.is_sample as "isSample", r.created_at as "createdAt"
+         from public.reviews r join public.products p on p.id = r.product_id
+        where ${where} order by r.is_verified_purchase desc, r.created_at desc limit ${Math.min(opts.limit ?? 6, 50)}`,
+      params as never[],
+    );
+  });
+}
+
+export interface BundleData {
+  id: string;
+  label: string;
+  shortLabel: string | null;
+  description: string | null;
+  quantity: number;
+  priceKobo: number;
+  compareAtKobo: number | null;
+  tag: string | null;
+  sideTag: string | null;
+  note: string | null;
+  isPopular: boolean;
+}
+
+export interface HubStock {
+  hubCode: string;
+  hubName: string;
+  available: number;
+  batchSize: number;
+  lowStockThreshold: number;
+}
+
+export interface ProductDetail extends ProductCardData {
+  description: string | null;
+  basePriceKobo: number;
+  warrantyMonths: number;
+  specs: { label: string; value: string }[];
+  images: { url: string; alt: string }[];
+  features: { icon: string; title: string; description: string }[];
+  faqs: { question: string; answer: string }[];
+  bundles: BundleData[];
+  gift: { name: string; valueKobo: number; imageUrl: string | null; conditions: string | null } | null;
+  stock: HubStock[];
+  seoTitle: string | null;
+  seoDescription: string | null;
+  tags: string[];
+  flashEndsAt: string | null;
+}
+
+async function loadDetail(q: Queryable, where: string, param: string): Promise<ProductDetail | null> {
+  const rows = await q.query<ProductDetail & { categoryId: string | null }>(
+    `select ${CARD_SELECT}, p.description, p.price_kobo as "basePriceKobo", p.warranty_months as "warrantyMonths",
+            p.specs, p.seo_title as "seoTitle", p.seo_description as "seoDescription", p.tags,
+            (select min(fd.ends_at) from public.flash_deals fd where fd.product_id = p.id and fd.is_active
+               and now() >= fd.starts_at and now() < fd.ends_at) as "flashEndsAt"
+       from public.products p left join public.categories c on c.id = p.category_id
+      where ${where} and p.is_active`,
+    [param],
+  );
+  const p = rows[0];
+  if (!p) return null;
+  const [images, features, faqs, bundles, gifts, stock] = await Promise.all([
+    q.query<{ url: string; alt: string }>(
+      "select url, alt from public.product_images where product_id = $1 order by sort_order",
+      [p.id],
+    ),
+    q.query<{ icon: string; title: string; description: string }>(
+      "select icon, title, description from public.product_features where product_id = $1 order by sort_order",
+      [p.id],
+    ),
+    q.query<{ question: string; answer: string }>(
+      "select question, answer from public.product_faqs where product_id = $1 order by sort_order",
+      [p.id],
+    ),
+    q.query<BundleData>(
+      `select id, label, short_label as "shortLabel", description, quantity, price_kobo as "priceKobo",
+              compare_at_kobo as "compareAtKobo", tag, side_tag as "sideTag", note, is_popular as "isPopular"
+         from public.bundles where product_id = $1 and is_active order by sort_order`,
+      [p.id],
+    ),
+    q.query<{ name: string; valueKobo: number; imageUrl: string | null; conditions: string | null }>(
+      `select name, value_kobo as "valueKobo", image_url as "imageUrl", conditions
+         from public.free_gifts where product_id = $1 and is_active limit 1`,
+      [p.id],
+    ),
+    q.query<HubStock>(
+      `select h.code as "hubCode", h.name as "hubName", greatest(i.on_hand - i.reserved, 0)::int as available,
+              i.batch_size as "batchSize", i.low_stock_threshold as "lowStockThreshold"
+         from public.inventory i join public.hubs h on h.id = i.hub_id
+        where i.product_id = $1 and h.is_active order by h.sort_order`,
+      [p.id],
+    ),
+  ]);
+  return { ...p, images, features, faqs, bundles, gift: gifts[0] ?? null, stock };
+}
+
+export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
+  return asAnon((q) => loadDetail(q, "p.slug = $1", slug));
+}
+
+export async function getProductById(id: string): Promise<ProductDetail | null> {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+  return asAnon((q) => loadDetail(q, "p.id = $1::uuid", id));
+}
+
+export async function getRelatedProducts(productId: string, categorySlug: string | null, limit = 4) {
+  return asAnon((q) =>
+    q.query<ProductCardData>(
+      `select ${CARD_SELECT} from public.products p left join public.categories c on c.id = p.category_id
+        where p.is_active and p.id <> $1 and ($2::text is null or c.slug = $2)
+        order by p.sold_count desc, p.review_count desc, p.created_at desc limit ${Math.min(limit, 12)}`,
+      [productId, categorySlug],
+    ),
+  );
+}
+
+export interface Suggestion {
+  slug: string;
+  name: string;
+  priceKobo: number;
+  imageUrl: string | null;
+}
+
+export async function searchSuggestions(term: string, limit = 6): Promise<Suggestion[]> {
+  const ts = toTsQuery(term);
+  if (!ts) return [];
+  return asAnon((q) =>
+    q.query<Suggestion>(
+      `select p.slug, p.name, public.effective_unit_price(p.id) as "priceKobo",
+              (select url from public.product_images i where i.product_id = p.id order by sort_order limit 1) as "imageUrl"
+         from public.products p
+        where p.is_active and (p.search_vector @@ to_tsquery('english', $1) or p.name ilike $2)
+        order by ts_rank(p.search_vector, to_tsquery('english', $1)) desc, p.sold_count desc
+        limit ${Math.min(limit, 10)}`,
+      [ts, `%${term.trim().slice(0, 60)}%`],
+    ),
+  );
+}
+
+export async function getAllProductSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
+  return asAnon((q) =>
+    q.query<{ slug: string; updatedAt: string }>(
+      `select slug, updated_at as "updatedAt" from public.products where is_active order by slug`,
+    ),
+  );
+}
+
+/** Largest real discount among active products — powers "{max_discount}" in hero copy. */
+export async function maxActiveDiscountPercent(): Promise<number> {
+  const r = await asAnon((q) =>
+    q.query<{ pct: number | null }>(
+      `select max(round(((compare_at_kobo - price_kobo) * 100.0) / compare_at_kobo))::int as pct
+         from public.products where is_active and compare_at_kobo > price_kobo`,
+    ),
+  );
+  return r[0]?.pct ?? 0;
+}
