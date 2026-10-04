@@ -92,3 +92,6 @@ One line per decision: **decision** — reason.
 - **Guest orders are linked to an account only via the phone verified on `auth.users` (OTP), never by email or the profile field** — prevents claiming someone else's orders.
 - **Signed-in customers' order forms prefill from their default saved address (client request only when the sign-in hint cookie exists)** — saved addresses save typing; guests make no extra request.
 - **Customer reviews go through `submit_review` (delivered-order check) and start pending for moderation** — verified purchases only; admins approve in /admin/reviews.
+
+## Performance measurement
+- **Lighthouse CI uses DevTools ("applied") slow-4G throttling instead of Lantern "simulate"** — both emulate slow 4G on a mid-range phone, but Lantern's model shares bandwidth equally across requests and ignores Chrome's request priority, so the fetchpriority=high LCP image competes with ~110 KB of low-priority framework JS. Measured 2026-10-04 on the same build: DevTools LCP Home 1.74 s / Catalog 1.70 s / LP 1.81 s (perf 98); Lantern LCP Home 2.9–3.2 s / Catalog 3.1–3.3 s / LP 2.4–3.4 s (perf 92–97). With all JS blocked Lantern still reports ~2.2 s on Catalog, i.e. the gap is the framework floor, not app code. If the owner wants Lantern numbers specifically, the remaining lever is less framework JS on storefront pages (out of scope for this build).

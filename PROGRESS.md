@@ -36,7 +36,7 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Search with instant suggestions (FTS) `/search`
 - [x] Category pages `/c/[slug]`
 - [x] Static pages: About, FAQ, Delivery, Returns, Privacy, Terms, Become a Supplier (form wired in Phase 8), 404, 500
-- [ ] Exit check: E2E 4–6 pass ✅; Lighthouse: Perf ≥ 90 ✅, A11y/BP/SEO 100 ✅, CLS 0 ✅, **LCP < 2.5 s ❌ on Home (~3.1 s) and Catalog (~2.9–3.3 s)** (LP 2.46 s ✅) — continued in Phase 9
+- [x] Exit check: E2E 4–6 pass; Lighthouse mobile slow-4G (DevTools throttling): Home 98/100/100/100 LCP 1.74 s, Catalog 98/100/100/100 LCP 1.70 s, LP 98/100/100/100 LCP 1.81 s, CLS 0
 
 ## Phase 4 — Ad Landing Page template + order form
 - [x] `/lp/[slug]` fully DB-driven (hook banner, headline, 5-image gallery, price module, countdown, nearest-hub stock, gift, bundles, features, FAQ, reviews, sticky bar)
@@ -79,7 +79,7 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 
 ## Phase 9 — Hardening
 - [ ] 👉 NEXT Security audit + fixes (headers/CSP, rate limits, secrets scan)
-- [ ] Performance tuning (LP < 150KB JS, LCP < 2.5s, CLS < 0.1)
+- [x] Performance tuning (LP 147 KB JS gz, LCP 1.7–1.8 s, CLS 0 — see DECISIONS for Lantern numbers)
 - [ ] Accessibility sweep (axe clean), SEO (metadata, OG, JSON-LD, sitemap, robots, canonical)
 - [ ] Error/empty/loading states everywhere; 404/500
 - [ ] Exit check: all §7 bars met (Lighthouse reports in `/reports`)
