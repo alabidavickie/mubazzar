@@ -15,6 +15,12 @@ import { notify } from "./notify";
  */
 
 export const SESSION_COOKIE = "mbz_session";
+/**
+ * Readable "a session exists" hint (value "1", no identity) so static storefront pages know when to
+ * run client-only work such as the server-cart sync. Never trusted: the server always reads the
+ * signed HttpOnly session cookie.
+ */
+export const SIGNED_IN_HINT_COOKIE = "mbz_signed_in";
 const SESSION_DAYS = 30;
 const secret = () => new TextEncoder().encode(env.authSecret);
 
@@ -38,6 +44,7 @@ export async function createSessionCookie(claims: SessionClaims): Promise<void> 
     path: "/",
     maxAge: SESSION_DAYS * 86_400,
   });
+  jar.set(SIGNED_IN_HINT_COOKIE, "1", { httpOnly: false, sameSite: "lax", secure: env.isProd, path: "/", maxAge: SESSION_DAYS * 86_400 });
 }
 
 export async function readSessionCookie(): Promise<SessionClaims | null> {
@@ -56,6 +63,7 @@ export async function readSessionCookie(): Promise<SessionClaims | null> {
 export async function clearSessionCookie(): Promise<void> {
   const jar = await cookies();
   jar.delete(SESSION_COOKIE);
+  jar.delete(SIGNED_IN_HINT_COOKIE);
 }
 
 // ─── Passwords (mock) ────────────────────────────────────────────────────────

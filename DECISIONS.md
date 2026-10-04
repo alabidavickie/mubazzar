@@ -62,3 +62,7 @@ One line per decision: **decision** — reason.
 - **LP gallery slides 2–5 load after `load`/idle or on first interaction (with `<noscript>` fallback)** — they are inside Chrome's lazy-load distance and downloaded alongside the LCP image.
 - **`PW_EXECUTABLE_PATH` lets Playwright use a preinstalled Chromium** — the cloud sandbox has Chromium r1194 while Playwright 1.63 expects r1243 and Google Chrome is not installed.
 - **Desktop screenshots and `reports/{playwright,lighthouse}` are gitignored** — regenerated every run; the final Lighthouse report is committed deliberately at release.
+
+## Cart
+- **Server cart fallback = mirror for signed-in customers only (`carts.user_id`), merged on the first page after sign-in (union, larger pack count, never doubled) and re-priced from the DB** — guests keep a localStorage cart (no anonymous server rows to clean up); prices in the saved cart can never go stale because only identity + packs are stored.
+- **A readable `mbz_signed_in=1` hint cookie (no identity) is set next to the HttpOnly session** — storefront pages are static (ISR) and can't see the session; the hint lets `CartSync` skip the network entirely for guests. The server never trusts it.

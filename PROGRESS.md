@@ -45,12 +45,12 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Exit check: E2E 1, 11, 12 pass; cro-reviewer findings fixed (countdown now follows the real promo deadline; bundle savings computed from live prices; LP CLS 0; LP JS 147 KB)
 
 ## Phase 5 — Cart, checkout, order pipeline
-- [ ] 👉 NEXT Zustand cart (localStorage) ✅ + **server cart fallback for signed-in customers** (todo); cart page ✅; free gift lines ✅; delivery estimate ✅
+- [x] Zustand cart (localStorage) + server cart fallback for signed-in customers (`CartSync` → `syncCartAction`, merged + re-priced on sign-in); cart page; free gift lines; delivery estimate
 - [x] Checkout using shared OrderForm + `create_order`
 - [x] Inventory reservation per hub; no oversell under concurrency
 - [x] Delivery rules: fee/ETA per state, same-day cut-off (Africa/Lagos)
 - [x] Fake-order reduction: phone normalisation, dup flag (24h), rate limits, honeypot
-- [ ] Exit check: integration tests pass, no oversell
+- [x] Exit check: integration tests pass, no oversell (`orders.test.ts` concurrency, `cart.test.ts`, E2E `cart-sync.spec.ts`)
 
 ## Phase 6 — Social checkout & integrations
 - [x] Thank-you page with WhatsApp handoff (auto-open on mobile), other channels with Copy order details, chat click logging

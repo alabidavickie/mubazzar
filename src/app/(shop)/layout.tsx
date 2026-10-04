@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { FloatingWhatsApp } from "@/components/layout/floating-whatsapp";
 import { MetaPixel } from "@/components/analytics/meta-pixel";
+import { CartSync } from "@/components/storefront/cart-sync";
 import { getCategories, maxActiveDiscountPercent } from "@/server/services/catalog";
 import { getPublicSettings } from "@/server/services/settings";
 import { buildWhatsAppLink } from "@/lib/chat/links";
@@ -36,6 +37,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
       <Suspense fallback={null}>
         <MetaPixel />
       </Suspense>
+      <CartSync />
     </>
   );
 }

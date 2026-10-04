@@ -32,6 +32,16 @@ export function uniquePhone(): string {
   return `081${n}`;
 }
 
+/** Signs the seeded customer in through the /login one-time-code tab (mock code). */
+export async function loginCustomer(page: Page) {
+  await page.goto("/login");
+  await page.getByLabel(/Phone number or email/).fill(ACCOUNTS.customer.phone);
+  await page.getByRole("button", { name: /Send login code/ }).click();
+  await page.getByLabel("Login code").fill(MOCK_OTP);
+  await page.getByRole("button", { name: /^sign in$/i }).click();
+  await page.waitForURL((u) => !u.pathname.startsWith("/login"));
+}
+
 /** Signs in through the /login page (email + password tab). */
 export async function login(page: Page, role: Exclude<keyof typeof ACCOUNTS, "customer">) {
   const acct = ACCOUNTS[role];
