@@ -18,3 +18,15 @@ One line per decision: **decision** — reason.
 - **TypeScript pinned to 6.0.x (not 7.0)** — typescript-eslint and eslint-config-next do not support TS 7 yet; TS 6 is the newest version the lint toolchain supports.
 - **Local E2E runs on the installed Google Chrome (`channel: "chrome"`); CI installs Playwright Chromium** — the build machine's connection (~14 KB/s) makes the 150 MB browser download impractical. iPhone 13 project uses Chromium with the iPhone 13 viewport/UA (WebKit not installed).
 - **Fixed auto-cancel test to sum reservations across hubs** — it assumed the Lagos hub, but earlier tests exhaust Lagos stock so the order correctly falls back to the warehouse.
+
+## Landing & handoff
+- **`/lp/[slug]` is dynamic (no ISR)** — it reads Vercel's geo header for nearest-hub stock and supports `?preview=1` staff sessions; both need per-request data.
+- **LP rating pill and Product JSON-LD use only real (non-sample) approved reviews (`getRealRatingSummary`)** — `products.rating_avg/review_count` include seeded sample reviews; honesty rule says ratings come from real data only, so the pill is hidden in seeded envs.
+- **The LP order form (RHF + Zod) is lazy-loaded off the critical path** (after `load`, or when the visitor scrolls within 1500px / jumps to `#order-form`) and LP images use server-side `getImageProps` (no next/image runtime) — keeps first-load JS near the framework floor. The form needs JS to submit anyway, so nothing is lost for no-JS visitors.
+- **Design copy replaced on the LP**: "Select your bundle & pay on delivery" → "Choose your package & order now"; "100% Authentic Guarantee" → "Tested before dispatch"; the design's Paystack/card payment selector and "CRITICAL NOTE" block are dropped (no payment on site; payment explained in chat copy).
+- **Without `video_url` the video teaser renders the poster as a captioned still (no play button)** — no fake play buttons.
+- **Thank-you auto-open uses `location.href = wa.me…` after a visible 3 s countdown with Cancel, on mobile UAs only, once per order per tab (sessionStorage key set when it fires or is cancelled)** — `window.open` without a gesture is popup-blocked on mobile; setting the key at fire/cancel time keeps it working under React StrictMode double effects.
+- **Non-WhatsApp orders show the message preview + "Copy order details" (step 1) then the open-chat link (step 2) and still offer "Continue on WhatsApp instead"**; WhatsApp orders keep other enabled channels behind a "Use another app instead" disclosure.
+- **Track Order runs `public.track_order` as `anon` and rebuilds the WhatsApp handoff from the returned `public_token`; mismatches always return one generic not-found message** — never reveals whether an order number exists.
+- **`/api/cron/auto-cancel` refuses all requests when `CRON_SECRET` is unset and compares the bearer token in constant time** — the cron must never be open by default.
+- **E2E stubs `https://wa.me/*` via `page.route`** — auto-open navigates the tab to wa.me; stubbing keeps tests offline and deterministic.
