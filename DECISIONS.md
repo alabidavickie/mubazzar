@@ -47,3 +47,18 @@ One line per decision: **decision** — reason.
 - **Client-only error screens link to `/api/support/whatsapp`, a redirect to the support number in settings** — error boundaries can't read the DB and the number must not be hard-coded.
 - **Checkout clears the cart in `onSuccess` and shows "opening your order page…"** — prevents an empty-cart flash before the thank-you navigation.
 - **Shared `SiteHeader` wordmark switched from Syne (`font-display`) to Plus Jakarta Sans** — the design's header wordmark uses headline-sm (Plus Jakarta Sans 18px bold); Syne with wide tracking pushed the action icons on 390px screens.
+
+## Verification pass after the promo-pricing merge (2026-10-04)
+- **Fixed `stock.test` "uses the lowest hub threshold"** — its first assertion expected the *highest* threshold; the code, its docstring and the catalog SQL (`min(low_stock_threshold)`) all use the lowest, so the test was wrong.
+- **`effective_bundle_price` added to the security-definer allow-list in `privileges.test`** — the promo migration deliberately grants it to anon/authenticated (catalog reads bundle prices as anon), exactly like `effective_unit_price`.
+- **Countdown E2E reads both formats (d/h/m from 24 h out, h:m:s in the last 24 h) with tolerance = display resolution** — the promo merge intentionally changed the format; a new case covers the switch.
+- **E2E customers get their own client IP (`x-forwarded-for` in `fillOrderForm`)** — the per-IP order limit (10/10 min) is correct for production but the 3-project suite places more orders than that from 127.0.0.1; the limit itself is unchanged.
+- **Desktop 404 test uses `includeHidden` for the bottom nav** — it is `lg:hidden` by design, so `getByRole` could never find it on desktop.
+- **Root `not-found.tsx` and `global-error.tsx` must ship no client JS (plain GET search form, `StaticImg`, `ErrorContent` without next/link)** — root boundaries ship with every route; the storefront 404 (SearchBox + next/image) pushed the LP to 164 KB gz. LP now 147 KB; `tests/e2e/js-budget.spec.ts` guards the 150 KB budget.
+- **Root 404 search is a plain search box (no instant suggestions); the storefront 404 keeps suggestions** — instant suggestions on the root 404 cost every page ~13 KB.
+- **LP timer counts down only to the product's real promo deadline (`landingTimer`: earliest live bundle promo / flash deal end); `campaign_ends_at` only decides whether "Promo ended" is shown after it passed** — a campaign end without a price change would be a fake deadline (honesty rule).
+- **Bundle "Save extra ₦X" is computed from live prices (`bundleExtraSavingKobo`), tags are labels only; migration `20261004010000` strips typed amounts** — typed savings drift from real prices.
+- **Syne uses `display: optional` and a subset (ASCII + punctuation, wght 600–800, 16 KB)** — the late swap caused CLS 0.111 on the LP; Syne is only used for bold/extrabold headings.
+- **LP gallery slides 2–5 load after `load`/idle or on first interaction (with `<noscript>` fallback)** — they are inside Chrome's lazy-load distance and downloaded alongside the LCP image.
+- **`PW_EXECUTABLE_PATH` lets Playwright use a preinstalled Chromium** — the cloud sandbox has Chromium r1194 while Playwright 1.63 expects r1243 and Google Chrome is not installed.
+- **Desktop screenshots and `reports/{playwright,lighthouse}` are gitignored** — regenerated every run; the final Lighthouse report is committed deliberately at release.
