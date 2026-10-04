@@ -76,6 +76,26 @@ export function isCampaignLive(endsAt: string | Date | null | undefined, now: Da
   return Number.isFinite(end.getTime()) && end.getTime() > now.getTime();
 }
 
+export type LandingTimer = { kind: "live"; endsAt: string } | { kind: "ended" } | { kind: "none" };
+
+/**
+ * What the landing page's price timer shows (honesty rule §0.8). It counts down ONLY to the product's
+ * real promo deadline (earliest live bundle promo / flash deal end) — the moment the price actually
+ * changes. `campaign_ends_at` is never a countdown source; once it has passed (and no promo is live)
+ * the page says the promo ended, otherwise no timer is shown at all.
+ */
+export function landingTimer(
+  promoEndsAt: string | Date | null | undefined,
+  campaignEndsAt: string | Date | null | undefined,
+  now: Date = new Date(),
+): LandingTimer {
+  const promo = toIsoOrNull(promoEndsAt);
+  if (promo && isCampaignLive(promo, now)) return { kind: "live", endsAt: promo };
+  const campaign = toIsoOrNull(campaignEndsAt);
+  if (campaign && !isCampaignLive(campaign, now)) return { kind: "ended" };
+  return { kind: "none" };
+}
+
 /** Safe `https://www.youtube-nocookie.com/embed/<id>` for YouTube URLs, else null (use <video>). */
 export function youTubeEmbedUrl(url: string | null | undefined): string | null {
   if (!url) return null;

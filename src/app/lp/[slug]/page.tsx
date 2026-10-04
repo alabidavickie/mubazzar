@@ -28,7 +28,7 @@ import { getDeliveryZones, getEnabledChannels, getPublicSettings } from "@/serve
 import { buildWhatsAppLink, CHANNEL_LABEL } from "@/lib/chat/links";
 import { formatNaira, koboToNairaInput, savingsKobo } from "@/lib/money";
 import { formatNgPhoneIntl } from "@/lib/phone";
-import { isCampaignLive, nearestHubFromGeo, promoPricing, youTubeEmbedUrl } from "@/lib/landing";
+import { landingTimer, nearestHubFromGeo, promoPricing, youTubeEmbedUrl } from "@/lib/landing";
 import { markupToPlainText, renderMarkup } from "@/lib/markup";
 import { absoluteUrl } from "@/lib/site";
 
@@ -89,9 +89,10 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
   const serverNow = new Date().toISOString();
   const promo = promoPricing(product, product.bundles);
-  // timestamptz may arrive as a Date (PGlite) or a string (postgres.js) — normalise to ISO.
-  const endsAt = lp.campaignEndsAt ? new Date(lp.campaignEndsAt as unknown as string).toISOString() : null;
-  const live = isCampaignLive(endsAt);
+  // The timer follows the real promo deadline (when the price actually changes), never campaign_ends_at.
+  const timer = landingTimer(product.promoEndsAt, lp.campaignEndsAt);
+  const live = timer.kind === "live";
+  const endsAt = timer.kind === "live" ? timer.endsAt : null;
   const geo = nearestHubFromGeo(h.get("x-vercel-ip-country"), h.get("x-vercel-ip-country-region"), zones);
   const images = product.images.slice(0, 5);
   const slides = images.map((im, i) =>
@@ -295,7 +296,11 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
               ) : null}
             </div>
             <div data-testid="promo-timer" data-ends-at={endsAt ?? ""}>
-              {live && endsAt ? <PromoCountdown endsAt={endsAt} serverNow={serverNow} /> : <PromoEnded />}
+              {timer.kind === "live" ? (
+                <PromoCountdown endsAt={timer.endsAt} serverNow={serverNow} />
+              ) : timer.kind === "ended" ? (
+                <PromoEnded />
+              ) : null}
             </div>
             <LandingStock
               stock={product.stock}
