@@ -51,8 +51,19 @@ export interface DeliveryInput {
   address?: string;
 }
 
-/** Fills the shared order form inside `scope` (page or a sheet locator). */
+/**
+ * Each E2E customer orders from their own client IP (like real shoppers) so the per-IP order rate
+ * limit (10 per 10 min) applies per customer instead of to the whole suite running on localhost.
+ * `next start` has no proxy in front, so the app reads the IP from this header.
+ */
+export async function assignClientIp(page: Page) {
+  const n = Math.floor(Math.random() * 0xfffffe) + 1;
+  await page.setExtraHTTPHeaders({ "x-forwarded-for": `10.${(n >> 16) & 255}.${(n >> 8) & 255}.${n & 255}` });
+}
+
+/** Fills the shared order form inside `scope` (page or a sheet locator) as a new customer. */
 export async function fillOrderForm(scope: Page | ReturnType<Page["locator"]>, input: DeliveryInput = {}) {
+  await assignClientIp("page" in scope ? scope.page() : scope);
   await scope.getByLabel(/Full Name/).fill(input.name ?? "Ada Lovelace");
   await scope.getByLabel(/Active WhatsApp Phone Number/).fill(input.phone ?? uniquePhone());
   await scope.getByLabel(/Delivery State/).selectOption(input.state ?? "Lagos");

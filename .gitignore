@@ -52,3 +52,6 @@ next-env.d.ts
 
 # agent worktrees
 /.claude/worktrees/
+
+# Desktop E2E screenshots are regenerated every run; only the mobile ones are kept for design review
+tests/screenshots/*-desktop.png
