@@ -35,7 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </form>
         </div>
       </header>
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         <AdminNav items={navFor(session.role)} />
         <main id="main" className="min-w-0 flex-1 px-4 py-4 pb-16 lg:px-6">
           {children}

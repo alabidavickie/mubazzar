@@ -34,6 +34,7 @@ export function uniquePhone(): string {
 
 /** Signs the seeded customer in through the /login one-time-code tab (mock code). */
 export async function loginCustomer(page: Page) {
+  await assignClientIp(page);
   await page.goto("/login");
   await page.getByLabel(/Phone number or email/).fill(ACCOUNTS.customer.phone);
   await page.getByRole("button", { name: /Send login code/ }).click();
@@ -45,6 +46,7 @@ export async function loginCustomer(page: Page) {
 /** Signs in through the /login page (email + password tab). */
 export async function login(page: Page, role: Exclude<keyof typeof ACCOUNTS, "customer">) {
   const acct = ACCOUNTS[role];
+  await assignClientIp(page); // each test signs in from its own IP so the login rate limit stays per-user
   await page.goto(`/login`);
   await page.getByRole("tab", { name: /staff|email/i }).click().catch(() => undefined);
   await page.getByLabel("Email", { exact: true }).fill(acct.email);
@@ -99,4 +101,10 @@ export async function saveScreenshot(page: Page, testInfo: TestInfo, name: strin
   const dir = path.join(process.cwd(), "tests", "screenshots");
   mkdirSync(dir, { recursive: true });
   await page.screenshot({ path: path.join(dir, `${name}-${testInfo.project.name}.png`), fullPage: true });
+}
+
+/** Fails when the page scrolls sideways (broken mobile layout). */
+export async function expectNoHorizontalOverflow(page: Page) {
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow, "page should not scroll horizontally").toBeLessThanOrEqual(0);
 }

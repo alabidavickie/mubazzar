@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectNoA11yViolations } from "./helpers";
+import { expectNoA11yViolations, expectNoHorizontalOverflow } from "./helpers";
 import { placeLandingOrder, stubWhatsApp } from "./lp-helpers";
 import { openAdminOrder, recordPayment, signedInPage } from "./admin-helpers";
 
@@ -21,6 +21,11 @@ test.describe("staff payments", () => {
     expect(wa.hostname).toBe("wa.me");
     expect(wa.searchParams.get("text")).toContain(placed.orderNumber);
     await expectNoA11yViolations(staff);
+    await expectNoHorizontalOverflow(staff);
+    await staff.goto("/admin/orders");
+    await expectNoHorizontalOverflow(staff);
+    await expectNoA11yViolations(staff);
+    await openAdminOrder(staff, placed.orderNumber);
 
     // Bank transfer without confirming the money arrived is refused (fake screenshots are common).
     await recordPayment(staff, { amount: "15,000", method: "bank_transfer", reference: "NIP-001" });
@@ -78,6 +83,7 @@ test.describe("staff payments", () => {
     await expect(rider.getByTestId("to-collect")).toHaveText(balance);
     expect(await rider.getByTestId("maps-link").getAttribute("href")).toContain("google.com/maps");
     await expectNoA11yViolations(rider);
+    await expectNoHorizontalOverflow(rider);
     await rider.getByRole("button", { name: "Delivered" }).click();
     const form = rider.getByTestId("delivered-form");
     await form.getByLabel("How was it paid?").selectOption("pay_on_delivery");

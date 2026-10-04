@@ -137,3 +137,21 @@ export function timeAgo(d: Date | string, now: Date = new Date()): string {
   if (hours < 48) return `${hours} h ago`;
   return `${Math.round(hours / 24)} d ago`;
 }
+
+/** `<input type="datetime-local">` value ("YYYY-MM-DDTHH:mm", read as Africa/Lagos) → UTC Date; null if invalid. */
+export function lagosLocalToUtc(value: string | null | undefined): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value?.trim() ?? "");
+  if (!m) return null;
+  const [, y, mo, d, h, mi] = m.map(Number) as [number, number, number, number, number, number];
+  const utc = Date.UTC(y, mo - 1, d, h, mi) - LAGOS_OFFSET_MINUTES * 60_000;
+  const date = new Date(utc);
+  return Number.isFinite(utc) ? date : null;
+}
+
+/** UTC instant → `datetime-local` value in Africa/Lagos ("" for null). */
+export function utcToLagosLocal(value: Date | string | null | undefined): string {
+  if (!value) return "";
+  const t = new Date(value).getTime();
+  if (!Number.isFinite(t)) return "";
+  return new Date(t + LAGOS_OFFSET_MINUTES * 60_000).toISOString().slice(0, 16);
+}

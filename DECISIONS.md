@@ -76,3 +76,9 @@ One line per decision: **decision** — reason.
 - **CSV export prefixes cells starting with = + - @ with `'`** — customer-typed names/addresses must not run as spreadsheet formulas.
 - **Proof images live in the private bucket; locally `/api/proofs` serves them only to staff or the rider assigned to that delivery (404 otherwise); in production staff get 10-minute Supabase signed URLs** — payment screenshots contain bank details.
 - **Dashboard "Verified payments" = payments recorded today minus refunds (Africa/Lagos day)** — revenue is what staff verified, not what customers claimed.
+- **The landing-page builder doesn't expose `cta_label`** — the LP order button is channel-specific ("Place Order & Pay on WhatsApp" / "…Continue on Instagram") per brief §5.5; an editable label that the page ignores would mislead admins. The column stays for compatibility.
+- **Product editor saves everything in one transaction; removed bundles are deactivated (not deleted); stock edits go through `adjust_inventory`** — orders/carts keep bundle references and every stock change is audited.
+- **Product/landing schemas refuse typed savings: bundle tags with ₦ amounts and hook banners with "%" are rejected; a promo price requires a real end date** — honesty rule; the UI computes discounts from live prices.
+- **Photo uploads don't revalidate; saving the product does and returns the fresh form state** — revalidating mid-edit re-rendered the editor and dropped unsaved changes.
+- **Admin shell stacks the nav above the content on phones (`flex-col lg:flex-row`)** — the mobile tab strip sat beside `<main>` and squeezed it; admin E2E now asserts no horizontal overflow.
+- **Login rate limit: per IP counts every attempt, per account counts only failed attempts** — successful sign-ins shouldn't consume the budget, and nobody can lock the owner out by spamming their email.

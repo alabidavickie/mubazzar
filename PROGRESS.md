@@ -63,13 +63,13 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 
 ## Phase 7 — Admin, staff & dispatcher
 - [x] Admin shell + role guard; Dashboard
-- [ ] 👉 NEXT Products CRUD + images + bundles + gifts + features/specs/FAQ + SEO
-- [ ] Flash deals; Landing page builder (publish/preview)
+- [x] Products CRUD + images + bundles + gifts + features/specs/FAQ + SEO
+- [x] Flash deals; Landing page builder (publish/preview)
 - [x] Inventory per hub + low-stock alerts
 - [x] Orders (filters, detail timeline, WhatsApp buttons, payments, assign dispatcher, notes, CSV export, print)
-- [ ] Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Audit log ✅; Analytics
+- [ ] 👉 NEXT Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Categories; Analytics (Audit log ✅)
 - [x] `/dispatch` mobile view (assigned orders, map link, call/WhatsApp, delivered w/ collection, failed w/ reason, proof photo)
-- [ ] Exit check: E2E 8–9 pass (9 ✅ on all projects; 8 needs catalogue admin + LP builder)
+- [x] Exit check: E2E 8–9 pass (iphone-13, pixel-7, desktop)
 
 ## Phase 8 — Supplier portal & customer accounts
 - [ ] Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view

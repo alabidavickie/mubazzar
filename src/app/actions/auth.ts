@@ -10,7 +10,7 @@ import {
   signInWithPassword,
   verifyOtp,
 } from "@/server/adapters/auth";
-import { hashIp, rateLimit } from "@/server/adapters/rate-limit";
+import { hashIp, peekRateLimit, rateLimit } from "@/server/adapters/rate-limit";
 import { asService } from "@/server/db";
 import { homeForRole, type AppRole } from "@/server/session";
 import { normalizeNgPhone } from "@/lib/phone";
@@ -42,13 +42,16 @@ export async function passwordLoginAction(_prev: AuthState, form: FormData): Pro
   const parsed = passwordSchema.safeParse({ email: form.get("email"), password: form.get("password") });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check your details" };
   const ip = hashIp(await clientIp());
-  const [byIp, byEmail] = await Promise.all([
-    rateLimit(`login:ip:${ip}`, 20, 900),
-    rateLimit(`login:email:${parsed.data.email.toLowerCase()}`, 8, 900),
-  ]);
+  // Per IP: every attempt counts. Per account: only FAILED attempts count, so nobody can lock the owner
+  // out by spamming their email, and normal sign-ins never use up the budget.
+  const emailKey = `login:email-fail:${parsed.data.email.toLowerCase()}`;
+  const [byIp, byEmail] = await Promise.all([rateLimit(`login:ip:${ip}`, 20, 900), peekRateLimit(emailKey, 8, 900)]);
   if (!byIp.ok || !byEmail.ok) return { error: "Too many attempts. Please wait 15 minutes and try again." };
   const res = await signInWithPassword(parsed.data.email, parsed.data.password);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) {
+    await rateLimit(emailKey, 8, 900);
+    return { error: res.error };
+  }
   await createSessionCookie({ sub: res.userId, email: res.email });
   const role = await roleOf(res.userId);
   redirect(safeNext(form.get("next")) ?? homeForRole(role));
