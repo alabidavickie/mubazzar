@@ -535,7 +535,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
       </main>
 
       <StickyOrderBar compareAtKobo={promo.compareAtKobo} />
-      <FloatingWhatsApp number={settings.support.whatsapp} className="bottom-24 lg:bottom-24" />
+      <FloatingWhatsApp number={settings.support.whatsapp} raised />
     </LandingProvider>
   );
 }

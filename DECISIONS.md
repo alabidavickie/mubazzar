@@ -30,3 +30,5 @@ One line per decision: **decision** — reason.
 - **Track Order runs `public.track_order` as `anon` and rebuilds the WhatsApp handoff from the returned `public_token`; mismatches always return one generic not-found message** — never reveals whether an order number exists.
 - **`/api/cron/auto-cancel` refuses all requests when `CRON_SECRET` is unset and compares the bearer token in constant time** — the cron must never be open by default.
 - **E2E stubs `https://wa.me/*` via `page.route`** — auto-open navigates the tab to wa.me; stubbing keeps tests offline and deterministic.
+- **Seed hook banner no longer hard-codes a discount %** — the real discount (49%) is computed from prices; copy with numbers drifts from data (honesty rule).
+- **Ad landing page first-load JS cut from 178.9 KB to 145.6 KB gz (budget 150)** — icons moved from an inline JS map to a cached SVG sprite (`public/icons.svg`), LP images built with a pure srcset helper (`src/lib/image.ts`) instead of importing next/image, LP client components use `cx` (clsx) instead of tailwind-merge, order schema uses `zod/mini`. Measured with `scripts/measure-js.mjs`.

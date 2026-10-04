@@ -156,6 +156,10 @@
       transition-duration: 0.01ms !important;
     }
   }
+  /* Default icon size; any text-* utility on an icon overrides it (utilities layer wins). */
+  .icon {
+    font-size: 1.25rem;
+  }
   summary::-webkit-details-marker {
     display: none;
   }

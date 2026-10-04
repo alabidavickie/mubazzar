@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/cn";
+import { cx } from "@/lib/cx";
 import { formatNaira } from "@/lib/money";
 
 export interface SelectableBundle {
@@ -34,7 +34,7 @@ export function BundleSelector({
   compact?: boolean;
 }) {
   return (
-    <div role="radiogroup" aria-label="Choose your package" className={cn("flex flex-col", compact ? "gap-2" : "gap-4")}>
+    <div role="radiogroup" aria-label="Choose your package" className={cx("flex flex-col", compact ? "gap-2" : "gap-4")}>
       {bundles.map((b) => {
         const selected = value === b.id;
         return (
@@ -42,7 +42,7 @@ export function BundleSelector({
             key={b.id}
             data-testid="bundle-option"
             data-bundle-qty={b.quantity}
-            className={cn(
+            className={cx(
               "relative flex cursor-pointer flex-col gap-2 rounded-xl border-[1.5px] bg-card shadow-card transition-all",
               compact ? "p-3" : "p-4",
               selected ? "border-gold shadow-raised" : "border-transparent",
@@ -51,7 +51,7 @@ export function BundleSelector({
           >
             {b.tag ? (
               <span
-                className={cn(
+                className={cx(
                   "rounded-full bg-bronze px-3 py-0.5 text-label-sm font-extrabold text-on-dark shadow-card",
                   compact ? "self-start" : "absolute -top-3 right-4",
                 )}
@@ -80,7 +80,7 @@ export function BundleSelector({
                 </span>
               </span>
               <span className="shrink-0 text-right">
-                <span className={cn("block text-headline-sm font-extrabold tabular", b.isPopular ? "text-bronze" : "text-navy-deep")}>
+                <span className={cx("block text-headline-sm font-extrabold tabular", b.isPopular ? "text-bronze" : "text-navy-deep")}>
                   {formatNaira(b.priceKobo)}
                 </span>
                 {b.compareAtKobo && b.compareAtKobo > b.priceKobo ? (

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/cn";
+import { cx } from "@/lib/cx";
 import { Icon } from "@/components/icons/icon";
 
 export interface HubStockInfo {
@@ -27,14 +27,14 @@ export function StockMeter({ stock, className }: { stock: HubStockInfo | null; c
 
   if (stock.available <= 0) {
     return (
-      <p data-testid="stock-meter" className={cn("flex items-center gap-1 text-label-sm text-ink-muted", className)}>
+      <p data-testid="stock-meter" className={cx("flex items-center gap-1 text-label-sm text-ink-muted", className)}>
         <Icon name="schedule" className="text-sm" /> Out of stock in {hub} — ships from our central warehouse
       </p>
     );
   }
 
   return (
-    <div data-testid="stock-meter" className={cn("flex flex-col gap-1.5", className)}>
+    <div data-testid="stock-meter" className={cx("flex flex-col gap-1.5", className)}>
       <div className="flex items-center justify-between gap-2">
         {low ? (
           <span className="flex items-center gap-1 text-label-sm font-bold text-urgent">
@@ -58,7 +58,7 @@ export function StockMeter({ stock, className }: { stock: HubStockInfo | null; c
           aria-valuemin={0}
           aria-valuemax={100}
         >
-          <div className={cn("h-full rounded-full", low ? "bg-urgent" : "bg-gold")} style={{ width: `${soldPct}%` }} />
+          <div className={cx("h-full rounded-full", low ? "bg-urgent" : "bg-gold")} style={{ width: `${soldPct}%` }} />
         </div>
       ) : null}
     </div>

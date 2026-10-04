@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/cn";
+import { cx } from "@/lib/cx";
 import { formatNaira } from "@/lib/money";
 import { Icon } from "@/components/icons/icon";
 import { useLanding } from "./landing-provider";
@@ -41,7 +41,7 @@ export function StickyOrderBar({ targetId = "order-form", compareAtKobo }: { tar
       data-hidden={formVisible ? "true" : "false"}
       inert={formVisible}
       aria-hidden={formVisible || undefined}
-      className={cn(
+      className={cx(
         "fixed inset-x-0 bottom-0 z-40 border-t border-line bg-card/95 shadow-dock backdrop-blur-md transition-transform duration-300 pb-safe",
         formVisible && "translate-y-full",
       )}

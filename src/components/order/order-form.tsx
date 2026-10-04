@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { deliveryDetailsSchema, type DeliveryDetailsInput, type DeliveryDetails } from "@/lib/schemas/order";
+import { DELIVERY_FIELDS, deliveryDetailsSchema, type DeliveryDetailsInput, type DeliveryDetails } from "@/lib/schemas/order";
 import { NG_STATES, stateDisplayName } from "@/lib/ng-states";
 import { quoteDelivery, type DeliveryZone } from "@/lib/delivery";
 import { formatNaira } from "@/lib/money";
@@ -142,7 +142,7 @@ export function OrderForm(props: OrderFormProps) {
       if (!res.ok) {
         if (res.fieldErrors) {
           for (const [k, msg] of Object.entries(res.fieldErrors)) {
-            if (k in deliveryDetailsSchema.shape) setError(k as keyof DeliveryDetailsInput, { message: msg });
+            if ((DELIVERY_FIELDS as string[]).includes(k)) setError(k as keyof DeliveryDetailsInput, { message: msg });
           }
         }
         setFormError(res.error);

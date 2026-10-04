@@ -1,7 +1,7 @@
-import { cn } from "@/lib/cn";
-import { ICON_PATHS, type IconName } from "./paths";
+import { cx } from "@/lib/cx";
+import { FILLED_ICONS, ICON_SPRITE_URL, type IconName } from "./names";
 
-export type { IconName } from "./paths";
+export type { IconName } from "./names";
 
 export interface IconProps {
   name: IconName | (string & {});
@@ -12,23 +12,24 @@ export interface IconProps {
   label?: string;
 }
 
-/** Inline-SVG Material Symbol. Sized with font-size utilities like the original icon font (1em). */
+/**
+ * Material Symbol from the generated SVG sprite (public/icons.svg). Icon path data never ships in
+ * JavaScript, so client components can use icons freely. Sized like the icon font (1em).
+ */
 export function Icon({ name, filled, className, label }: IconProps) {
-  const key = (filled && `${name}-fill` in ICON_PATHS ? `${name}-fill` : name) as IconName;
-  const d = ICON_PATHS[key] ?? ICON_PATHS.info;
+  const id = filled && FILLED_ICONS.has(name) ? `${name}-fill` : name;
   return (
     <svg
-      viewBox="0 -960 960 960"
       width="1em"
       height="1em"
       fill="currentColor"
-      className={cn("inline-block shrink-0 text-[1.25rem]", className)}
+      className={cx("icon inline-block shrink-0", className)}
       aria-hidden={label ? undefined : true}
       role={label ? "img" : undefined}
       aria-label={label}
       focusable="false"
     >
-      <path d={d} />
+      <use href={`${ICON_SPRITE_URL}#${id}`} />
     </svg>
   );
 }

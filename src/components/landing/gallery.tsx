@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { cn } from "@/lib/cn";
+import { cx } from "@/lib/cx";
 import type { StaticImgProps } from "./static-img";
 
 /**
@@ -75,7 +75,7 @@ export function LandingGallery({
               onClick={() => goTo(i)}
               aria-label={`Show photo ${i + 1} of ${thumbs.length}`}
               aria-current={active === i ? "true" : undefined}
-              className={cn(
+              className={cx(
                 "relative aspect-square min-h-11 overflow-hidden rounded-lg p-0.5 shadow-card transition",
                 active === i ? "bg-gold" : "bg-surface-container opacity-80 hover:opacity-100",
               )}

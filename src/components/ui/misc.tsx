@@ -1,13 +1,13 @@
-import { cn } from "@/lib/cn";
+import { cx } from "@/lib/cx";
 import { Icon } from "@/components/icons/icon";
 
 export function Skeleton({ className }: { className?: string }) {
-  return <div aria-hidden className={cn("animate-pulse rounded-lg bg-surface-high", className)} />;
+  return <div aria-hidden className={cx("animate-pulse rounded-lg bg-surface-high", className)} />;
 }
 
 export function Card({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("rounded-xl border border-line-soft bg-card shadow-card", className)} {...rest}>
+    <div className={cx("rounded-xl border border-line-soft bg-card shadow-card", className)} {...rest}>
       {children}
     </div>
   );
@@ -29,7 +29,7 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("mb-3 flex items-end justify-between gap-3", className)}>
+    <div className={cx("mb-3 flex items-end justify-between gap-3", className)}>
       <div className="min-w-0">
         {eyebrow ? <div className="mb-0.5">{eyebrow}</div> : null}
         <Tag className="text-headline-sm font-bold text-navy">{title}</Tag>
@@ -48,7 +48,7 @@ export function Accordion({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div className={cx("flex flex-col gap-2", className)}>
       {items.map((item) => (
         <details key={item.question} className="group rounded-xl bg-card shadow-card">
           <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 p-4 text-label-lg font-bold text-navy">

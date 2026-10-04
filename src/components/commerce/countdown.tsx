@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/cn";
+import { cx } from "@/lib/cx";
 import { remainingParts } from "@/lib/time";
 
 /**
@@ -43,7 +43,7 @@ export function Countdown({
 
   if (r.ended) {
     return (
-      <span data-testid="countdown" data-ended="true" className={cn("text-label-sm font-bold text-ink-muted", className)}>
+      <span data-testid="countdown" data-ended="true" className={cx("text-label-sm font-bold text-ink-muted", className)}>
         {endedLabel}
       </span>
     );
@@ -51,7 +51,7 @@ export function Countdown({
 
   if (variant === "inline") {
     return (
-      <span data-testid="countdown" data-ended="false" className={cn("font-bold tabular", className)}>
+      <span data-testid="countdown" data-ended="false" className={cx("font-bold tabular", className)}>
         <span className="sr-only">{accessible}</span>
         <span aria-hidden>
           {pad(hours)}:{pad(r.minutes)}:{pad(r.seconds)}
@@ -65,7 +65,7 @@ export function Countdown({
       <span
         data-testid="countdown"
         data-ended="false"
-        className={cn("flex items-center gap-1 text-headline-sm font-bold tracking-widest text-gold-soft", className)}
+        className={cx("flex items-center gap-1 text-headline-sm font-bold tracking-widest text-gold-soft", className)}
         role="timer"
         aria-live="off"
       >
@@ -86,7 +86,7 @@ export function Countdown({
       data-ended="false"
       role="timer"
       aria-live="off"
-      className={cn(
+      className={cx(
         "flex items-center gap-0.5 rounded-lg bg-navy-deep px-2 py-1 text-gold-pale shadow-card",
         className,
       )}
@@ -100,7 +100,7 @@ export function Countdown({
         <span key={u} aria-hidden className="flex items-center gap-0.5">
           {i > 0 ? <span className="text-xs font-bold leading-none">:</span> : null}
           <span className="flex flex-col items-center">
-            <span className={cn("text-xs leading-none font-bold tabular", u === "s" && "text-coral-soft")}>{v}</span>
+            <span className={cx("text-xs leading-none font-bold tabular", u === "s" && "text-coral-soft")}>{v}</span>
             <span className="text-[0.5625rem] uppercase leading-tight text-on-dark-muted">{u}</span>
           </span>
         </span>

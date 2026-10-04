@@ -1,18 +1,18 @@
-import { getImageProps, type ImageProps } from "next/image";
+import { optimizedImageProps, type OptimizedImageInput, type OptimizedImageProps } from "@/lib/image";
 
 /**
- * Server-rendered optimised image (same srcset/sizes/AVIF/WebP pipeline as next/image) that ships
- * no client JavaScript — used on the ad landing page to keep its first-load JS small.
+ * Server-rendered optimised image (Next's /_next/image optimizer: AVIF/WebP, responsive srcset)
+ * that ships no client JavaScript — used on the ad landing page to keep first-load JS small.
  */
-export function StaticImg(props: ImageProps) {
-  const { props: img } = getImageProps(props);
+export function StaticImg(props: OptimizedImageInput) {
+  const img = optimizedImageProps(props);
   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- alt is passed through from props
   return <img {...img} />;
 }
 
-/** Image props for client components that render a plain <img> (no next/image runtime). */
-export function staticImgProps(props: ImageProps) {
-  return getImageProps(props).props;
+/** Image props for client components that render a plain <img>. */
+export function staticImgProps(props: OptimizedImageInput): OptimizedImageProps {
+  return optimizedImageProps(props);
 }
 
-export type StaticImgProps = ReturnType<typeof staticImgProps>;
+export type StaticImgProps = OptimizedImageProps;

@@ -185,7 +185,7 @@ export const LANDING_PAGE = {
   slug: "car-vacuum",
   product: "turbo-car-vacuum",
   hookLabel: "PROMO ALERT",
-  hookBanner: "⚡ 48% OFF + Free Luxury Car Diffuser | Pay on Delivery available — arrange in chat",
+  hookBanner: "⚡ Promo price + Free Luxury Car Diffuser | Pay on Delivery available — arrange in chat",
   trendBadge: "#1 Trending Car Gadget in Nigeria",
   headline: "Stop Paying Car Wash ~~₦4,000~~ Every Week!",
   subheadline:
