@@ -87,11 +87,10 @@ test.describe("staff payments", () => {
     await rider.getByRole("button", { name: "Delivered" }).click();
     const form = rider.getByTestId("delivered-form");
     await form.getByLabel("How was it paid?").selectOption("pay_on_delivery");
-    await form.getByLabel(/Proof of delivery photo/).setInputFiles({
-      name: "proof.png",
-      mimeType: "image/png",
-      buffer: Buffer.from("89504e470d0a1a0a0000000d4948445200000001000000010806000000" + "1f15c4890000000d4944415478da63f8ffff3f0005fe02fea7d6a5c20000000049454e44ae426082", "hex"),
-    });
+    // A realistic 2.5 MB phone photo (PNG signature + payload) — larger than the 1 MB server-action default.
+    const big = Buffer.alloc(2_500_000, 0);
+    Buffer.from("89504e470d0a1a0a", "hex").copy(big);
+    await form.getByLabel(/Proof of delivery photo/).setInputFiles({ name: "proof.png", mimeType: "image/png", buffer: big });
     await form.getByRole("button", { name: "Confirm delivered" }).click();
     await expect(rider.getByTestId("delivery-done")).toContainText("Marked delivered");
 
