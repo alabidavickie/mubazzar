@@ -82,3 +82,6 @@ One line per decision: **decision** — reason.
 - **Photo uploads don't revalidate; saving the product does and returns the fresh form state** — revalidating mid-edit re-rendered the editor and dropped unsaved changes.
 - **Admin shell stacks the nav above the content on phones (`flex-col lg:flex-row`)** — the mobile tab strip sat beside `<main>` and squeezed it; admin E2E now asserts no horizontal overflow.
 - **Login rate limit: per IP counts every attempt, per account counts only failed attempts** — successful sign-ins shouldn't consume the budget, and nobody can lock the owner out by spamming their email.
+- **All admin settings go through one `saveSettingAction` validated by a per-key Zod schema (`src/lib/schemas/settings.ts`)** — one audited write path; e.g. CAC numbers must look real (RC/BN + digits), bank accounts are 10-digit NUBANs, phones normalised to E.164.
+- **Admin creates staff/rider/admin accounts with a temporary password (auth adapter `createUser`, Supabase admin API in production)** — staff roles sign in with email + password per the brief; admins can't remove their own admin access.
+- **Analytics are tables + stat tiles over 7/30/90 days, from real orders/payments/events only** — "chat → paid" = paid-or-delivered ÷ orders whose customer opened chat; LP conversion = orders ÷ ViewContent events.

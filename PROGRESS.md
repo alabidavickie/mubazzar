@@ -67,12 +67,12 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Flash deals; Landing page builder (publish/preview)
 - [x] Inventory per hub + low-stock alerts
 - [x] Orders (filters, detail timeline, WhatsApp buttons, payments, assign dispatcher, notes, CSV export, print)
-- [ ] 👉 NEXT Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Categories; Analytics (Audit log ✅)
+- [x] Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Categories; Analytics; Audit log
 - [x] `/dispatch` mobile view (assigned orders, map link, call/WhatsApp, delivered w/ collection, failed w/ reason, proof photo)
 - [x] Exit check: E2E 8–9 pass (iphone-13, pixel-7, desktop)
 
 ## Phase 8 — Supplier portal & customer accounts
-- [ ] Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view
+- [ ] 👉 NEXT Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view
 - [ ] Customer OTP login, order history, saved addresses, wishlist, verified-purchase reviews
 - [x] Track order (order number + phone)
 - [ ] Exit check: E2E 7, 10 pass
