@@ -14,6 +14,7 @@ import { Field, Input, Select, Textarea } from "@/components/ui/field";
 import { Icon } from "@/components/icons/icon";
 import { WhatsAppIcon } from "@/components/icons/whatsapp";
 import { submitOrderAction } from "@/app/actions/order";
+import { getDefaultAddressAction } from "@/app/actions/account";
 import { readAttribution } from "@/lib/client/attribution";
 import { newEventId, track } from "@/lib/client/pixel";
 import type { ChatChannelKind } from "@/lib/chat/links";
@@ -84,6 +85,8 @@ export function OrderForm(props: OrderFormProps) {
     handleSubmit,
     control,
     setError,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<DeliveryDetailsInput, unknown, DeliveryDetails>({
     resolver: zodResolver(deliveryDetailsSchema),
@@ -100,6 +103,29 @@ export function OrderForm(props: OrderFormProps) {
       note: "",
     },
   });
+
+  // Signed-in customers: prefill empty fields from their default saved address (guests make no request).
+  useEffect(() => {
+    if (!/(?:^|;\s*)mbz_signed_in=1/.test(document.cookie)) return;
+    let alive = true;
+    getDefaultAddressAction()
+      .then((a) => {
+        if (!alive || !a) return;
+        const fill: [keyof DeliveryDetailsInput, string | null][] = [
+          ["customerName", a.fullName],
+          ["phone", a.phoneE164.replace(/^\+234/, "0")],
+          ["state", a.state],
+          ["city", a.city],
+          ["address", a.address],
+          ["landmark", a.landmark],
+        ];
+        for (const [k, val] of fill) if (val && !getValues(k)) setValue(k, val as never, { shouldValidate: false });
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [getValues, setValue]);
 
   const state = (useWatch({ control, name: "state" }) ?? "") as string;
   const chatChannel = (useWatch({ control, name: "chatChannel" }) ?? "whatsapp") as ChatChannelKind;

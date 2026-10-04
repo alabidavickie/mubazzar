@@ -85,3 +85,10 @@ One line per decision: **decision** — reason.
 - **All admin settings go through one `saveSettingAction` validated by a per-key Zod schema (`src/lib/schemas/settings.ts`)** — one audited write path; e.g. CAC numbers must look real (RC/BN + digits), bank accounts are 10-digit NUBANs, phones normalised to E.164.
 - **Admin creates staff/rider/admin accounts with a temporary password (auth adapter `createUser`, Supabase admin API in production)** — staff roles sign in with email + password per the brief; admins can't remove their own admin access.
 - **Analytics are tables + stat tiles over 7/30/90 days, from real orders/payments/events only** — "chat → paid" = paid-or-delivered ÷ orders whose customer opened chat; LP conversion = orders ÷ ViewContent events.
+
+## Suppliers & accounts
+- **The supplier application creates the applicant's login (email + password, role customer); approval promotes it to supplier (`review_supplier`)** — one form, no separate invite step; pending applicants see their status on /account.
+- **Supplier sales/stock are read by a server query scoped to the supplier's own products (asService + supplier_id)** — suppliers must not read orders (customer PII); they see units sold/in open orders only.
+- **Guest orders are linked to an account only via the phone verified on `auth.users` (OTP), never by email or the profile field** — prevents claiming someone else's orders.
+- **Signed-in customers' order forms prefill from their default saved address (client request only when the sign-in hint cookie exists)** — saved addresses save typing; guests make no extra request.
+- **Customer reviews go through `submit_review` (delivered-order check) and start pending for moderation** — verified purchases only; admins approve in /admin/reviews.

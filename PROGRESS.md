@@ -72,13 +72,13 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Exit check: E2E 8–9 pass (iphone-13, pixel-7, desktop)
 
 ## Phase 8 — Supplier portal & customer accounts
-- [ ] 👉 NEXT Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view
-- [ ] Customer OTP login, order history, saved addresses, wishlist, verified-purchase reviews
+- [x] Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view
+- [x] Customer OTP login, order history, saved addresses, wishlist, verified-purchase reviews
 - [x] Track order (order number + phone)
-- [ ] Exit check: E2E 7, 10 pass
+- [x] Exit check: E2E 7, 10 pass (+ account.spec: address prefill, history, verified review, wishlist)
 
 ## Phase 9 — Hardening
-- [ ] Security audit + fixes (headers/CSP, rate limits, secrets scan)
+- [ ] 👉 NEXT Security audit + fixes (headers/CSP, rate limits, secrets scan)
 - [ ] Performance tuning (LP < 150KB JS, LCP < 2.5s, CLS < 0.1)
 - [ ] Accessibility sweep (axe clean), SEO (metadata, OG, JSON-LD, sitemap, robots, canonical)
 - [ ] Error/empty/loading states everywhere; 404/500

@@ -14,6 +14,7 @@ import { Accordion, SectionHeader } from "@/components/ui/misc";
 import { TrackViewContent } from "@/components/landing/track-view-content";
 import { ProductGallery } from "@/components/storefront/product-gallery";
 import { PdpBuyPanel, PdpPurchaseProvider, PdpStickyBar } from "@/components/storefront/pdp-purchase";
+import { WishlistButton } from "@/components/account/account-forms";
 import { getProductBySlug, getRecentReviews, getRelatedProducts } from "@/server/services/catalog";
 import { getDeliveryZones, getPublicSettings } from "@/server/services/settings";
 import { getProductReviewSummary } from "@/server/services/storefront";
@@ -290,6 +291,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           ) : null}
 
           <PdpBuyPanel />
+          <WishlistButton productId={product.id} productName={product.name} />
 
           <a
             href={askHref}
