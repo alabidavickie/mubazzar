@@ -96,7 +96,7 @@ export function CatalogView({
       </div>
 
       {/* Category carousel */}
-      <nav aria-label="Filter by category" className="no-scrollbar flex items-center gap-2 overflow-x-auto px-4 py-0.5">
+      <nav aria-label="Filter by category" className="no-scrollbar flex items-center gap-2 -my-1 overflow-x-auto px-4">
         <FilterChip href={categoryHref(null)} active={!currentCategory} kind="category">
           All
           <span className="rounded-full bg-bronze px-1.5 text-[0.625rem] leading-4 font-bold text-on-dark">{allCount}</span>
@@ -247,7 +247,7 @@ function RefinementPanel({
         <span className="text-label-sm text-ink-muted" id="price-range-label">
           Price Range
         </span>
-        <div className="no-scrollbar -mx-1 flex items-center gap-1.5 overflow-x-auto px-1" role="group" aria-labelledby="price-range-label">
+        <div className="no-scrollbar -mx-1 -my-2 flex items-center gap-1.5 overflow-x-auto px-1" role="group" aria-labelledby="price-range-label">
           <FilterChip href={href({ price: null })} active={!state.price && !custom}>
             All Prices
           </FilterChip>
@@ -257,7 +257,7 @@ function RefinementPanel({
             </FilterChip>
           ))}
         </div>
-        <details className="group" open={custom}>
+        <details className="group -my-1.5" open={custom}>
           <summary className="flex min-h-11 w-fit cursor-pointer list-none items-center gap-1 text-label-sm font-bold text-bronze">
             <Icon name="tune" className="text-sm" />
             {custom ? `Custom: ${state.min !== null ? `₦${state.min.toLocaleString("en-NG")}` : "₦0"} – ${state.max !== null ? `₦${state.max.toLocaleString("en-NG")}` : "any"}` : "Custom price range"}
@@ -305,7 +305,7 @@ function RefinementPanel({
       </div>
 
       {/* Sort */}
-      <div className="flex items-center gap-2 pt-0.5">
+      <div className="-my-1.5 flex items-center gap-2">
         <span className="shrink-0 text-label-sm text-ink-muted" id="sort-label">
           Sort by:
         </span>

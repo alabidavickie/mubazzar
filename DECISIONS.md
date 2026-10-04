@@ -46,3 +46,4 @@ One line per decision: **decision** — reason.
 - **PDP sticky add-to-cart bar sits above the bottom nav and lifts the floating WhatsApp button with a scoped `<style>` while visible** — avoids overlap without changing the shared layout components.
 - **Client-only error screens link to `/api/support/whatsapp`, a redirect to the support number in settings** — error boundaries can't read the DB and the number must not be hard-coded.
 - **Checkout clears the cart in `onSuccess` and shows "opening your order page…"** — prevents an empty-cart flash before the thank-you navigation.
+- **Shared `SiteHeader` wordmark switched from Syne (`font-display`) to Plus Jakarta Sans** — the design's header wordmark uses headline-sm (Plus Jakarta Sans 18px bold); Syne with wide tracking pushed the action icons on 390px screens.

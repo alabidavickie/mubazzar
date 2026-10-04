@@ -31,7 +31,7 @@ export function SiteHeader({
 
       <div className="mx-auto flex h-12 max-w-(--container-site) items-center justify-between gap-2 px-4">
         <div className="flex min-w-0 items-center gap-2">
-          <Link href="/" className="font-display text-headline-sm font-extrabold tracking-wider text-navy" aria-label="MUBAZZAR home">
+          <Link href="/" className="font-sans text-headline-sm font-extrabold tracking-wider text-navy" aria-label="MUBAZZAR home">
             MUBAZZAR
           </Link>
           {pageLabel ? (
