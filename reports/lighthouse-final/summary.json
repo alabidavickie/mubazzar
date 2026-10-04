@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-04",
+  "results": [
+    {
+      "page": "/",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1755,
+      "cls": 0,
+      "throttling": "devtools slow 4G, mobile"
+    },
+    {
+      "page": "/shop",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1722,
+      "cls": 0,
+      "throttling": "devtools slow 4G, mobile"
+    },
+    {
+      "page": "/lp/car-vacuum",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcpMs": 1882,
+      "cls": 0,
+      "throttling": "devtools slow 4G, mobile"
+    }
+  ]
+}

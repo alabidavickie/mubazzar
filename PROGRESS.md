@@ -86,8 +86,8 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 
 ## Phase 10 — Final verification & docs
 - [x] README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
-- [ ] 👉 NEXT Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
-- [ ] Final summary below
+- [x] Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
+- [x] Final summary below
 
 ## Execution notes
 - Machine has 7.9 GB RAM: run ONE workstream (one build/Playwright) at a time. Four parallel worktree agents crashed the machine on 2026-10-03.
@@ -97,4 +97,32 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - Cloud sandbox E2E: `PW_EXECUTABLE_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome pnpm test:e2e`; Lighthouse: `CHROME_PATH=… pnpm lhci`.
 
 ## Final Summary
-_(written at the end of Phase 10)_
+
+**Status (2026-10-04): every phase is complete and verified.** Final run on a fresh build and a fresh database:
+
+| Check | Result |
+|---|---|
+| `pnpm lint` / `pnpm typecheck` / `pnpm build` | ✅ clean |
+| `pnpm test` (unit + integration, PGlite with all migrations, RLS for every role) | ✅ 195/195 |
+| `pnpm test:e2e` (iPhone 13, Pixel 7, desktop; axe on every page) | ✅ 143 passed, 7 skipped by design (mobile-only auto-open on desktop; single-device checks) |
+| Brief §8 E2E journeys 1–12 | ✅ all pass on both mobile viewports |
+| `pnpm lhci` (mobile, slow-4G DevTools throttling) | ✅ Home 98/100/100/100 LCP 1.76 s · Catalog 98/100/100/100 LCP 1.72 s · LP 97/100/100/100 LCP 1.88 s · CLS 0 — reports in `reports/lighthouse-final/` |
+| LP first-load JS | ✅ 147 KB gz (budget 150, guarded by `js-budget.spec.ts`) |
+| `pnpm audit --prod` | ✅ no known vulnerabilities |
+
+**What was built**
+- **Storefront:** Home, Catalog (URL filters, Load More), Category, Search with instant suggestions, PDP (bundles, hub stock, gift, JSON-LD, wishlist), cart (with server mirror for signed-in customers), checkout, static pages, branded 404/500, sitemap/robots/OG.
+- **Ad landing page** `/lp/[slug]`: fully DB-driven, honest countdown to the real promo end, live bundle savings, nearest-hub stock, lazy order form, UTM/fbclid capture, under 150 KB JS.
+- **Order pipeline:** `create_order` (server-priced, per-hub reservation, no oversell), WhatsApp/social handoff with auto-open, chat-click logging, duplicate flag, rate limits, honeypot, auto-cancel cron, Track Order, customer status SMS.
+- **Admin** `/admin`: dashboard, order desk (filters, follow-up list, WhatsApp buttons, payment recording with bank-arrival confirmation, proof uploads, refunds, overpayment flag, dispatcher assignment, notes, timeline, CSV, print), products/bundles/gifts/images/stock editor, landing-page builder with preview/publish, flash deals, inventory with low-stock alerts, categories, reviews moderation, delivery zones, homepage content, chat & payment settings, staff/rider accounts, suppliers, audit log, analytics.
+- **Rider view** `/dispatch`: assigned orders, call/WhatsApp/map, delivered with cash/POS collected + proof photo, failed with reason.
+- **Suppliers:** `/sell/apply`, admin approval, `/supplier` portal (submissions, stock, units sold).
+- **Customer accounts:** OTP login, order history (guest orders linked by verified phone), saved addresses that prefill checkout, wishlist, verified-purchase reviews.
+- **Integrations behind adapters with mocks:** Supabase Auth/Storage, Termii SMS, Resend email, WhatsApp Cloud, Meta Pixel + CAPI (Purchase once on paid/delivered).
+
+**What you need to do to go live** (details in README §4–§6 and `KNOWN_ISSUES.md`)
+1. Create the Supabase project, `supabase db push`, load `pnpm db:seed-sql --production`, enable Email/Phone OTP, create your owner account and promote it to admin.
+2. Import the repo in Vercel and set the env vars from README §2 (`AUTH_SECRET`, `CRON_SECRET`, `IP_HASH_SALT`, `DATABASE_URL`, Supabase keys, `NEXT_PUBLIC_SITE_URL`), then add your domain.
+3. Add live keys you want: Meta Pixel + CAPI token, Termii (sender ID), Resend (verified domain), optional WhatsApp Cloud API.
+4. In Admin: set your real WhatsApp numbers/handles and routing, bank accounts, support contacts, business details/CAC, new-order alert recipients, delivery fees; switch **Sample reviews** off; load your real products and stock.
+5. Create staff and rider accounts in **Staff & riders**, then put `/lp/<slug>?utm_source=facebook&utm_campaign=…` links in your ads.
