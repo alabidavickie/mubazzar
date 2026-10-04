@@ -85,8 +85,8 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Exit check: all §7 bars met (Lighthouse reports in `/reports/lighthouse`)
 
 ## Phase 10 — Final verification & docs
-- [ ] 👉 NEXT README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
-- [ ] Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
+- [x] README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
+- [ ] 👉 NEXT Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
 - [ ] Final summary below
 
 ## Execution notes

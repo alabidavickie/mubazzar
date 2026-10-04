@@ -101,7 +101,8 @@ pnpm lhci
 
 - `pnpm test` runs unit tests (`src/**/*.test.ts`) and integration tests (`tests/integration`) against a fresh in-memory Postgres with all migrations + seed — including RLS checks for every role, no-oversell concurrency, payments and the Purchase-once rule.
 - `pnpm test:e2e` builds (if needed) and starts the production server on port 3100 with a brand-new database, then runs every journey on **iPhone 13, Pixel 7 and desktop**, with an axe-core accessibility scan on customer pages. Locally it drives your installed Google Chrome; CI installs Playwright's Chromium. Use `E2E_REBUILD=1` after code changes, `--project=pixel-7` to run one device, and `E2E_PORT` to change the port.
-- `pnpm lhci` runs Lighthouse (mobile, simulated slow 4G) on Home, Catalog and the car-vacuum landing page and fails below 90/95/95/95. Reports go to `reports/lighthouse`.
+- `pnpm lhci` runs Lighthouse (mobile, slow-4G DevTools throttling) on Home, Catalog and the car-vacuum landing page and fails below 90/95/95/95, LCP > 2.5 s or CLS > 0.1. Reports go to `reports/lighthouse` (latest: 98/100/100/100, LCP 1.7–1.8 s, CLS 0).
+- No Google Chrome installed (e.g. a cloud sandbox)? Point the tools at any Chromium: `PW_EXECUTABLE_PATH=/path/to/chrome pnpm test:e2e` and `CHROME_PATH=/path/to/chrome pnpm lhci`.
 
 ---
 
@@ -157,34 +158,40 @@ The seed uses **placeholder** numbers (`+234 812 000 8899` Lagos desk, `+234 812
 3. Enable/disable Instagram, Messenger, Telegram and phone, and set each handle (Instagram username, Facebook page username, Telegram username, phone number). Disabled channels never appear to customers.
 4. Edit the message templates if you like (placeholders such as `{order_number}`, `{items}`, `{total}`, `{state}`, `{first_name}` are listed on the page).
 5. Enter the official **bank accounts** staff should send to customers. These are only ever shown inside the admin panel.
-6. Update the support WhatsApp/phone/email in **Homepage** settings (used by the header, footer and floating WhatsApp button).
+6. Update the support WhatsApp/phone/email in **Homepage** settings (used by the header, footer and floating WhatsApp button), and switch **Sample reviews** off before launch.
 
 ---
 
 ## 7. Admin Guide
 
 ### Add a product
-Admin → **Products** → **New product**. Enter name, category, price and (optional) compare-at price — the discount badge is calculated automatically. Upload photos (first photo is the main image), add features, specs and FAQs, any **bundles** (e.g. 1x / 2x / 3x with their prices — the "short label" is what appears in the customer's WhatsApp message) and an optional **free gift**. Then set stock per hub in **Inventory**. Products appear in the shop once active and in stock.
+Admin → **Products** → **New product**. Enter name, category, price and (optional) compare-at price — the discount badge is calculated automatically. Click **Create product**, then upload photos (first photo is the main image; give each a short description), add features, specs and FAQs, **bundles** (e.g. 1x / 2x / 3x with their prices — the "chat label" is what appears in the customer's WhatsApp message; a promo price needs a real end date and the regular price returns automatically afterwards) and an optional **free gift**. Set **stock per hub** in the same form (or later in **Inventory**, which also lists low-stock products). Tick **Visible in the shop** and save. Savings like "SAVE EXTRA ₦4,000" and discount badges are calculated from the prices — never type them.
 
 ### Launch a new ad landing page
-Admin → **Landing pages** → **New**. Pick the product, set the slug (this becomes `/lp/<slug>`), hook banner, headline (`~~₦4,000~~` shows struck-through red, `**text**` bold), sub-headline, campaign end time (the countdown counts down to this exact time and switches to "promo ended" afterwards — it never resets), trust items, video and SEO/OG fields. Use **Preview**, then **Publish**. Put the URL in your ad with UTM tags, e.g. `https://mubazzar.ng/lp/car-vacuum?utm_source=facebook&utm_campaign=oct-vacuum`. UTM/fbclid are saved on every order for ROI reporting (**Analytics**).
+Admin → **Landing pages** → **New landing page** (or **Create ad landing page** on a product). Pick the product, set the page link (this becomes `/lp/<link>`), hook banner (no typed percentages — the real discount is shown), headline (`~~₦4,000~~` shows struck-through red, `**text**` bold), sub-headline, photo caption, trust blocks, video and sharing fields. Price, bundles, gift, photos, stock, reviews and the **countdown come from the product**: the timer counts down to the product's real promo end (bundle promo or flash deal) and never resets; the optional campaign end only makes the page say "Promo ended" after it. Save, use **Preview** (staff only), then tap **Draft — publish** in the list. Put the URL in your ad with UTM tags, e.g. `https://mubazzar.ng/lp/car-vacuum?utm_source=facebook&utm_campaign=oct-vacuum`. UTM/fbclid are saved on every order for ROI reporting (**Analytics**).
 
 ### Manage orders
-Admin → **Orders**. New orders start as **Awaiting chat** and are highlighted, as are orders where the customer says they've paid. Open an order to see items, totals, delivery details, ad source and the timeline. Use **Open WhatsApp chat** (prefilled greeting with the order) or **Confirm via WhatsApp** (prefilled confirmation). Move the order through **In chat → Confirmed → Dispatched → Delivered**. The **Dashboard** shows a follow-up list of unpaid orders before they auto-cancel (default 48 h, editable in Chat & payments); auto-cancel releases the reserved stock.
+Admin → **Orders**. New orders start as **Awaiting chat** and are highlighted, as are orders where the customer says they've paid. Open an order to see items, totals, delivery details, ad source and the timeline. Use **Open WhatsApp chat** (prefilled greeting with the order) or **Confirm via WhatsApp** (prefilled confirmation). Use **Mark in chat** and **Confirm order**; assigning a rider marks it **Dispatched**, and the rider's delivery form marks it **Delivered** (so the cash collected and a proof photo are always recorded). Customers get an SMS at each milestone. The **Follow up** tab lists unpaid orders still waiting for the customer in chat (after 12 h) with their auto-cancel time (48 h by default, both editable in Chat & payments); auto-cancel releases the reserved stock. **Export CSV** downloads the current filter; **Print** gives a delivery note.
 
 ### Confirm and record payments from WhatsApp chats
 1. Send the official account details from the **Copy bank details** panel on the order.
-2. When the customer says they've paid, tap **Customer says paid**.
+2. When the customer says they've paid, tap **Customer says they paid**.
 3. **Check your bank app/statement to confirm the money actually arrived** — fake transfer screenshots are common.
-4. Tap **Record payment**: amount, method (bank transfer / pay on delivery / POS on delivery / other), bank reference, optional screenshot, and tick the confirmation. Part payments are fine — the payment status updates automatically (Part paid → Paid) and overpayments are flagged.
-5. For **Pay on Delivery**, tap **Agreed Pay on Delivery**; the rider records the cash/POS collected when they deliver.
+4. In **Record payment** enter the amount (the balance is prefilled), method (bank transfer / cash on delivery / POS on delivery / other), bank reference, optional screenshot, and tick **I checked our bank app — the money has arrived** (required for transfers). Part payments are fine — the payment status updates automatically (Part paid → Paid) and overpayments are flagged.
+5. For **Pay on Delivery**, tap **Pay on delivery agreed**; the rider records the cash/POS collected when they deliver. Refunds are recorded the same way (choose **Refund sent**).
 Every payment is permanently recorded with who recorded it and when (see **Audit log**). When an order first becomes paid (or delivered), a single `Purchase` event is sent to Meta.
 
 ### Onboard a dispatcher
-Admin → **Staff & riders** → **Add account**: name, phone, email, role **Dispatcher**, temporary password. Share the login with the rider. On an order, choose **Assign dispatcher**; the rider sees it at `/dispatch` with map, call and WhatsApp buttons, and marks it **Delivered** (recording any money collected and a proof photo) or **Failed** (with a reason, which releases the stock).
+Admin → **Staff & riders**: name, email, phone, role **Dispatcher (rider)**, hub and a temporary password → **Create account**. Share the login with the rider. On an order, choose **Assign dispatcher**; the rider sees it at `/dispatch` with map, call and WhatsApp buttons, and marks it **Delivered** (recording any money collected and a proof photo) or **Failed** (with a reason, which releases the stock).
 
 ### Approve a supplier
-Suppliers apply at `/sell/apply`. Admin → **Suppliers** → open the application → **Approve** (an account is created and a temporary password is shown once and sent to them) or **Reject** with a note. Approved suppliers sign in at `/login`, submit products at `/supplier`, and you approve each submission in **Suppliers → Submissions** — approved products go live in the shop.
+Suppliers apply at `/sell/apply` (they choose their own password; you get an email). Admin → **Suppliers** → **Approve** (they're emailed and can now sign in at `/login` → Staff & partners) or **Reject** with a note. Approved suppliers submit products at `/supplier`; each submission appears at the top of **Suppliers** under *Products waiting for review* — set the selling price and **Approve & publish** (the product goes live with their photos and stock in the warehouse hub) or reject with a note. Suppliers see their stock, units sold and units in open orders.
+
+### Run a flash deal
+Admin → **Flash deals**: choose the product, a deal price below its regular price, and real start/end times (Lagos time). The deal price is charged only inside that window; the homepage countdown counts to the real end.
+
+### Settings at a glance
+**Homepage** (announcement strip, hero, trust strip, support contacts, business details/CAC, sample reviews on/off), **Delivery zones** (fee, days, hub, same-day per state + cut-off time), **Chat & payments** (WhatsApp numbers/routing, social handles, bank accounts, message templates, auto-cancel and follow-up hours, new-order alert recipients), **Categories**, **Reviews** (approve/reject), **Audit log**, **Analytics** (orders, verified revenue, order→chat→paid rates, delivery success, top products/states, landing page and UTM campaign conversion).
 
 ---
 
