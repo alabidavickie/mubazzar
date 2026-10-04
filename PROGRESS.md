@@ -78,14 +78,14 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Exit check: E2E 7, 10 pass (+ account.spec: address prefill, history, verified review, wishlist)
 
 ## Phase 9 — Hardening
-- [ ] 👉 NEXT Security audit + fixes (headers/CSP, rate limits, secrets scan)
+- [x] Security audit + fixes (headers/CSP asserted in E2E, rate limits on order/login/OTP/supplier/cart/uploads, secrets scan clean, `pnpm audit --prod` clean, 6 MB upload bodies, per-account failed-login limit)
 - [x] Performance tuning (LP 147 KB JS gz, LCP 1.7–1.8 s, CLS 0 — see DECISIONS for Lantern numbers)
-- [ ] Accessibility sweep (axe clean), SEO (metadata, OG, JSON-LD, sitemap, robots, canonical)
-- [ ] Error/empty/loading states everywhere; 404/500
-- [ ] Exit check: all §7 bars met (Lighthouse reports in `/reports`)
+- [x] Accessibility sweep (axe clean on every customer, admin, rider and supplier page in E2E), SEO (metadata, OG, JSON-LD, sitemap, robots, canonical)
+- [x] Error/empty/loading states everywhere; 404/500
+- [x] Exit check: all §7 bars met (Lighthouse reports in `/reports/lighthouse`)
 
 ## Phase 10 — Final verification & docs
-- [ ] README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
+- [ ] 👉 NEXT README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
 - [ ] Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
 - [ ] Final summary below
 

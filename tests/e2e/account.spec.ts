@@ -32,6 +32,7 @@ test("customer account: address, order history, verified review, wishlist", asyn
   await page.goto("/account");
   const row = page.getByTestId("account-order").filter({ hasText: orderNumber });
   await expect(row).toContainText("waiting for you in chat");
+  await expectNoA11yViolations(page);
 
   // Staff confirm + rider delivers.
   const staff = await signedInPage(browser, testInfo, "staff");
@@ -70,6 +71,7 @@ test("customer account: address, order history, verified review, wishlist", asyn
   await expect(heart).toHaveAttribute("aria-pressed", "true");
   await page.goto("/account/wishlist");
   await expect(page.getByTestId("wishlist")).toContainText("Turbo");
+  await expectNoA11yViolations(page);
   await page.getByRole("button", { name: /Remove .* from wishlist/ }).first().click();
   await expect(page.getByTestId("wishlist")).toHaveCount(0);
 
