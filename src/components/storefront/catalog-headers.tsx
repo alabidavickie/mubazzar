@@ -14,7 +14,7 @@ export function BrandShowcase({ title, subtitle, srTitle }: { title: string; sub
   return (
     <div className="px-4 pt-2 pb-1">
       <div className="flex items-center gap-3 rounded-xl bg-card p-2 shadow-card">
-        <Image src="/brand/emblem.webp" alt="" width={56} height={40} className="h-10 w-14 shrink-0 rounded-lg bg-surface-low object-contain" priority />
+        <Image src="/brand/emblem.webp" alt="" width={56} height={40} className="h-10 w-14 shrink-0 rounded-lg bg-surface-low object-contain" loading="eager" />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1">
             <h1 className="truncate text-headline-sm font-bold text-navy">

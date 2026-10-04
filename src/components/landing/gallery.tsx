@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cx } from "@/lib/cx";
 import type { StaticImgProps } from "./static-img";
 
@@ -8,7 +8,10 @@ import type { StaticImgProps } from "./static-img";
  * Swipeable product showcase: CSS scroll-snap track (native swipe, no JS library) + thumbnail
  * buttons. Image props (srcset/sizes) are computed on the server with getImageProps, so no
  * next/image runtime ships. Overlays (discount tag, warranty, caption) are server-rendered children.
- * The first slide is the page's LCP image (eager, high priority, preloaded by the page).
+ * The first slide is the page's LCP image (eager, high priority, preloaded by the page). Slides 2–5
+ * are off-screen to the side but inside the browser's lazy-load distance, so they would download
+ * alongside the LCP image on slow 4G; they get their src only after `load` (on idle) or as soon as the
+ * visitor touches, scrolls or uses the thumbnails.
  */
 export function LandingGallery({
   slides,
@@ -21,8 +24,26 @@ export function LandingGallery({
 }) {
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [restReady, setRestReady] = useState(false);
+
+  useEffect(() => {
+    let idle = 0;
+    const schedule = () => {
+      idle = window.requestIdleCallback
+        ? window.requestIdleCallback(() => setRestReady(true), { timeout: 2000 })
+        : window.setTimeout(() => setRestReady(true), 200);
+    };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
+    return () => {
+      window.removeEventListener("load", schedule);
+      if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
+    };
+  }, []);
 
   const goTo = (i: number) => {
+    setRestReady(true);
     const el = track.current;
     if (!el) return;
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -31,6 +52,7 @@ export function LandingGallery({
   };
 
   const onScroll = () => {
+    setRestReady(true);
     const el = track.current;
     if (!el || !el.clientWidth) return;
     const i = Math.max(0, Math.min(slides.length - 1, Math.round(el.scrollLeft / el.clientWidth)));
@@ -45,6 +67,8 @@ export function LandingGallery({
         <div
           ref={track}
           onScroll={onScroll}
+          onPointerDown={() => setRestReady(true)}
+          onFocus={() => setRestReady(true)}
           tabIndex={0}
           role="region"
           aria-roledescription="carousel"
@@ -59,8 +83,15 @@ export function LandingGallery({
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${slides.length}`}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- props from getImageProps include alt */}
-              <img {...img} />
+              {i === 0 || restReady ? (
+                // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- props from getImageProps include alt
+                <img {...img} />
+              ) : (
+                <noscript>
+                  {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- props include alt */}
+                  <img {...img} />
+                </noscript>
+              )}
             </div>
           ))}
         </div>

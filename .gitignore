@@ -55,3 +55,7 @@ next-env.d.ts
 
 # Desktop E2E screenshots are regenerated every run; only the mobile ones are kept for design review
 tests/screenshots/*-desktop.png
+
+# Test/Lighthouse run output (the final Lighthouse report is committed deliberately at release)
+reports/playwright/
+reports/lighthouse/
