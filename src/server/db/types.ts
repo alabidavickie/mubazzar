@@ -86,6 +86,8 @@ export interface Tables {
       is_active: boolean;
       sort_order: number;
       created_at: string;
+      promo_price_kobo: number | null;
+      promo_ends_at: string | null;
     };
     Insert: {
       id?: string;
@@ -103,6 +105,8 @@ export interface Tables {
       is_active?: boolean;
       sort_order?: number;
       created_at?: string;
+      promo_price_kobo?: number | null;
+      promo_ends_at?: string | null;
     };
   };
   carts: {
@@ -259,7 +263,7 @@ export interface Tables {
       product_id: string;
       title: string | null;
       promo_text: string | null;
-      deal_price_kobo: number | null;
+      deal_price_kobo: number;
       starts_at: string;
       ends_at: string;
       is_active: boolean;
@@ -271,7 +275,7 @@ export interface Tables {
       product_id: string;
       title?: string | null;
       promo_text?: string | null;
-      deal_price_kobo?: number | null;
+      deal_price_kobo: number;
       starts_at: string;
       ends_at: string;
       is_active?: boolean;
@@ -290,6 +294,7 @@ export interface Tables {
       min_order_kobo: number;
       is_active: boolean;
       created_at: string;
+      ends_at: string | null;
     };
     Insert: {
       id?: string;
@@ -301,6 +306,7 @@ export interface Tables {
       min_order_kobo?: number;
       is_active?: boolean;
       created_at?: string;
+      ends_at?: string | null;
     };
   };
   hubs: {

@@ -38,8 +38,11 @@ export interface PromoBundle {
 }
 
 /**
- * The headline promo price: the single-unit (quantity 1) bundle when there is one, otherwise the
- * product's own price. The default selected bundle is that 1x bundle (or the first bundle).
+ * The headline price: the single-unit (quantity 1) bundle when there is one, otherwise the product's own
+ * price. Prices come from the read models, so they are already the LIVE price (promo while it runs) and
+ * the struck price follows the honesty rule (regular price during a promo, else a real compare-at).
+ * The product's compare-at is only borrowed when the 1x bundle costs exactly the product price — a
+ * compare-at never applies to a different price. The default selection is that 1x bundle (or the first).
  */
 export function promoPricing(
   product: { priceKobo: Kobo; compareAtKobo: Kobo | null },
@@ -48,9 +51,22 @@ export function promoPricing(
   const single = bundles.find((b) => b.quantity === 1) ?? null;
   const defaultBundleId = single?.id ?? bundles[0]?.id ?? null;
   if (single) {
-    return { priceKobo: single.priceKobo, compareAtKobo: single.compareAtKobo ?? product.compareAtKobo, defaultBundleId };
+    const compareAtKobo = single.compareAtKobo ?? (single.priceKobo === product.priceKobo ? product.compareAtKobo : null);
+    return { priceKobo: single.priceKobo, compareAtKobo, defaultBundleId };
   }
   return { priceKobo: product.priceKobo, compareAtKobo: product.compareAtKobo, defaultBundleId };
+}
+
+/** timestamptz arrives as a Date (PGlite) or a string (postgres.js): normalise to ISO, null when invalid. */
+export function toIsoOrNull(v: string | Date | null | undefined): string | null {
+  if (!v) return null;
+  const d = typeof v === "string" ? new Date(v) : v;
+  return Number.isFinite(d.getTime()) ? d.toISOString() : null;
+}
+
+/** Lowest delivery fee across zones ("Delivery from ₦X" before a state is chosen). */
+export function lowestDeliveryFee(zones: { feeKobo: Kobo }[]): Kobo | null {
+  return zones.length ? Math.min(...zones.map((z) => z.feeKobo)) : null;
 }
 
 /** True when a campaign end is set and still in the future. */

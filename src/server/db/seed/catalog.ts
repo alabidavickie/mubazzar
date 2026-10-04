@@ -39,7 +39,10 @@ export interface SeedBundle {
   shortLabel: string;
   description: string;
   quantity: number;
+  /** Regular price (₦). */
   price: number;
+  /** Promo price (₦), charged only until the seed promo deadline (PROMO_ENDS_AT in index.ts). */
+  promo?: number;
   compareAt: number | null;
   tag?: string;
   sideTag?: string;
@@ -51,6 +54,8 @@ export interface SeedGift {
   value: number;
   image?: string;
   conditions: string;
+  /** Gift is part of the promo and stops at the promo deadline. */
+  endsWithPromo?: boolean;
 }
 export interface SeedProduct {
   slug: string;
@@ -73,7 +78,9 @@ export interface SeedProduct {
   faqs?: SeedFaq[];
   bundles?: SeedBundle[];
   gift?: SeedGift;
-  /** units per hub: [lagos, abuja, warehouse] and batch sizes for honest sold-% meters */
+  /** Flash deal (₦ price) ending at the promo deadline. */
+  flash?: { price: number; title: string; promoText: string | null; sort: number };
+  /** units per hub: [lagos, abuja, warehouse]; batch = units received in the current batch (admin data, not shown) */
   stock: [number, number, number];
   batch?: [number, number, number];
   ageDays: number; // for "Newest" sort
@@ -88,8 +95,8 @@ export const PRODUCTS: SeedProduct[] = [
     slug: "turbo-car-vacuum",
     name: "4-in-1 Turbo Cordless Car Vacuum & Blower",
     category: "car-tech",
-    price: 19_500,
-    compareAt: 38_000,
+    price: 24_500,
+    compareAt: null,
     short: "Vacuum, blow, inflate & deflate — 9,000Pa cordless jet power for car and home.",
     description:
       "Blow stubborn AC sand, pull deep coin crumbs and inflate car tyres in 60 seconds with the MUBAZZAR 4-in-1 Turbo Cordless Handheld Jet Vacuum. Built for dusty harmattan seasons, roadside sand and everyday quick interior touch-ups.",
@@ -102,8 +109,7 @@ export const PRODUCTS: SeedProduct[] = [
       img("car-vacuum-5.webp", "Unboxed package: navy box, Type-C cable, 4 nozzle heads, extra HEPA filter and pouch"),
     ],
     tags: ["vacuum", "car", "blower", "inflator", "cordless", "cleaning"],
-    imageBadge: { text: "Selling Fast", style: "navy", icon: "local_fire_department" },
-    perk: { text: "Free Car Diffuser", icon: "redeem", style: "gold" },
+    imageBadge: { text: "9,000Pa Suction", style: "navy", icon: "tornado" },
     deliveryNote: { text: "Lagos 24h Delivery", icon: "local_shipping" },
     warrantyMonths: 12,
     specs: [
@@ -128,11 +134,12 @@ export const PRODUCTS: SeedProduct[] = [
       { q: "How do I charge it? Can I use my car charger?", a: "Yes. It has a universal Type-C port, so you can charge it from your car USB port/adapter, any phone charger or a power bank. A full charge takes about 2 hours and lasts up to 45 minutes of cleaning." },
     ],
     bundles: [
-      { key: "1x", label: "1x Turbo Vacuum Set", shortLabel: "1x Turbo Car Vacuum", description: "Includes 1 Free Filter + 1 Gift Diffuser", quantity: 1, price: 19_500, compareAt: 38_000 },
-      { key: "2x", label: "2x Turbo Vacuum Sets (His & Hers)", shortLabel: "2x Turbo Car Vacuum (His & Hers)", description: "2 Vacuums + 2 Extra HEPA Filters + Free Gift", quantity: 2, price: 35_000, compareAt: 70_000, tag: "MOST POPULAR • SAVE EXTRA ₦4,000", note: "Perfect for 2 cars or 1 for Car + 1 for Home", popular: true },
-      { key: "3x", label: "3x Turbo Family Pack", shortLabel: "3x Turbo Car Vacuum (Family Pack)", description: "3 Vacuums + 3 Filters + Premium Tyre Gauge", quantity: 3, price: 49_000, compareAt: 105_000, sideTag: "Best Value" },
+      { key: "1x", label: "1x Turbo Vacuum Set", shortLabel: "1x Turbo Car Vacuum", description: "Vacuum + 4 nozzles + 1 extra HEPA filter", quantity: 1, price: 24_500, promo: 19_500, compareAt: null },
+      { key: "2x", label: "2x Turbo Vacuum Sets (His & Hers)", shortLabel: "2x Turbo Car Vacuum (His & Hers)", description: "2 Vacuums + 2 Extra HEPA Filters", quantity: 2, price: 45_000, promo: 35_000, compareAt: null, tag: "MOST POPULAR • SAVE EXTRA ₦4,000", note: "Perfect for 2 cars or 1 for Car + 1 for Home", popular: true },
+      { key: "3x", label: "3x Turbo Family Pack", shortLabel: "3x Turbo Car Vacuum (Family Pack)", description: "3 Vacuums + 3 Filters + Premium Tyre Gauge", quantity: 3, price: 63_000, promo: 49_000, compareAt: null, sideTag: "Best Value" },
     ],
-    gift: { name: "Luxury Aromatherapy Car Diffuser", value: 4_500, image: "gift-diffuser.webp", conditions: "Packed free inside every vacuum order while this promo runs." },
+    gift: { name: "Luxury Aromatherapy Car Diffuser", value: 4_500, image: "gift-diffuser.webp", conditions: "Packed free inside every vacuum order while this promo runs.", endsWithPromo: true },
+    flash: { price: 19_500, title: "Car Vacuum Flash Deal", promoText: "+ FREE Extra HEPA Filter", sort: 1 },
     stock: [9, 25, 120],
     batch: [100, 60, 150],
     ageDays: 20,
@@ -141,8 +148,8 @@ export const PRODUCTS: SeedProduct[] = [
     slug: "magnetic-solar-wall-light",
     name: "360° Rotatable Magnetic Solar Wall Light",
     category: "solar-power",
-    price: 14_000,
-    compareAt: 25_000,
+    price: 17_000,
+    compareAt: null,
     short: "Motion-sensor solar security light that rotates 360° — no wiring, no NEPA bill.",
     description:
       "A waterproof solar wall light with a powerful motion sensor and magnetic 360° rotating head. Mount it on any wall, gate or fence and light up dark corners all night without electricity.",
@@ -163,10 +170,11 @@ export const PRODUCTS: SeedProduct[] = [
       { icon: "water_drop", title: "Survives heavy downpours", description: "IP65 sealed body made for the Nigerian rainy season." },
     ],
     bundles: [
-      { key: "1x", label: "1x Solar Wall Light", shortLabel: "1x Solar Wall Light", description: "Single light with mounting kit", quantity: 1, price: 14_000, compareAt: 25_000 },
-      { key: "2x", label: "2x Solar Wall Lights", shortLabel: "2x Solar Wall Light", description: "Light up front gate and backyard", quantity: 2, price: 26_000, compareAt: 50_000, tag: "MOST POPULAR • SAVE EXTRA ₦2,000", popular: true },
-      { key: "4x", label: "4x Solar Wall Lights (Compound Pack)", shortLabel: "4x Solar Wall Light", description: "Cover all four corners of your compound", quantity: 4, price: 48_000, compareAt: 100_000, sideTag: "Best Value" },
+      { key: "1x", label: "1x Solar Wall Light", shortLabel: "1x Solar Wall Light", description: "Single light with mounting kit", quantity: 1, price: 17_000, promo: 14_000, compareAt: null },
+      { key: "2x", label: "2x Solar Wall Lights", shortLabel: "2x Solar Wall Light", description: "Light up front gate and backyard", quantity: 2, price: 32_000, promo: 26_000, compareAt: null, tag: "MOST POPULAR • SAVE EXTRA ₦2,000", popular: true },
+      { key: "4x", label: "4x Solar Wall Lights (Compound Pack)", shortLabel: "4x Solar Wall Light", description: "Cover all four corners of your compound", quantity: 4, price: 58_000, promo: 48_000, compareAt: null, sideTag: "Best Value" },
     ],
+    flash: { price: 14_000, title: "Solar Light Flash Deal", promoText: null, sort: 2 },
     stock: [40, 30, 200],
     ageDays: 35,
   },
@@ -246,7 +254,7 @@ export const PRODUCTS: SeedProduct[] = [
     description: "Charge three phones at once from your cigarette lighter socket with retractable Type-C, Lightning and Micro cables, plus a digital voltmeter that warns you about a weak car battery.",
     images: [img("car-charger.webp", "3-in-1 retractable car charger with glowing voltage display in a car console")],
     tags: ["car", "charger", "phone", "usb"],
-    imageBadge: { text: "Selling Fast", style: "navy", icon: "local_fire_department" },
+    imageBadge: { text: "Free Gift Inside", style: "gold", icon: "redeem" },
     perk: { text: "Free Air Freshener", icon: "redeem", style: "gold" },
     gift: { name: "Car Vent Air Freshener", value: 2_000, conditions: "One free air freshener with every charger." },
     stock: [45, 30, 160],
@@ -293,7 +301,7 @@ export const PRODUCTS: SeedProduct[] = [
     description: "Tough nylon-braided 3-in-1 cable rated for 100W fast charging with gold-alloy connectors.",
     images: [img("multi-cable.webp", "Braided 100W multi charging cable with gold connectors on a dark blue background")],
     tags: ["cable", "charger", "usb", "fast charging"],
-    imageBadge: { text: "Best Seller", style: "bronze", icon: "grade" },
+    imageBadge: { text: "100W Fast Charging", style: "bronze", icon: "bolt" },
     perk: { text: "Universal All-in-1", icon: "verified", style: "neutral" },
     stock: [120, 80, 400],
     ageDays: 90,

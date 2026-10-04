@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { cx } from "@/lib/cx";
-import { remainingParts } from "@/lib/time";
+import { formatCountdown } from "@/lib/time";
 
 /**
  * Countdown to a REAL end time from the database. It never resets on reload; when the deal
  * ends it switches to the `ended` state (or renders nothing). Server renders the initial
  * value from `serverNow` to avoid hydration drift.
+ *
+ * Format: "2d 22h 15m" while 24 h or more remain, HH:MM:SS within the last 24 h.
  */
 export function Countdown({
   endsAt,
@@ -34,16 +36,13 @@ export function Countdown({
       clearInterval(t);
     };
   }, []);
-  const r = remainingParts(endsAt, now);
-  const hours = r.days * 24 + r.hours;
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const accessible = r.ended
-    ? endedLabel
-    : `${label ? `${label} ` : ""}${hours} hours ${r.minutes} minutes ${r.seconds} seconds`;
+  const c = formatCountdown(endsAt, now);
+  const { long, parts } = c;
+  const accessible = c.ended ? endedLabel : `${label ? `${label} ` : ""}${c.spoken}`;
 
-  if (r.ended) {
+  if (c.ended) {
     return (
-      <span data-testid="countdown" data-ended="true" className={cx("text-label-sm font-bold text-ink-muted", className)}>
+      <span data-testid="countdown" data-ended="true" data-ends-at={endsAt} className={cx("text-label-sm font-bold text-ink-muted", className)}>
         {endedLabel}
       </span>
     );
@@ -51,11 +50,9 @@ export function Countdown({
 
   if (variant === "inline") {
     return (
-      <span data-testid="countdown" data-ended="false" className={cx("font-bold tabular", className)}>
+      <span data-testid="countdown" data-ended="false" data-ends-at={endsAt} className={cx("font-bold tabular", className)}>
         <span className="sr-only">{accessible}</span>
-        <span aria-hidden>
-          {pad(hours)}:{pad(r.minutes)}:{pad(r.seconds)}
-        </span>
+        <span aria-hidden>{c.text}</span>
       </span>
     );
   }
@@ -65,15 +62,19 @@ export function Countdown({
       <span
         data-testid="countdown"
         data-ended="false"
+        data-ends-at={endsAt}
         className={cx("flex items-center gap-1 text-headline-sm font-bold tracking-widest text-gold-soft", className)}
         role="timer"
         aria-live="off"
       >
         <span className="sr-only">{accessible}</span>
-        {[pad(hours), pad(r.minutes), pad(r.seconds)].map((v, i) => (
-          <span key={i} aria-hidden className="flex items-center gap-1">
-            {i > 0 ? ":" : null}
-            <span className="rounded bg-navy px-1.5 py-0.5 tabular">{v}</span>
+        {parts.map(([v, u], i) => (
+          <span key={u} aria-hidden className="flex items-center gap-1">
+            {i > 0 && !long ? ":" : null}
+            <span className="rounded bg-navy px-1.5 py-0.5 tabular">
+              {v}
+              {long ? <span className="text-label-sm tracking-normal">{u}</span> : null}
+            </span>
           </span>
         ))}
       </span>
@@ -84,21 +85,15 @@ export function Countdown({
     <span
       data-testid="countdown"
       data-ended="false"
+      data-ends-at={endsAt}
       role="timer"
       aria-live="off"
-      className={cx(
-        "flex items-center gap-0.5 rounded-lg bg-navy-deep px-2 py-1 text-gold-pale shadow-card",
-        className,
-      )}
+      className={cx("flex items-center gap-0.5 rounded-lg bg-navy-deep px-2 py-1 text-gold-pale shadow-card", className)}
     >
       <span className="sr-only">{accessible}</span>
-      {[
-        [pad(hours), "h"],
-        [pad(r.minutes), "m"],
-        [pad(r.seconds), "s"],
-      ].map(([v, u], i) => (
+      {parts.map(([v, u], i) => (
         <span key={u} aria-hidden className="flex items-center gap-0.5">
-          {i > 0 ? <span className="text-xs font-bold leading-none">:</span> : null}
+          {i > 0 ? <span className="text-xs leading-none font-bold">:</span> : null}
           <span className="flex flex-col items-center">
             <span className={cx("text-xs leading-none font-bold tabular", u === "s" && "text-coral-soft")}>{v}</span>
             <span className="text-[0.5625rem] uppercase leading-tight text-on-dark-muted">{u}</span>

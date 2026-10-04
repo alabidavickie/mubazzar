@@ -102,7 +102,8 @@ export const SETTINGS: { key: string; value: unknown; isPublic: boolean; descrip
     value: {
       legalName: "MUBAZZAR Nigeria Ltd.",
       address: "Lekki Expressway, Victoria Island, Lagos, Nigeria",
-      cac: "RC — to be provided",
+      // Only a real registration number (RC/BN + digits) is ever shown; set it in admin settings.
+      cac: null,
       returnsDays: 7,
     },
     isPublic: true,
@@ -186,7 +187,7 @@ export const LANDING_PAGE = {
   product: "turbo-car-vacuum",
   hookLabel: "PROMO ALERT",
   hookBanner: "⚡ Promo price + Free Luxury Car Diffuser | Pay on Delivery available — arrange in chat",
-  trendBadge: "#1 Trending Car Gadget in Nigeria",
+  trendBadge: "Tested by our Lagos team",
   headline: "Stop Paying Car Wash ~~₦4,000~~ Every Week!",
   subheadline:
     "Blow stubborn AC sand, pull deep coin crumbs, and inflate car tires in 60 seconds with the **Mubazzar 4-in-1 Turbo Cordless Handheld Jet Vacuum**.",

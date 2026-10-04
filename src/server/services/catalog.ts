@@ -30,15 +30,35 @@ export interface ProductCardData {
   categorySlug: string | null;
   categoryName: string | null;
   curatedLabel: string | null;
+  /** Sum of available units across active hubs (what the product can actually ship). */
   availableUnits: number;
+  /** "Only N left" shows only when availableUnits is at/below this (lowest hub threshold). */
+  lowStockThreshold: number;
   createdAt: string;
   defaultBundleId: string | null;
 }
 
+/**
+ * Price honesty (BRIEF §0.8): `priceKobo` is what the customer is charged right now (live flash-deal
+ * price, else the regular price). While a promo is live the struck "was" price is the REGULAR price, so
+ * "You save" = regular − promo. Without a live promo the struck price is the admin's compare-at (if any).
+ */
+const EFFECTIVE = `public.effective_unit_price(p.id)`;
+const DISPLAY_COMPARE = `(case when ${EFFECTIVE} < p.price_kobo then p.price_kobo else p.compare_at_kobo end)`;
+/** A gift is shown/added only while it is active and its promo (if any) has not ended. */
+const GIFT_LIVE = `g.is_active and (g.ends_at is null or now() < g.ends_at)`;
+/** Units the product can actually ship: available stock summed across active hubs. */
+const AVAILABLE_UNITS = `coalesce((select sum(greatest(inv.on_hand - inv.reserved, 0)) from public.inventory inv
+     join public.hubs h on h.id = inv.hub_id where inv.product_id = p.id and h.is_active), 0)::int`;
+/** Live bundle promo: promo price set and its deadline still ahead. */
+const BUNDLE_PROMO_LIVE = `(b.promo_price_kobo is not null and b.promo_ends_at is not null and now() < b.promo_ends_at)`;
+/** Live flash deal that really lowers the price. */
+const FLASH_LIVE = `(fd.is_active and now() >= fd.starts_at and now() < fd.ends_at and fd.deal_price_kobo < p.price_kobo)`;
+
 const CARD_SELECT = `
   p.id, p.slug, p.name, p.short_description as "shortDescription",
-  public.effective_unit_price(p.id) as "priceKobo",
-  p.compare_at_kobo as "compareAtKobo",
+  ${EFFECTIVE} as "priceKobo",
+  ${DISPLAY_COMPARE} as "compareAtKobo",
   p.rating_avg::float8 as "ratingAvg", p.review_count as "reviewCount", p.sold_count as "soldCount",
   (select url from public.product_images i where i.product_id = p.id order by sort_order limit 1) as "imageUrl",
   coalesce((select alt from public.product_images i where i.product_id = p.id order by sort_order limit 1), p.name) as "imageAlt",
@@ -46,9 +66,11 @@ const CARD_SELECT = `
   p.perk_text as "perkText", p.perk_icon as "perkIcon", p.perk_style as "perkStyle",
   p.delivery_note as "deliveryNote", p.delivery_note_icon as "deliveryNoteIcon",
   p.pod_available as "podAvailable",
-  (select g.name from public.free_gifts g where g.product_id = p.id and g.is_active limit 1) as "giftName",
+  (select g.name from public.free_gifts g where g.product_id = p.id and ${GIFT_LIVE} limit 1) as "giftName",
   c.slug as "categorySlug", c.name as "categoryName", p.curated_label as "curatedLabel",
-  coalesce((select sum(greatest(on_hand - reserved, 0)) from public.inventory inv where inv.product_id = p.id), 0)::int as "availableUnits",
+  ${AVAILABLE_UNITS} as "availableUnits",
+  coalesce((select min(inv.low_stock_threshold) from public.inventory inv join public.hubs h on h.id = inv.hub_id
+             where inv.product_id = p.id and h.is_active), 0)::int as "lowStockThreshold",
   p.created_at as "createdAt",
   (select b.id from public.bundles b where b.product_id = p.id and b.is_active order by b.sort_order limit 1) as "defaultBundleId"
 `;
@@ -70,7 +92,7 @@ export interface CatalogFilters {
 
 const ORDER_BY: Record<SortKey, string> = {
   popular: `p.sold_count desc, p.review_count desc, p.rating_avg desc, p.created_at desc`,
-  discount: `case when p.compare_at_kobo > 0 then (p.compare_at_kobo - p.price_kobo)::float8 / p.compare_at_kobo else 0 end desc, p.created_at desc`,
+  discount: `case when ${DISPLAY_COMPARE} > ${EFFECTIVE} then (${DISPLAY_COMPARE} - ${EFFECTIVE})::float8 / ${DISPLAY_COMPARE} else 0 end desc, p.created_at desc`,
   newest: `p.created_at desc`,
   price_asc: `public.effective_unit_price(p.id) asc, p.created_at desc`,
   price_desc: `public.effective_unit_price(p.id) desc, p.created_at desc`,
@@ -98,11 +120,11 @@ function buildWhere(f: CatalogFilters): { where: string; params: unknown[] } {
   if (f.minKobo != null) add("public.effective_unit_price(p.id) >= ?", f.minKobo);
   if (f.maxKobo != null) add("public.effective_unit_price(p.id) <= ?", f.maxKobo);
   if (f.pod) clauses.push("p.pod_available");
-  if (f.gift) clauses.push("exists (select 1 from public.free_gifts g where g.product_id = p.id and g.is_active)");
+  if (f.gift) clauses.push(`exists (select 1 from public.free_gifts g where g.product_id = p.id and ${GIFT_LIVE})`);
   if (f.sameDay)
     clauses.push(
       `exists (select 1 from public.inventory inv join public.hubs h on h.id = inv.hub_id
-                where inv.product_id = p.id and h.code in ('lagos','abuja') and inv.on_hand - inv.reserved > 0)`,
+                where inv.product_id = p.id and h.is_active and h.code in ('lagos','abuja') and inv.on_hand - inv.reserved > 0)`,
     );
   if (f.q) {
     const ts = toTsQuery(f.q);
@@ -168,21 +190,28 @@ export interface FlashDealCard extends ProductCardData {
   dealTitle: string | null;
   promoText: string | null;
   endsAt: string;
+  /** Total units left across active hubs when at/below the low-stock threshold, else null. */
   lowStockUnits: number | null;
 }
 
 export async function getActiveFlashDeals(): Promise<FlashDealCard[]> {
   return asAnon((q) =>
-    q.query<FlashDealCard>(
-      `select ${CARD_SELECT}, fd.id as "dealId", fd.title as "dealTitle", fd.promo_text as "promoText", fd.ends_at as "endsAt",
-              (select min(greatest(inv.on_hand - inv.reserved, 0)) from public.inventory inv
-                 where inv.product_id = p.id and greatest(inv.on_hand - inv.reserved, 0) <= inv.low_stock_threshold
-                   and greatest(inv.on_hand - inv.reserved, 0) > 0)::int as "lowStockUnits"
-         from public.flash_deals fd
-         join public.products p on p.id = fd.product_id
-         left join public.categories c on c.id = p.category_id
-        where fd.is_active and p.is_active and now() >= fd.starts_at and now() < fd.ends_at
-        order by fd.sort_order, fd.ends_at`,
+    q.query<Omit<FlashDealCard, "lowStockUnits"> & { dealSort: number }>(
+      `select * from (
+         select distinct on (p.id) ${CARD_SELECT}, fd.id as "dealId", fd.title as "dealTitle", fd.promo_text as "promoText",
+                fd.ends_at as "endsAt", fd.sort_order as "dealSort"
+           from public.flash_deals fd
+           join public.products p on p.id = fd.product_id
+           left join public.categories c on c.id = p.category_id
+          where p.is_active and ${FLASH_LIVE}
+          order by p.id, fd.deal_price_kobo, fd.ends_at
+       ) d
+       order by d."dealSort", d."endsAt"`,
+    ).then((rows) =>
+      rows.map(({ dealSort: _sort, ...d }) => ({
+        ...d,
+        lowStockUnits: d.availableUnits > 0 && d.availableUnits <= d.lowStockThreshold ? d.availableUnits : null,
+      })),
     ),
   );
 }
@@ -242,8 +271,13 @@ export interface BundleData {
   shortLabel: string | null;
   description: string | null;
   quantity: number;
+  /** Price charged right now: the live promo price, else the regular price. */
   priceKobo: number;
+  /** Struck price: the regular price while a promo is live, else the admin compare-at (if any). */
   compareAtKobo: number | null;
+  regularPriceKobo: number;
+  /** End of the live bundle promo, null when no promo is running. */
+  promoEndsAt: string | null;
   tag: string | null;
   sideTag: string | null;
   note: string | null;
@@ -254,7 +288,6 @@ export interface HubStock {
   hubCode: string;
   hubName: string;
   available: number;
-  batchSize: number;
   lowStockThreshold: number;
 }
 
@@ -267,20 +300,30 @@ export interface ProductDetail extends ProductCardData {
   features: { icon: string; title: string; description: string }[];
   faqs: { question: string; answer: string }[];
   bundles: BundleData[];
-  gift: { name: string; valueKobo: number; imageUrl: string | null; conditions: string | null } | null;
+  /** Free gift, only while it is live (its promo has not ended). */
+  gift: { name: string; valueKobo: number; imageUrl: string | null; conditions: string | null; endsAt: string | null } | null;
   stock: HubStock[];
   seoTitle: string | null;
   seoDescription: string | null;
   tags: string[];
+  /** End of the live flash deal that lowers the price (null when none). */
   flashEndsAt: string | null;
+  /**
+   * The product's ONE promo deadline: the earliest live promo end among its bundles and flash deal.
+   * Null when no promo is live — then no countdown and no promo/save copy anywhere.
+   */
+  promoEndsAt: string | null;
 }
 
 async function loadDetail(q: Queryable, where: string, param: string): Promise<ProductDetail | null> {
   const rows = await q.query<ProductDetail & { categoryId: string | null }>(
     `select ${CARD_SELECT}, p.description, p.price_kobo as "basePriceKobo", p.warranty_months as "warrantyMonths",
             p.specs, p.seo_title as "seoTitle", p.seo_description as "seoDescription", p.tags,
-            (select min(fd.ends_at) from public.flash_deals fd where fd.product_id = p.id and fd.is_active
-               and now() >= fd.starts_at and now() < fd.ends_at) as "flashEndsAt"
+            (select min(fd.ends_at) from public.flash_deals fd where fd.product_id = p.id and ${FLASH_LIVE}) as "flashEndsAt",
+            least(
+              (select min(fd.ends_at) from public.flash_deals fd where fd.product_id = p.id and ${FLASH_LIVE}),
+              (select min(b.promo_ends_at) from public.bundles b where b.product_id = p.id and b.is_active and ${BUNDLE_PROMO_LIVE})
+            ) as "promoEndsAt"
        from public.products p left join public.categories c on c.id = p.category_id
       where ${where} and p.is_active`,
     [param],
@@ -301,19 +344,23 @@ async function loadDetail(q: Queryable, where: string, param: string): Promise<P
       [p.id],
     ),
     q.query<BundleData>(
-      `select id, label, short_label as "shortLabel", description, quantity, price_kobo as "priceKobo",
-              compare_at_kobo as "compareAtKobo", tag, side_tag as "sideTag", note, is_popular as "isPopular"
-         from public.bundles where product_id = $1 and is_active order by sort_order`,
+      `select b.id, b.label, b.short_label as "shortLabel", b.description, b.quantity,
+              public.effective_bundle_price(b.id) as "priceKobo",
+              case when ${BUNDLE_PROMO_LIVE} then b.price_kobo else b.compare_at_kobo end as "compareAtKobo",
+              b.price_kobo as "regularPriceKobo",
+              case when ${BUNDLE_PROMO_LIVE} then b.promo_ends_at end as "promoEndsAt",
+              b.tag, b.side_tag as "sideTag", b.note, b.is_popular as "isPopular"
+         from public.bundles b where b.product_id = $1 and b.is_active order by b.sort_order`,
       [p.id],
     ),
-    q.query<{ name: string; valueKobo: number; imageUrl: string | null; conditions: string | null }>(
-      `select name, value_kobo as "valueKobo", image_url as "imageUrl", conditions
-         from public.free_gifts where product_id = $1 and is_active limit 1`,
+    q.query<NonNullable<ProductDetail["gift"]>>(
+      `select g.name, g.value_kobo as "valueKobo", g.image_url as "imageUrl", g.conditions, g.ends_at as "endsAt"
+         from public.free_gifts g where g.product_id = $1 and ${GIFT_LIVE} limit 1`,
       [p.id],
     ),
     q.query<HubStock>(
       `select h.code as "hubCode", h.name as "hubName", greatest(i.on_hand - i.reserved, 0)::int as available,
-              i.batch_size as "batchSize", i.low_stock_threshold as "lowStockThreshold"
+              i.low_stock_threshold as "lowStockThreshold"
          from public.inventory i join public.hubs h on h.id = i.hub_id
         where i.product_id = $1 and h.is_active order by h.sort_order`,
       [p.id],
@@ -373,12 +420,13 @@ export async function getAllProductSlugs(): Promise<{ slug: string; updatedAt: s
   );
 }
 
-/** Largest real discount among active products — powers "{max_discount}" in hero copy. */
+/** Largest real discount (same rule as the struck price on cards) — powers "{max_discount}" in hero copy. */
 export async function maxActiveDiscountPercent(): Promise<number> {
   const r = await asAnon((q) =>
     q.query<{ pct: number | null }>(
-      `select max(round(((compare_at_kobo - price_kobo) * 100.0) / compare_at_kobo))::int as pct
-         from public.products where is_active and compare_at_kobo > price_kobo`,
+      `select max(round(((cmp - eff) * 100.0) / cmp))::int as pct
+         from (select ${EFFECTIVE} as eff, ${DISPLAY_COMPARE} as cmp from public.products p where p.is_active) x
+        where cmp > eff`,
     ),
   );
   return r[0]?.pct ?? 0;

@@ -35,6 +35,8 @@ export function ReviewCard({
   showProduct?: boolean;
   className?: string;
 }) {
+  // A check / "Verified purchase" mark only for real reviews tied to a delivered order — never samples.
+  const verified = review.isVerifiedPurchase && !review.isSample;
   return (
     <figure className={cn("flex flex-col justify-between gap-2 rounded-xl bg-card p-3 shadow-card", className)} data-testid="review-card">
       <div className="flex flex-col gap-2">
@@ -49,8 +51,8 @@ export function ReviewCard({
             <span className="min-w-0">
               <span className="block truncate text-label-md font-bold text-ink">{review.authorName}</span>
               {review.location ? (
-                <span className="flex items-center gap-0.5 text-label-sm text-emerald-ink">
-                  <Icon name="check_circle" className="text-xs" />
+                <span className="flex items-center gap-0.5 text-label-sm text-ink-muted">
+                  <Icon name="location_on" className="text-xs" />
                   <span className="truncate">{review.location}</span>
                 </span>
               ) : null}
@@ -61,7 +63,15 @@ export function ReviewCard({
         <blockquote className="line-clamp-4 text-body-md text-ink italic">&ldquo;{review.body}&rdquo;</blockquote>
       </div>
       <div className="flex items-center justify-between gap-2 pt-1 text-label-sm text-ink-subtle">
-        <span className="truncate">{showProduct ? review.productName : review.isVerifiedPurchase ? "Verified purchase" : ""}</span>
+        <span className="flex min-w-0 items-center gap-1">
+          {verified ? (
+            <span className="flex shrink-0 items-center gap-0.5 text-emerald-ink" data-testid="verified-purchase">
+              <Icon name="check_circle" className="text-xs" />
+              {showProduct ? <span className="sr-only">Verified purchase</span> : "Verified purchase"}
+            </span>
+          ) : null}
+          {showProduct ? <span className="truncate">{review.productName}</span> : null}
+        </span>
         <span className="flex shrink-0 items-center gap-1.5">
           {review.isSample ? <SampleTag /> : null}
           {relativeDays(review.createdAt)}

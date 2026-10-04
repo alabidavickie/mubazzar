@@ -56,6 +56,9 @@ const ago = (days: number) => raw(`now() - interval '${days} days'`);
 const lagosMidnightIn = (days: number) =>
   raw(`date_trunc('day', now() at time zone 'UTC') at time zone 'UTC' + interval '${days} days' - interval '1 hour'`);
 
+/** One real deadline for every seeded promo (bundle promo prices, flash deals, promo gifts). */
+const PROMO_ENDS_AT = lagosMidnightIn(3);
+
 function hashPasswordLocal(password: string): string {
   const salt = randomBytes(16).toString("hex");
   const hash = scryptSync(password, salt, 32).toString("hex");
@@ -290,6 +293,7 @@ export function buildSeedStatements(opts: SeedOptions): string[] {
           value_kobo: kobo(p.gift.value),
           image_url: p.gift.image ? productImage(p.gift.image) : null,
           conditions: p.gift.conditions,
+          ends_at: p.gift.endsWithPromo ? PROMO_ENDS_AT : null,
         }),
       );
     }
@@ -303,6 +307,8 @@ export function buildSeedStatements(opts: SeedOptions): string[] {
           description: b.description,
           quantity: b.quantity,
           price_kobo: kobo(b.price),
+          promo_price_kobo: b.promo === undefined ? null : kobo(b.promo),
+          promo_ends_at: b.promo === undefined ? null : PROMO_ENDS_AT,
           compare_at_kobo: kobo(b.compareAt),
           tag: b.tag ?? null,
           side_tag: b.sideTag ?? null,
@@ -326,29 +332,22 @@ export function buildSeedStatements(opts: SeedOptions): string[] {
     );
   }
 
-  // Flash deals with real windows (end at Lagos midnight in 2 days)
-  out.push(
-    insert("public.flash_deals", {
-      id: seedId("flash", "turbo-car-vacuum"),
-      product_id: seedId("product", "turbo-car-vacuum"),
-      title: "Car Vacuum Flash Deal",
-      promo_text: "+ FREE Extra HEPA Filter",
-      deal_price_kobo: null,
-      starts_at: ago(1),
-      ends_at: lagosMidnightIn(2),
-      sort_order: 1,
-    }),
-    insert("public.flash_deals", {
-      id: seedId("flash", "magnetic-solar-wall-light"),
-      product_id: seedId("product", "magnetic-solar-wall-light"),
-      title: "Solar Light Flash Deal",
-      promo_text: null,
-      deal_price_kobo: null,
-      starts_at: ago(1),
-      ends_at: lagosMidnightIn(2),
-      sort_order: 2,
-    }),
-  );
+  // Flash deals: real lower prices with the same real deadline as the product's bundle promos.
+  for (const p of PRODUCTS) {
+    if (!p.flash) continue;
+    out.push(
+      insert("public.flash_deals", {
+        id: seedId("flash", p.slug),
+        product_id: seedId("product", p.slug),
+        title: p.flash.title,
+        promo_text: p.flash.promoText,
+        deal_price_kobo: kobo(p.flash.price),
+        starts_at: ago(1),
+        ends_at: PROMO_ENDS_AT,
+        sort_order: p.flash.sort,
+      }),
+    );
+  }
 
   // Landing page
   const lp = LANDING_PAGE;
@@ -368,7 +367,8 @@ export function buildSeedStatements(opts: SeedOptions): string[] {
       hero_overlay_icon: lp.heroOverlayIcon,
       warranty_badge: lp.warrantyBadge,
       regions_text: lp.regionsText,
-      campaign_ends_at: lagosMidnightIn(3),
+      // Legacy column: no longer drives the countdown (the product's live promo deadline does).
+      campaign_ends_at: PROMO_ENDS_AT,
       features_title: lp.featuresTitle,
       features_subtitle: lp.featuresSubtitle,
       video_url: lp.videoUrl,

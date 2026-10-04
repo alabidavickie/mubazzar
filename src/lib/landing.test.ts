@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { hubForState, isCampaignLive, nearestHubFromGeo, promoPricing, youTubeEmbedUrl } from "./landing";
+import {
+  hubForState,
+  isCampaignLive,
+  lowestDeliveryFee,
+  nearestHubFromGeo,
+  promoPricing,
+  toIsoOrNull,
+  youTubeEmbedUrl,
+} from "./landing";
 
 const zones = [
   { state: "Lagos", hubCode: "lagos" },
@@ -48,8 +56,23 @@ describe("promoPricing", () => {
     expect(promoPricing(product, [{ id: "b3", quantity: 3, priceKobo: 1, compareAtKobo: null }]).defaultBundleId).toBe("b3");
   });
 
-  it("uses the product compare-at when the 1x bundle has none", () => {
-    expect(promoPricing(product, [{ id: "b1", quantity: 1, priceKobo: 1_950_000, compareAtKobo: null }]).compareAtKobo).toBe(4_000_000);
+  it("borrows the product compare-at only when the 1x bundle costs exactly the product price", () => {
+    expect(promoPricing(product, [{ id: "b1", quantity: 1, priceKobo: 2_000_000, compareAtKobo: null }]).compareAtKobo).toBe(4_000_000);
+    // A compare-at never applies to a different price (no invented "was" prices).
+    expect(promoPricing(product, [{ id: "b1", quantity: 1, priceKobo: 1_950_000, compareAtKobo: null }]).compareAtKobo).toBeNull();
+  });
+});
+
+describe("toIsoOrNull / lowestDeliveryFee", () => {
+  it("normalises timestamps", () => {
+    expect(toIsoOrNull("2026-10-06T23:00:00Z")).toBe("2026-10-06T23:00:00.000Z");
+    expect(toIsoOrNull(new Date("2026-10-06T23:00:00Z"))).toBe("2026-10-06T23:00:00.000Z");
+    expect(toIsoOrNull(null)).toBeNull();
+    expect(toIsoOrNull("nope")).toBeNull();
+  });
+  it("finds the cheapest zone fee", () => {
+    expect(lowestDeliveryFee([{ feeKobo: 300_000 }, { feeKobo: 250_000 }])).toBe(250_000);
+    expect(lowestDeliveryFee([])).toBeNull();
   });
 });
 

@@ -1,66 +1,48 @@
 import { cx } from "@/lib/cx";
 import { Icon } from "@/components/icons/icon";
+import { formatDayRange, stockStatus, type HubAvailability } from "@/lib/stock";
 
-export interface HubStockInfo {
-  hubCode: string;
-  hubName: string;
-  available: number;
-  batchSize: number;
-  lowStockThreshold: number;
-}
-
-/** Short hub label for copy: "Lagos Hub (Ikeja)" → "Lagos Hub". */
-export function shortHubName(name: string): string {
-  return name.replace(/\s*\(.*\)\s*$/, "");
-}
+export type HubStockInfo = HubAvailability;
+export { shortHubName } from "@/lib/stock";
 
 /**
- * Honest stock indicator for one hub. "Only N left" appears only when real availability is at or
- * below the admin's low-stock threshold; the bar shows the real share of the current batch sold.
+ * Honest stock line (rules in `src/lib/stock.ts`): "Only N left" only when the total the product can
+ * ship is at/below the low-stock threshold; otherwise where it ships from. No "% sold" bars.
+ * Icon + text in one wrapping row so it never breaks awkwardly in narrow cards.
  */
-export function StockMeter({ stock, className }: { stock: HubStockInfo | null; className?: string }) {
-  if (!stock) return null;
-  const hub = shortHubName(stock.hubName);
-  const low = stock.available > 0 && stock.available <= stock.lowStockThreshold;
-  const soldPct =
-    stock.batchSize > 0 ? Math.min(100, Math.max(0, Math.round(((stock.batchSize - stock.available) / stock.batchSize) * 100))) : null;
-
-  if (stock.available <= 0) {
-    return (
-      <p data-testid="stock-meter" className={cx("flex items-center gap-1 text-label-sm text-ink-muted", className)}>
-        <Icon name="schedule" className="text-sm" /> Out of stock in {hub} — ships from our central warehouse
-      </p>
-    );
-  }
-
+export function StockMeter({
+  stock,
+  nearestHub,
+  eta,
+  className,
+}: {
+  stock: HubAvailability[];
+  nearestHub: string | null;
+  eta: { etaMinDays: number; etaMaxDays: number };
+  className?: string;
+}) {
+  const s = stockStatus(stock, nearestHub, eta);
+  const tone = s.kind === "low" ? "text-urgent" : s.kind === "out" ? "text-ink-muted" : "text-emerald-ink";
+  const icon = s.kind === "low" ? "warning" : s.kind === "out" ? "schedule" : "check_circle";
   return (
-    <div data-testid="stock-meter" className={cx("flex flex-col gap-1.5", className)}>
-      <div className="flex items-center justify-between gap-2">
-        {low ? (
-          <span className="flex items-center gap-1 text-label-sm font-bold text-urgent">
-            <Icon name="warning" className="text-sm" />
-            Only <span data-testid="stock-count">{stock.available}</span> {stock.available === 1 ? "unit" : "units"} left in {hub}
-          </span>
+    <p data-testid="stock-meter" data-kind={s.kind} className={cx("flex items-start gap-1.5 text-label-sm font-bold", tone, className)}>
+      <Icon name={icon} className="mt-px shrink-0 text-sm" />
+      <span className="min-w-0">
+        {s.kind === "low" ? (
+          <>
+            Only <span data-testid="stock-count">{s.units}</span> left in stock
+          </>
+        ) : s.kind === "out" ? (
+          "Sold out right now — message us to be told when it's back"
+        ) : s.kind === "nearest" ? (
+          <>In stock — ships from {s.hubName}</>
         ) : (
-          <span className="flex items-center gap-1 text-label-sm font-bold text-emerald-ink">
-            <Icon name="check_circle" className="text-sm" />
-            In stock at {hub} (<span data-testid="stock-count">{stock.available}</span> available)
-          </span>
+          <>
+            In stock — ships from {s.isWarehouse ? "our central warehouse" : s.hubName} in{" "}
+            {formatDayRange(s.etaMinDays, s.etaMaxDays)}
+          </>
         )}
-        {soldPct !== null && soldPct > 0 ? <span className="text-body-sm text-ink-muted">{soldPct}% of batch sold</span> : null}
-      </div>
-      {soldPct !== null ? (
-        <div
-          className="h-2 w-full overflow-hidden rounded-full bg-surface-high"
-          role="progressbar"
-          aria-label={`${soldPct}% of the current batch sold`}
-          aria-valuenow={soldPct}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <div className={cx("h-full rounded-full", low ? "bg-urgent" : "bg-gold")} style={{ width: `${soldPct}%` }} />
-        </div>
-      ) : null}
-    </div>
+      </span>
+    </p>
   );
 }

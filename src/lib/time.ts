@@ -68,3 +68,42 @@ export function remainingParts(endsAt: Date | string, now: Date = new Date()) {
     ended: total === 0,
   };
 }
+
+export interface CountdownDisplay {
+  ended: boolean;
+  /** true while 24 h or more remain → [days, hours, minutes]; else [hours, minutes, seconds]. */
+  long: boolean;
+  parts: [value: string, unit: "d" | "h" | "m" | "s"][];
+  /** "2d 22h 15m" or "05:04:03" */
+  text: string;
+  /** Screen-reader text without a label, e.g. "2 days 22 hours 15 minutes". */
+  spoken: string;
+}
+
+/** Countdown display: "2d 22h 15m" while ≥ 24 h remain, HH:MM:SS within the last 24 h. */
+export function formatCountdown(endsAt: Date | string, now: Date = new Date()): CountdownDisplay {
+  const r = remainingParts(endsAt, now);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;
+  const long = r.days >= 1;
+  const parts: CountdownDisplay["parts"] = long
+    ? [
+        [String(r.days), "d"],
+        [String(r.hours), "h"],
+        [String(r.minutes), "m"],
+      ]
+    : [
+        [pad(r.hours), "h"],
+        [pad(r.minutes), "m"],
+        [pad(r.seconds), "s"],
+      ];
+  return {
+    ended: r.ended,
+    long,
+    parts,
+    text: long ? parts.map(([v, u]) => `${v}${u}`).join(" ") : parts.map(([v]) => v).join(":"),
+    spoken: long
+      ? `${plural(r.days, "day")} ${plural(r.hours, "hour")} ${plural(r.minutes, "minute")}`
+      : `${plural(r.hours, "hour")} ${plural(r.minutes, "minute")} ${plural(r.seconds, "second")}`,
+  };
+}

@@ -15,13 +15,16 @@ import { TrackViewContent } from "@/components/landing/track-view-content";
 import { ProductGallery } from "@/components/storefront/product-gallery";
 import { PdpBuyPanel, PdpPurchaseProvider, PdpStickyBar } from "@/components/storefront/pdp-purchase";
 import { getProductBySlug, getRecentReviews, getRelatedProducts } from "@/server/services/catalog";
-import { getPublicSettings } from "@/server/services/settings";
+import { getDeliveryZones, getPublicSettings } from "@/server/services/settings";
 import { getProductReviewSummary } from "@/server/services/storefront";
 import { formatNaira, koboToNairaInput, savingsKobo } from "@/lib/money";
 import { formatCutoff } from "@/lib/time";
 import { optimizedImageProps } from "@/lib/image";
 import { absoluteUrl } from "@/lib/site";
 import { buildWhatsAppLink } from "@/lib/chat/links";
+import { DEFAULT_HUB, toIsoOrNull } from "@/lib/landing";
+import { etaForState } from "@/lib/stock";
+import { reviewsHeading } from "@/lib/reviews";
 
 export const revalidate = 60;
 
@@ -66,15 +69,17 @@ export default async function ProductPage({ params }: { params: Params }) {
   const product = await load(slug);
   if (!product) notFound();
 
-  const [reviews, summary, related, settings] = await Promise.all([
+  const [reviews, summary, related, settings, zones] = await Promise.all([
     getRecentReviews({ productId: product.id, limit: 8 }),
     getProductReviewSummary(product.id),
     getRelatedProducts(product.id, product.categorySlug, 4),
     getPublicSettings(),
+    getDeliveryZones(),
   ]);
 
   const serverNow = new Date().toISOString();
-  const flashEndsAt = product.flashEndsAt ? new Date(product.flashEndsAt as unknown as string).toISOString() : null;
+  // One real deadline per product (earliest live bundle promo / flash deal); null = no promo copy.
+  const promoEndsAt = toIsoOrNull(product.promoEndsAt);
   const soldOut = product.availableUnits <= 0;
   const images = product.images.length ? product.images : product.imageUrl ? [{ url: product.imageUrl, alt: product.imageAlt }] : [];
   const slides = images.map((im, i) =>
@@ -110,7 +115,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       price: koboToNairaInput(product.priceKobo),
       availability: soldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
-      ...(flashEndsAt ? { priceValidUntil: flashEndsAt.slice(0, 10) } : {}),
+      ...(promoEndsAt ? { priceValidUntil: promoEndsAt.slice(0, 10) } : {}),
       seller: { "@type": "Organization", name: settings.business.legalName },
     },
     // Structured data only ever uses REAL approved reviews — never seeded sample reviews.
@@ -225,12 +230,12 @@ export default async function ProductPage({ params }: { params: Params }) {
                 You save <SavingsText priceKobo={product.priceKobo} compareAtKobo={product.compareAtKobo} />
               </p>
             ) : null}
-            {flashEndsAt ? (
+            {promoEndsAt ? (
               <div className="flex items-center justify-between gap-2 rounded-lg bg-navy-deep px-3 py-2 text-on-dark">
                 <span className="flex items-center gap-1 text-label-sm text-gold-pale">
-                  <Icon name="flash_on" className="text-sm" /> Flash price ends in
+                  <Icon name="flash_on" className="text-sm" /> Promo price ends in
                 </span>
-                <Countdown endsAt={flashEndsAt} serverNow={serverNow} variant="inline" label="Flash price ends in" endedLabel="Flash price ended" className="text-label-lg text-gold-soft" />
+                <Countdown endsAt={promoEndsAt} serverNow={serverNow} variant="inline" label="Promo price ends in" endedLabel="Promo ended" className="text-label-lg text-gold-soft" />
               </div>
             ) : null}
             <ul className="flex flex-col gap-1.5 pt-1 text-body-sm">
@@ -262,7 +267,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               <h2 id="stock-title" className="flex items-center gap-1 text-label-lg font-bold text-navy">
                 <Icon name="inventory_2" className="text-base" /> Stock by hub
               </h2>
-              <HubStockList stock={product.stock} />
+              <HubStockList stock={product.stock} nearestHub={DEFAULT_HUB} eta={etaForState(null, zones)} />
             </section>
           ) : null}
 
@@ -360,7 +365,7 @@ export default async function ProductPage({ params }: { params: Params }) {
         {/* Reviews */}
         <section id="reviews" aria-labelledby="reviews-title" className="flex scroll-mt-32 flex-col gap-3">
           <h2 id="reviews-title" className="text-headline-md font-bold text-navy">
-            Customer Reviews
+            {reviewsHeading(reviews, "Customer Reviews")}
           </h2>
           {summary.count > 0 ? (
             <div className="flex items-center gap-4 rounded-xl bg-card p-4 shadow-card">

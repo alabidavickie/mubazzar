@@ -118,7 +118,12 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
     });
   }
   const channelKinds = [...new Set(channels.map((c) => c.kind))].map((k) => ({ kind: k, label: CHANNEL_LABEL[k] }));
-  const stateHubs = zones.map((z) => ({ state: z.state, hubCode: z.hubCode }));
+  const stateHubs = zones.map((z) => ({
+    state: z.state,
+    hubCode: z.hubCode,
+    etaMinDays: z.etaMinDays,
+    etaMaxDays: z.etaMaxDays,
+  }));
   const trust = lp.sections.filter((s) => s.kind === "trust_matrix");
   const customText = lp.sections.filter((s) => s.kind === "custom_text");
   const supportHref = buildWhatsAppLink(settings.support.whatsapp, `Hello MUBAZZAR, I have a question about the ${product.name}.`);
@@ -292,7 +297,12 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
             <div data-testid="promo-timer" data-ends-at={endsAt ?? ""}>
               {live && endsAt ? <PromoCountdown endsAt={endsAt} serverNow={serverNow} /> : <PromoEnded />}
             </div>
-            <LandingStock stock={product.stock} stateHubs={stateHubs} defaultHub={geo.hubCode} />
+            <LandingStock
+              stock={product.stock}
+              stateHubs={stateHubs}
+              defaultHub={geo.hubCode}
+              defaultState={geo.state}
+            />
           </section>
 
           {/* Free gift */}
