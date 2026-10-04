@@ -107,3 +107,33 @@ export function formatCountdown(endsAt: Date | string, now: Date = new Date()): 
       : `${plural(r.hours, "hour")} ${plural(r.minutes, "minute")} ${plural(r.seconds, "second")}`,
   };
 }
+
+const lagosDateTime = new Intl.DateTimeFormat("en-NG", {
+  timeZone: LAGOS_TZ,
+  day: "numeric",
+  month: "short",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+});
+const lagosDateOnly = new Intl.DateTimeFormat("en-NG", { timeZone: LAGOS_TZ, day: "numeric", month: "short", year: "numeric" });
+
+/** "4 Oct, 3:05 pm" in Africa/Lagos (staff screens, timelines). */
+export function formatLagosDateTime(d: Date | string): string {
+  return lagosDateTime.format(new Date(d));
+}
+
+/** "4 Oct 2026" in Africa/Lagos. */
+export function formatLagosDate(d: Date | string): string {
+  return lagosDateOnly.format(new Date(d));
+}
+
+/** "5 min ago" / "3 h ago" / "2 d ago" (coarse, for order lists). */
+export function timeAgo(d: Date | string, now: Date = new Date()): string {
+  const mins = Math.max(0, Math.round((now.getTime() - new Date(d).getTime()) / 60_000));
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 48) return `${hours} h ago`;
+  return `${Math.round(hours / 24)} d ago`;
+}

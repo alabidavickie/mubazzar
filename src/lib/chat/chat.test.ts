@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { statusUpdateMessage } from "./status-messages";
 import {
   buildChannelLink,
   buildWhatsAppLink,
@@ -144,5 +145,21 @@ describe("WhatsApp routing", () => {
   it("returns null when no WhatsApp number is enabled and hides disabled channels", () => {
     expect(pickWhatsAppChannel([channels[2]!], { routing: "first", seed: "x" })).toBeNull();
     expect(enabledChannels(channels).map((c) => c.id)).toEqual(["lag", "abj", "ig"]);
+  });
+});
+
+describe("status update messages", () => {
+  const o = { orderNumber: "MBZ-7K2QPA", trackUrl: "https://mubazzar.ng/track?o=MBZ-7K2QPA" };
+  it("notifies milestones and stays silent for internal moves", () => {
+    expect(statusUpdateMessage("confirmed", o)).toContain("MBZ-7K2QPA is confirmed");
+    expect(statusUpdateMessage("dispatched", o)).toContain(o.trackUrl);
+    expect(statusUpdateMessage("failed_delivery", { ...o, reason: "No one at home" })).toContain("(No one at home)");
+    expect(statusUpdateMessage("in_chat", o)).toBeNull();
+    expect(statusUpdateMessage("awaiting_chat", o)).toBeNull();
+  });
+  it("fits in two SMS segments", () => {
+    for (const s of ["confirmed", "dispatched", "delivered", "failed_delivery", "cancelled"]) {
+      expect(statusUpdateMessage(s, { ...o, reason: "Customer not reachable" })!.length).toBeLessThanOrEqual(306);
+    }
   });
 });
