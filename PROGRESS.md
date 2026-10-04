@@ -55,21 +55,21 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 ## Phase 6 — Social checkout & integrations
 - [x] Thank-you page with WhatsApp handoff (auto-open on mobile), other channels with Copy order details, chat click logging
 - [x] Multiple WhatsApp numbers + routing stored on order
-- [ ] Manual payment recording (partial, overpayment flag, proof upload, verify reminder), payment_status auto-calc, audit log
-- [ ] Unpaid follow-up list + auto-cancel cron (releases stock)
-- [ ] Meta Pixel + CAPI with event_id dedup; Purchase once on paid/delivered
-- [ ] Notifications adapters (customer confirmation, admin new-order alert, status updates)
-- [ ] Exit check: E2E 2–3 pass; payment integration tests pass; security review done
+- [x] Manual payment recording (partial, overpayment flag, proof upload, verify reminder), payment_status auto-calc, audit log
+- [x] Unpaid follow-up list + auto-cancel cron (releases stock)
+- [x] Meta Pixel + CAPI with event_id dedup; Purchase once on paid/delivered
+- [x] Notifications adapters (customer confirmation, admin new-order alert, status updates)
+- [x] Exit check: E2E 2–3 pass; payment integration tests pass; security review done (admin/dispatch surfaces: role re-checked in every action, SQL as the user, private proofs, upload sniffing, CSV formula-safe)
 
 ## Phase 7 — Admin, staff & dispatcher
-- [ ] Admin shell + role guard; Dashboard
-- [ ] Products CRUD + images + bundles + gifts + features/specs/FAQ + SEO
+- [x] Admin shell + role guard; Dashboard
+- [ ] 👉 NEXT Products CRUD + images + bundles + gifts + features/specs/FAQ + SEO
 - [ ] Flash deals; Landing page builder (publish/preview)
-- [ ] Inventory per hub + low-stock alerts
-- [ ] Orders (filters, detail timeline, WhatsApp buttons, payments, assign dispatcher, notes, CSV export, print)
-- [ ] Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Audit log; Analytics
-- [ ] `/dispatch` mobile view (assigned orders, map link, call/WhatsApp, delivered w/ collection, failed w/ reason, proof photo)
-- [ ] Exit check: E2E 8–9 pass
+- [x] Inventory per hub + low-stock alerts
+- [x] Orders (filters, detail timeline, WhatsApp buttons, payments, assign dispatcher, notes, CSV export, print)
+- [ ] Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Audit log ✅; Analytics
+- [x] `/dispatch` mobile view (assigned orders, map link, call/WhatsApp, delivered w/ collection, failed w/ reason, proof photo)
+- [ ] Exit check: E2E 8–9 pass (9 ✅ on all projects; 8 needs catalogue admin + LP builder)
 
 ## Phase 8 — Supplier portal & customer accounts
 - [ ] Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view

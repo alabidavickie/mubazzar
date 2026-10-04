@@ -66,3 +66,13 @@ One line per decision: **decision** — reason.
 ## Cart
 - **Server cart fallback = mirror for signed-in customers only (`carts.user_id`), merged on the first page after sign-in (union, larger pack count, never doubled) and re-priced from the DB** — guests keep a localStorage cart (no anonymous server rows to clean up); prices in the saved cart can never go stale because only identity + packs are stored.
 - **A readable `mbz_signed_in=1` hint cookie (no identity) is set next to the HttpOnly session** — storefront pages are static (ISR) and can't see the session; the hint lets `CartSync` skip the network entirely for guests. The server never trusts it.
+
+## Admin & dispatch
+- **Admin writes call the existing SQL functions as the signed-in user (`asUser`)** — role checks, RLS, row locks and audit logging stay in one place (the database), identical on PGlite and Supabase.
+- **Recording a bank-transfer payment requires ticking "I checked our bank app — the money has arrived" (validated server-side)** — brief §5.8: fake transfer screenshots are common; cash/POS and refunds don't need it.
+- **"Dispatched" is reached only by assigning a dispatcher and "Delivered" only through the rider's delivery form** — so every delivery records collection + proof; the order desk only offers the transitions `order_transition_allowed` permits.
+- **Customers get an SMS on confirmed / dispatched / delivered / failed / cancelled (not on internal moves like back to in_chat)** — milestone updates without noise; best-effort, never blocks a staff action.
+- **Order list "Follow up" view = unpaid orders still awaiting chat after `follow_up_after_hours` (12 h), each showing its auto-cancel time** — staff get a window before `cancel_stale_orders` (48 h) releases the stock.
+- **CSV export prefixes cells starting with = + - @ with `'`** — customer-typed names/addresses must not run as spreadsheet formulas.
+- **Proof images live in the private bucket; locally `/api/proofs` serves them only to staff or the rider assigned to that delivery (404 otherwise); in production staff get 10-minute Supabase signed URLs** — payment screenshots contain bank details.
+- **Dashboard "Verified payments" = payments recorded today minus refunds (Africa/Lagos day)** — revenue is what staff verified, not what customers claimed.
