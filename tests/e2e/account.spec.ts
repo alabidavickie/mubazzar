@@ -75,6 +75,11 @@ test("customer account: address, order history, verified review, wishlist", asyn
   await page.getByRole("button", { name: /Remove .* from wishlist/ }).first().click();
   await expect(page.getByTestId("wishlist")).toHaveCount(0);
 
+  // Tidy shared fixtures: un-approve the review (other specs assert the seeded rating has no real
+  // reviews) and remove the address.
+  await admin.goto("/admin/reviews?status=approved");
+  await admin.getByTestId("review-row").filter({ hasText: body }).getByRole("button", { name: "Reject" }).click();
+  await expect(admin.getByTestId("review-row").filter({ hasText: body })).toHaveCount(0);
   // Tidy the shared account's address book.
   await page.goto("/account/addresses");
   await page.getByTestId("address-form").filter({ has: page.locator(`input[value^="${testInfo.project.name} 5 Herbert"]`) }).getByRole("button", { name: "Remove" }).click();

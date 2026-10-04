@@ -10,7 +10,7 @@ import {
   signInWithPassword,
   verifyOtp,
 } from "@/server/adapters/auth";
-import { hashIp, peekRateLimit, rateLimit } from "@/server/adapters/rate-limit";
+import { hashIp, peekRateLimit, rateLimit, resetRateLimit } from "@/server/adapters/rate-limit";
 import { asService } from "@/server/db";
 import { homeForRole, type AppRole } from "@/server/session";
 import { normalizeNgPhone } from "@/lib/phone";
@@ -89,6 +89,9 @@ export async function verifyOtpAction(_prev: AuthState, form: FormData): Promise
   if (!limited.ok) return { error: "Too many attempts. Please request a new code later." };
   const res = await verifyOtp(id.value, code);
   if (!res.ok) return { step: "code", identifier: id.value, error: res.error };
+  // The per-number limit stops SMS-bombing someone else's phone; once the owner proves they hold the
+  // number, their request budget starts fresh (an attacker can't verify, so their requests keep counting).
+  await resetRateLimit(`otp:id:${id.value}`);
   await createSessionCookie({ sub: res.userId, email: res.email });
   const role = await roleOf(res.userId);
   redirect(safeNext(form.get("next")) ?? homeForRole(role));

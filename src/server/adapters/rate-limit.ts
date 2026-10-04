@@ -52,3 +52,8 @@ export async function peekRateLimit(key: string, limit: number, windowSeconds: n
   const retryAfterSeconds = Math.ceil((windowStart.getTime() + windowSeconds * 1000 - now) / 1000);
   return { ok: hits < limit, remaining: Math.max(limit - hits, 0), retryAfterSeconds };
 }
+
+/** Clears a counter (e.g. unverified OTP requests once the owner of the number has verified). */
+export async function resetRateLimit(key: string): Promise<void> {
+  await asService((q) => q.query("delete from public.rate_limits where key = $1", [key]));
+}
