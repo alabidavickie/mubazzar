@@ -32,3 +32,17 @@ One line per decision: **decision** — reason.
 - **E2E stubs `https://wa.me/*` via `page.route`** — auto-open navigates the tab to wa.me; stubbing keeps tests offline and deterministic.
 - **Seed hook banner no longer hard-codes a discount %** — the real discount (49%) is computed from prices; copy with numbers drifts from data (honesty rule).
 - **Ad landing page first-load JS cut from 178.9 KB to 145.6 KB gz (budget 150)** — icons moved from an inline JS map to a cached SVG sprite (`public/icons.svg`), LP images built with a pure srcset helper (`src/lib/image.ts`) instead of importing next/image, LP client components use `cx` (clsx) instead of tailwind-merge, order schema uses `zod/mini`. Measured with `scripts/measure-js.mjs`.
+
+## Storefront
+- **Catalog state lives entirely in the URL (`src/lib/catalog-params.ts`: q, category, price, min/max in whole naira, pod, sameday, gift, sort, page) and every filter is a plain `<Link scroll={false}>` / GET form** — shareable, Back restores state, works without JS; Load More = `page=N` and the server renders items 1..N×12 (chunked through `listProducts`' 48-row cap).
+- **Price bands are half-open: "Under ₦15k" = < ₦15,000, ₦15k–₦30k = ₦15,000–₦29,999, ₦30k–₦60k = ₦30,000–₦60,000; custom min/max override a band** — no product appears in two bands.
+- **Catalog copy changed from the design for honesty: brand badge "PODS 100%" → "POD via chat"; "100% Transit Insured" → "Tested Before Dispatch"; "LIVE POD" → "POD in chat"; "100% money-back guarantee" → swap/refund within `business.returnsDays`; hub cities come from the `hubs` table** — no unverifiable claims or invented numbers.
+- **Custom ₦ min/max sits behind a "Custom price range" disclosure inside Fast Refinements** — the design has no room for it; collapsed it keeps the panel at the design's height.
+- **Filter/sort chips are 44px-tall links wrapping the compact visual pill** — keeps the design's pill size while meeting the 44px tap-target rule.
+- **`/c/[slug]` has no `loading.tsx`** — a streamed Suspense boundary forces HTTP 200 on `notFound()`; unknown categories must return a real 404. `/shop`, `/search`, `/deals` keep skeleton `loading.tsx`.
+- **`/p/[slug]` is ISR (`generateStaticParams` → [] + revalidate 60)** — nothing on the PDP is per-visitor.
+- **PDP review summary shows visible approved reviews (samples only where the admin enables them, labelled "incl. samples"); Product JSON-LD `aggregateRating` uses only real non-sample reviews (`getProductReviewSummary().real`)** — honesty rule.
+- **PDP stock-per-hub uses a compact `HubStockList` (same honesty rules as `StockMeter`)** — the shared StockMeter's single-line layout wraps badly when three hubs are listed in a phone-width card.
+- **PDP sticky add-to-cart bar sits above the bottom nav and lifts the floating WhatsApp button with a scoped `<style>` while visible** — avoids overlap without changing the shared layout components.
+- **Client-only error screens link to `/api/support/whatsapp`, a redirect to the support number in settings** — error boundaries can't read the DB and the number must not be hard-coded.
+- **Checkout clears the cart in `onSuccess` and shows "opening your order page…"** — prevents an empty-cart flash before the thank-you navigation.
