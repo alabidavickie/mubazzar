@@ -21,6 +21,7 @@ const ICONS = [
   "add_photo_alternate", "navigation", "photo_camera", "speed", "bookmark", "chat_bubble", "send", "forum",
   "local_mall", "inventory", "pending", "hourglass_top", "price_check", "account_balance", "public", "language",
   "help", "policy", "gavel", "undo", "refresh", "visibility_off", "key", "qr_code_2", "sms", "touch_app",
+  "play_arrow-fill", "play_arrow", "receipt", "package_2", "radio_button_unchecked",
 ];
 
 const unique = [...new Set(ICONS)];
