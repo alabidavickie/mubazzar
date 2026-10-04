@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ErrorContent } from "@/components/storefront/not-found-content";
+import { ErrorContent } from "@/components/storefront/error-content";
 
 /** Branded 500 inside the storefront chrome (header, bottom nav and WhatsApp button stay usable). */
 export default function ShopError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {

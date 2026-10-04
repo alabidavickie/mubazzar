@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons/icon";
-import { SearchBox } from "./search-box";
 
 const POPULAR = [
   { href: "/shop", label: "Shop all gadgets", icon: "grid_view" },
@@ -9,8 +8,43 @@ const POPULAR = [
   { href: "/faq", label: "Help & FAQ", icon: "help" },
 ];
 
-/** Branded 404 body: search, popular destinations and categories. */
-export function NotFoundContent({ categories = [] }: { categories?: { slug: string; name: string; emoji: string | null }[] }) {
+/**
+ * Plain GET search form (no client JS) for the root 404. The root not-found boundary's client
+ * components ship with EVERY route, including the ad landing page, so it must not use SearchBox.
+ */
+export function PlainSearchForm({ label = "Search MUBAZZAR" }: { label?: string }) {
+  return (
+    <form action="/search" role="search" className="relative w-full">
+      <label htmlFor="not-found-search" className="sr-only">
+        {label}
+      </label>
+      <Icon name="search" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xl text-ink-muted" />
+      <input
+        id="not-found-search"
+        name="q"
+        type="search"
+        enterKeyHint="search"
+        autoComplete="off"
+        placeholder="Search gadgets, problem solvers, kitchen tech…"
+        className="h-12 w-full rounded-xl bg-card pr-4 pl-10 text-body-md text-ink shadow-card outline-none transition-shadow placeholder:text-ink-subtle focus:shadow-raised focus-visible:ring-2 focus-visible:ring-gold"
+      />
+    </form>
+  );
+}
+
+/**
+ * Branded 404 body: search, popular destinations and categories. `search` is a slot so the root
+ * 404 can pass `PlainSearchForm` without importing the client-side SearchBox.
+ */
+export function NotFoundContent({
+  search,
+  suggestsAsYouType = false,
+  categories = [],
+}: {
+  search: React.ReactNode;
+  suggestsAsYouType?: boolean;
+  categories?: { slug: string; name: string; emoji: string | null }[];
+}) {
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-4 px-4 py-6" data-testid="not-found">
       <div className="flex flex-col items-center gap-2 text-center">
@@ -22,11 +56,11 @@ export function NotFoundContent({ categories = [] }: { categories?: { slug: stri
         </p>
         <h1 className="font-display text-headline-xl font-bold text-navy">We couldn&apos;t find that page</h1>
         <p className="text-body-md text-ink-muted">
-          The link may be old or the product may have sold out and been retired. Try a search — we&apos;ll suggest products as you
-          type.
+          The link may be old or the product may have sold out and been retired.{" "}
+          {suggestsAsYouType ? <>Try a search — we&apos;ll suggest products as you type.</> : <>Try a search or pick a page below.</>}
         </p>
       </div>
-      <SearchBox action="/search" label="Search MUBAZZAR" />
+      {search}
       <nav aria-label="Popular pages">
         <ul className="grid grid-cols-2 gap-2">
           {POPULAR.map((l) => (
@@ -58,42 +92,6 @@ export function NotFoundContent({ categories = [] }: { categories?: { slug: stri
       <Link href="/" className="mx-auto inline-flex min-h-11 items-center gap-1 text-label-md text-navy underline-offset-2 hover:underline">
         <Icon name="arrow_back" className="text-base" /> Back to the homepage
       </Link>
-    </div>
-  );
-}
-
-/** Branded error body (500) with retry + WhatsApp help. */
-export function ErrorContent({ onRetry, digest }: { onRetry: () => void; digest?: string }) {
-  return (
-    <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-3 px-4 py-10 text-center" data-testid="error-page">
-      <span className="flex size-16 items-center justify-center rounded-full bg-urgent-soft text-urgent shadow-card">
-        <Icon name="error" className="text-4xl" />
-      </span>
-      <h1 className="font-display text-headline-xl font-bold text-navy">Something went wrong on our side</h1>
-      <p className="text-body-md text-ink-muted">
-        Sorry — this page didn&apos;t load. Your cart and any order you already placed are safe. Try again, or message us and we&apos;ll
-        help you finish your order in chat.
-      </p>
-      <div className="flex flex-wrap justify-center gap-2">
-        <button
-          type="button"
-          onClick={onRetry}
-          className="inline-flex min-h-12 items-center gap-1.5 rounded-lg bg-navy px-5 text-label-lg text-on-dark shadow-card"
-        >
-          <Icon name="refresh" /> Try again
-        </button>
-        <a
-          href="/api/support/whatsapp"
-          className="inline-flex min-h-12 items-center gap-1.5 rounded-lg bg-emerald-ink px-5 text-label-lg text-on-dark shadow-card"
-        >
-          <Icon name="chat" /> WhatsApp help
-        </a>
-      </div>
-      {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- hard navigation recovers from a broken client state */}
-      <a href="/" className="inline-flex min-h-11 items-center text-label-md text-navy underline underline-offset-2">
-        Go to the homepage
-      </a>
-      {digest ? <p className="text-body-sm text-ink-subtle">Error reference: {digest}</p> : null}
     </div>
   );
 }

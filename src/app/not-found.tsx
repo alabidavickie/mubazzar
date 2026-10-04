@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import { NotFoundContent } from "@/components/storefront/not-found-content";
+import { StaticImg } from "@/components/landing/static-img";
+import { NotFoundContent, PlainSearchForm } from "@/components/storefront/not-found-content";
 import { getCategories } from "@/server/services/catalog";
 
 export const metadata: Metadata = {
@@ -9,7 +9,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-/** Branded 404 for any unmatched URL. */
+/**
+ * Branded 404 for any unmatched URL. The root not-found boundary's client JS is shipped with every
+ * route (including /lp), so this page must stay client-JS-free: StaticImg + a plain search form.
+ */
 export default async function NotFound() {
   const categories = await getCategories().catch(() => []);
   return (
@@ -20,13 +23,13 @@ export default async function NotFound() {
         </div>
         <div className="mx-auto flex h-12 max-w-(--container-site) items-center px-4">
           <Link href="/" className="flex items-center gap-2 font-display text-headline-sm font-extrabold tracking-wider text-navy" aria-label="MUBAZZAR home">
-            <Image src="/brand/emblem.webp" alt="" width={28} height={28} className="rounded-md" />
+            <StaticImg src="/brand/emblem.webp" alt="" width={28} height={28} className="rounded-md" loading="eager" />
             MUBAZZAR
           </Link>
         </div>
       </header>
       <main id="main" className="min-h-[60dvh] pb-10">
-        <NotFoundContent categories={categories} />
+        <NotFoundContent search={<PlainSearchForm />} categories={categories} />
       </main>
     </>
   );

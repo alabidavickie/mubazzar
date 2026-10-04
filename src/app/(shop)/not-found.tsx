@@ -1,8 +1,9 @@
 import { NotFoundContent } from "@/components/storefront/not-found-content";
+import { SearchBox } from "@/components/storefront/search-box";
 import { getCategories } from "@/server/services/catalog";
 
 /** 404 for storefront routes that call notFound() (unknown product/category), inside the shop chrome. */
 export default async function ShopNotFound() {
   const categories = await getCategories().catch(() => []);
-  return <NotFoundContent categories={categories} />;
+  return <NotFoundContent search={<SearchBox action="/search" label="Search MUBAZZAR" />} suggestsAsYouType categories={categories} />;
 }
