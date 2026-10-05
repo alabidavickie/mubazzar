@@ -134,7 +134,7 @@ pnpm lhci
 ### 4.2 Vercel
 1. Import the repository. Framework: Next.js; install command `pnpm install`; build command `pnpm build`.
 2. Add all production environment variables from §2.
-3. `vercel.json` schedules `/api/cron/auto-cancel` (unpaid-order auto-cancel + Meta Purchase flush). Vercel Cron sends `Authorization: Bearer $CRON_SECRET` automatically when `CRON_SECRET` is set.
+3. `vercel.json` schedules `/api/cron/auto-cancel` (unpaid-order auto-cancel + Meta Purchase flush) **once a day** — the most Vercel's Hobby plan allows. Vercel Cron sends `Authorization: Bearer $CRON_SECRET` automatically when `CRON_SECRET` is set. For the intended every-30-minutes run, add the repository secrets `SITE_URL` and `CRON_SECRET` (GitHub → Settings → Secrets and variables → Actions); `.github/workflows/cron.yml` then calls the same endpoint every 30 minutes for free. On Vercel Pro you can instead set the schedule in `vercel.json` to `*/30 * * * *`.
 4. Add your domain and set `NEXT_PUBLIC_SITE_URL` to it.
 
 ---
