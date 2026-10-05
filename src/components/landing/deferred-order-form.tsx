@@ -11,7 +11,7 @@ const LandingOrderForm = lazy(() => import("./landing-order-form").then((m) => (
 
 function FormSkeleton() {
   return (
-    <div className="flex flex-col gap-3" aria-busy="true" aria-label="Loading the order form">
+    <div className="flex flex-col gap-3" role="status" aria-busy="true" aria-label="Loading the order form">
       <Skeleton className="h-16" />
       {Array.from({ length: 6 }, (_, i) => (
         <div key={i} className="flex flex-col gap-1.5">
