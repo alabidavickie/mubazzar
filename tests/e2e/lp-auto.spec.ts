@@ -32,7 +32,7 @@ test.describe("automatic product landing pages", () => {
 
   test("the order-form placeholder shown before scripts load is accessible", async ({ page }) => {
     // Slow phones see the server-rendered placeholder until the lazy form arrives; hold scripts back to scan it.
-    await page.route(/\/_next\/static\/chunks\//, (route) => route.abort());
+    await page.route(/\/_next\/static\/chunks\/.*\.js(\?|$)/, (route) => route.abort()); // CSS lives here too; keep it
     await page.goto("/lp/bladeless-neck-fan");
     await expect(page.getByRole("status", { name: "Loading the order form" })).toBeVisible();
     await expectNoA11yViolations(page);
