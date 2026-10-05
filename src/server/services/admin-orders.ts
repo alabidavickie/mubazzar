@@ -85,7 +85,8 @@ const LIST_SELECT = `
   o.phone_e164 as "phoneE164", o.state, o.city, o.total_kobo as "totalKobo", o.amount_paid_kobo as "amountPaidKobo",
   o.is_overpaid as "isOverpaid", o.is_duplicate_suspect as "isDuplicateSuspect", o.chat_channel as "chatChannel",
   o.chat_clicked_at as "chatClickedAt", o.source, o.utm_campaign as "utmCampaign", o.created_at as "createdAt",
-  coalesce((select string_agg(oi.packs || 'x ' || coalesce(oi.bundle_label, oi.name), ', ' order by oi.is_free_gift, oi.name)
+  -- Bundle labels already say "1x …", so the pack count is only prefixed for 2+ packs ("2 × 1x Turbo Vacuum Set").
+  coalesce((select string_agg(case when oi.packs > 1 then oi.packs || ' × ' else '' end || coalesce(oi.bundle_label, oi.name), ', ' order by oi.is_free_gift, oi.name)
               from public.order_items oi where oi.order_id = o.id and not oi.is_free_gift), '') as "itemsSummary",
   (select p.full_name from public.dispatch_assignments da join public.profiles p on p.id = da.dispatcher_id
     where da.order_id = o.id order by da.assigned_at desc limit 1) as "dispatcherName"`;

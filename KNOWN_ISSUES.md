@@ -3,7 +3,7 @@
 Items here genuinely need owner input or an environment the build machine lacks. Each has the exact reason and fix.
 
 ## Needs the owner before going live
-1. **Live service keys** — Supabase (URL, anon key, service-role key, pooler `DATABASE_URL`), Meta Pixel + CAPI token, Termii (SMS + sender ID), Resend (email + verified domain), optional WhatsApp Cloud API. Without them every adapter runs its mock (messages land in `notifications_outbox` / `meta_events`). Fix: add them in Vercel env vars (README §2, §5).
+1. **Live service keys** — ⚠️ the Vercel deploy currently has no `DATABASE_URL`, so `/api/health` reports `ENOENT … /var/task/.data/pglite` and every database-backed page (`/shop`, product and landing pages, placing an order, admin) fails with a 500; only pages built ahead of time (home, cart, track, info pages) load. Needed: Supabase (URL, anon key, service-role key, pooler `DATABASE_URL`), Meta Pixel + CAPI token, Termii (SMS + sender ID), Resend (email + verified domain), optional WhatsApp Cloud API. Without them every adapter runs its mock (messages land in `notifications_outbox` / `meta_events`). Fix: add them in Vercel env vars (README §2, §5).
 2. **Real WhatsApp numbers, social handles and bank accounts** — the seed uses placeholders (`+234 812 000 8899/8900`, `mubazzar.ng`, account `0000000000`). Fix: Admin → Chat & payments (README §6).
 3. **Business details** — CAC number (shown only when it's a real RC/BN number), registered address, support contacts. Fix: Admin → Homepage.
 4. **New-order alert recipients** — empty in the production seed. Fix: Admin → Chat & payments → New-order alerts.

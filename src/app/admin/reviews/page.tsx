@@ -41,7 +41,7 @@ export default async function ReviewsAdmin({ searchParams }: { searchParams: Pro
             <span className="flex flex-wrap items-center gap-2 text-body-sm">
               <span className="font-semibold text-ink">{r.author}</span>
               {r.location ? <span className="text-ink-muted">· {r.location}</span> : null}
-              <span aria-label={`${r.rating} out of 5`}>{"★".repeat(r.rating)}</span>
+              <span role="img" aria-label={`${r.rating} out of 5`}>{"★".repeat(r.rating)}</span>
               {r.verified ? <Badge tone="emeraldSoft" size="xs">Verified purchase</Badge> : null}
               {r.isSample ? <Badge size="xs">Sample</Badge> : null}
               <span className="ml-auto text-ink-muted">{r.product} · {formatLagosDate(r.createdAt)}</span>
