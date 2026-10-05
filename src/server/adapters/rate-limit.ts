@@ -40,3 +40,20 @@ export function hashIp(ip: string | null | undefined): string {
     .digest("hex")
     .slice(0, 32);
 }
+
+/** Reads a fixed-window counter without incrementing it (e.g. "failed attempts so far"). */
+export async function peekRateLimit(key: string, limit: number, windowSeconds: number): Promise<RateLimitResult> {
+  const now = Date.now();
+  const windowStart = new Date(Math.floor(now / (windowSeconds * 1000)) * windowSeconds * 1000);
+  const rows = await asService((q) =>
+    q.query<{ hits: number }>("select hits from public.rate_limits where key = $1 and window_start = $2", [key, windowStart]),
+  );
+  const hits = rows[0]?.hits ?? 0;
+  const retryAfterSeconds = Math.ceil((windowStart.getTime() + windowSeconds * 1000 - now) / 1000);
+  return { ok: hits < limit, remaining: Math.max(limit - hits, 0), retryAfterSeconds };
+}
+
+/** Clears a counter (e.g. unverified OTP requests once the owner of the number has verified). */
+export async function resetRateLimit(key: string): Promise<void> {
+  await asService((q) => q.query("delete from public.rate_limits where key = $1", [key]));
+}

@@ -16,7 +16,7 @@ export function AdminNav({ items }: { items: AdminNavItem[] }) {
   const groups = [...new Set(items.map((i) => i.group))];
   return (
     <>
-      <nav aria-label="Admin" className="no-scrollbar sticky top-14 z-20 flex gap-1 overflow-x-auto border-b border-line bg-card px-3 py-2 lg:hidden">
+      <nav aria-label="Admin" className="no-scrollbar sticky top-14 z-20 flex gap-1 overflow-x-auto border-b border-line bg-card px-3 py-2 lg:hidden print:hidden">
         {items.map((i) => (
           <Link
             key={i.href}
@@ -32,7 +32,7 @@ export function AdminNav({ items }: { items: AdminNavItem[] }) {
           </Link>
         ))}
       </nav>
-      <nav aria-label="Admin sections" className="hidden w-60 shrink-0 flex-col gap-4 border-r border-line bg-card p-3 lg:flex">
+      <nav aria-label="Admin sections" className="hidden w-60 shrink-0 flex-col gap-4 border-r border-line bg-card p-3 lg:flex print:hidden">
         {groups.map((g) => (
           <div key={g}>
             <p className="mb-1 px-2 text-label-sm text-ink-subtle uppercase">{g}</p>

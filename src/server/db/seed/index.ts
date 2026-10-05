@@ -118,11 +118,14 @@ export function buildSeedStatements(opts: SeedOptions): string[] {
   );
 
   // Settings
+  // Production seed: no dev contact data and no sample-review switch left on.
+  const productionOverrides: Record<string, unknown> = { admin_alerts: { emails: [], phones: [] }, show_sample_reviews: false };
   for (const s of SETTINGS) {
+    const value = !includeSamples && s.key in productionOverrides ? productionOverrides[s.key] : s.value;
     out.push(
       insert("public.settings", {
         key: s.key,
-        value: { json: s.value },
+        value: { json: value },
         is_public: s.isPublic,
         description: s.description,
       }),

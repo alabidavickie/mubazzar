@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   hubForState,
   isCampaignLive,
+  landingTimer,
   lowestDeliveryFee,
   nearestHubFromGeo,
   promoPricing,
@@ -83,6 +84,21 @@ describe("isCampaignLive", () => {
     expect(isCampaignLive("2026-10-04T10:00:00Z", now)).toBe(false);
     expect(isCampaignLive(null, now)).toBe(false);
     expect(isCampaignLive("not a date", now)).toBe(false);
+  });
+});
+
+describe("landingTimer", () => {
+  const now = new Date("2026-10-04T10:00:00Z");
+  it("counts down only to the real promo deadline, never to campaign_ends_at", () => {
+    expect(landingTimer("2026-10-06T10:00:00Z", "2026-12-31T00:00:00Z", now)).toEqual({ kind: "live", endsAt: "2026-10-06T10:00:00.000Z" });
+    expect(landingTimer(new Date("2026-10-05T00:00:00Z"), null, now)).toEqual({ kind: "live", endsAt: "2026-10-05T00:00:00.000Z" });
+    // A campaign end without a live promo price is NOT a reason to show a ticking timer.
+    expect(landingTimer(null, "2026-12-31T00:00:00Z", now)).toEqual({ kind: "none" });
+  });
+  it("says the promo ended only once a campaign end has passed", () => {
+    expect(landingTimer(null, "2026-10-01T00:00:00Z", now)).toEqual({ kind: "ended" });
+    expect(landingTimer("2026-10-04T09:59:59Z", "2026-10-04T09:59:59Z", now)).toEqual({ kind: "ended" });
+    expect(landingTimer(null, null, now)).toEqual({ kind: "none" });
   });
 });
 

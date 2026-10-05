@@ -2,6 +2,7 @@
 
 import { cx } from "@/lib/cx";
 import { formatNaira } from "@/lib/money";
+import { bundleExtraSavingKobo } from "@/lib/pricing";
 
 export interface SelectableBundle {
   id: string;
@@ -19,6 +20,7 @@ export interface SelectableBundle {
 /**
  * Tiered bundle selector (design: "Exclusive Bundle Discounts"). Native radio inputs for a11y;
  * the selected card gets the gold border, "Most Popular" tag pinned to the top edge.
+ * The multi-buy saving is always computed from the live prices (vs N singles), never typed copy.
  */
 export function BundleSelector({
   bundles,
@@ -37,6 +39,10 @@ export function BundleSelector({
     <div role="radiogroup" aria-label="Choose your package" className={cx("flex flex-col", compact ? "gap-2" : "gap-4")}>
       {bundles.map((b) => {
         const selected = value === b.id;
+        const single = bundles.find((x) => x.quantity === 1);
+        const extra = single && b.quantity > 1 ? bundleExtraSavingKobo(b.priceKobo, b.quantity, single.priceKobo) : 0;
+        const extraText = extra > 0 ? `Save extra ${formatNaira(extra)}` : null;
+        const tag = b.tag && extraText ? `${b.tag} • ${extraText.toUpperCase()}` : b.tag;
         return (
           <label
             key={b.id}
@@ -46,17 +52,17 @@ export function BundleSelector({
               "relative flex cursor-pointer flex-col gap-2 rounded-xl border-[1.5px] bg-card shadow-card transition-all",
               compact ? "p-3" : "p-4",
               selected ? "border-gold shadow-raised" : "border-transparent",
-              b.tag && !compact && "mt-2",
+              tag && !compact && "mt-2",
             )}
           >
-            {b.tag ? (
+            {tag ? (
               <span
                 className={cx(
                   "rounded-full bg-bronze px-3 py-0.5 text-label-sm font-extrabold text-on-dark shadow-card",
                   compact ? "self-start" : "absolute -top-3 right-4",
                 )}
               >
-                {b.tag}
+                {tag}
               </span>
             ) : null}
             <span className="flex items-center justify-between gap-3">
@@ -85,6 +91,11 @@ export function BundleSelector({
                 </span>
                 {b.compareAtKobo && b.compareAtKobo > b.priceKobo ? (
                   <s className="text-body-sm text-ink-subtle">{formatNaira(b.compareAtKobo)}</s>
+                ) : null}
+                {extraText && !b.tag ? (
+                  <span className="block text-label-sm font-bold text-emerald-ink" data-testid="bundle-extra-saving">
+                    {extraText}
+                  </span>
                 ) : null}
               </span>
             </span>

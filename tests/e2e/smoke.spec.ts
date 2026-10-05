@@ -13,6 +13,18 @@ test.describe("smoke", () => {
     await saveScreenshot(page, testInfo, "home");
   });
 
+  test("security headers are sent", async ({ request }) => {
+    const res = await request.get("/");
+    const h = res.headers();
+    expect(h["content-security-policy"]).toContain("frame-ancestors 'none'");
+    expect(h["content-security-policy"]).toContain("object-src 'none'");
+    expect(h["strict-transport-security"]).toContain("max-age=");
+    expect(h["x-frame-options"]).toBe("DENY");
+    expect(h["x-content-type-options"]).toBe("nosniff");
+    expect(h["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+    expect(h["x-powered-by"]).toBeUndefined();
+  });
+
   test("health endpoint reports the database", async ({ request }) => {
     const res = await request.get("/api/health");
     expect(res.ok()).toBe(true);

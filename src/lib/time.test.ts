@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCountdown } from "./time";
+import { formatCountdown, formatLagosDate, formatLagosDateTime, lagosLocalToUtc, timeAgo, utcToLagosLocal } from "./time";
 
 describe("formatCountdown", () => {
   const now = new Date("2026-10-04T10:00:00Z");
@@ -15,5 +15,29 @@ describe("formatCountdown", () => {
   });
   it("ends at zero", () => {
     expect(formatCountdown("2026-10-04T09:00:00Z", now)).toMatchObject({ ended: true, text: "00:00:00" });
+  });
+});
+
+describe("Lagos display helpers", () => {
+  it("formats in Africa/Lagos", () => {
+    expect(formatLagosDateTime("2026-10-04T23:30:00Z")).toMatch(/5 Oct.*12:30/);
+    expect(formatLagosDate("2026-10-04T23:30:00Z")).toMatch(/5 Oct 2026/);
+  });
+  it("describes elapsed time coarsely", () => {
+    const now = new Date("2026-10-04T12:00:00Z");
+    expect(timeAgo("2026-10-04T11:59:40Z", now)).toBe("just now");
+    expect(timeAgo("2026-10-04T11:15:00Z", now)).toBe("45 min ago");
+    expect(timeAgo("2026-10-03T12:00:00Z", now)).toBe("24 h ago");
+    expect(timeAgo("2026-09-30T12:00:00Z", now)).toBe("4 d ago");
+  });
+});
+
+describe("datetime-local in Africa/Lagos", () => {
+  it("round-trips admin date inputs", () => {
+    expect(lagosLocalToUtc("2026-10-06T23:59")!.toISOString()).toBe("2026-10-06T22:59:00.000Z");
+    expect(utcToLagosLocal("2026-10-06T22:59:00.000Z")).toBe("2026-10-06T23:59");
+    expect(lagosLocalToUtc("")).toBeNull();
+    expect(lagosLocalToUtc("2026-10-06")).toBeNull();
+    expect(utcToLagosLocal(null)).toBe("");
   });
 });

@@ -45,7 +45,10 @@ export function ProductCard({
               fill
               sizes="(min-width: 1024px) 280px, (min-width: 640px) 33vw, 50vw"
               className="object-cover"
-              priority={priority}
+              // Next 16: `priority` is deprecated and no longer sets fetchpriority. Above-the-fold cards are the LCP.
+              preload={priority}
+              loading={priority ? "eager" : undefined}
+              fetchPriority={priority ? "high" : undefined}
             />
           ) : null}
           <DiscountBadge

@@ -26,8 +26,10 @@ describe("stockStatus", () => {
   });
 
   it("uses the lowest hub threshold", () => {
-    expect(stockStatus([hub("lagos", 6, 5), hub("abuja", 0, 20)], "lagos", eta)).toEqual({ kind: "low", units: 6 });
-    expect(stockStatus([hub("lagos", 6, 5), hub("abuja", 0, 5)], "lagos", eta).kind).toBe("nearest");
+    // Thresholds 5 and 20 → 5 applies: 6 units is not "low", 5 units is.
+    expect(stockStatus([hub("lagos", 6, 5), hub("abuja", 0, 20)], "lagos", eta).kind).toBe("nearest");
+    expect(stockStatus([hub("lagos", 5, 5), hub("abuja", 0, 20)], "lagos", eta)).toEqual({ kind: "low", units: 5 });
+    expect(stockStatus([hub("lagos", 6, 20), hub("abuja", 0, 20)], "lagos", eta)).toEqual({ kind: "low", units: 6 });
   });
 
   it("falls back to the central warehouse with real delivery days when the nearest hub is empty", () => {

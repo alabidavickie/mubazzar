@@ -47,3 +47,53 @@ One line per decision: **decision** — reason.
 - **Client-only error screens link to `/api/support/whatsapp`, a redirect to the support number in settings** — error boundaries can't read the DB and the number must not be hard-coded.
 - **Checkout clears the cart in `onSuccess` and shows "opening your order page…"** — prevents an empty-cart flash before the thank-you navigation.
 - **Shared `SiteHeader` wordmark switched from Syne (`font-display`) to Plus Jakarta Sans** — the design's header wordmark uses headline-sm (Plus Jakarta Sans 18px bold); Syne with wide tracking pushed the action icons on 390px screens.
+
+## Verification pass after the promo-pricing merge (2026-10-04)
+- **Fixed `stock.test` "uses the lowest hub threshold"** — its first assertion expected the *highest* threshold; the code, its docstring and the catalog SQL (`min(low_stock_threshold)`) all use the lowest, so the test was wrong.
+- **`effective_bundle_price` added to the security-definer allow-list in `privileges.test`** — the promo migration deliberately grants it to anon/authenticated (catalog reads bundle prices as anon), exactly like `effective_unit_price`.
+- **Countdown E2E reads both formats (d/h/m from 24 h out, h:m:s in the last 24 h) with tolerance = display resolution** — the promo merge intentionally changed the format; a new case covers the switch.
+- **E2E customers get their own client IP (`x-forwarded-for` in `fillOrderForm`)** — the per-IP order limit (10/10 min) is correct for production but the 3-project suite places more orders than that from 127.0.0.1; the limit itself is unchanged.
+- **Desktop 404 test uses `includeHidden` for the bottom nav** — it is `lg:hidden` by design, so `getByRole` could never find it on desktop.
+- **Root `not-found.tsx` and `global-error.tsx` must ship no client JS (plain GET search form, `StaticImg`, `ErrorContent` without next/link)** — root boundaries ship with every route; the storefront 404 (SearchBox + next/image) pushed the LP to 164 KB gz. LP now 147 KB; `tests/e2e/js-budget.spec.ts` guards the 150 KB budget.
+- **Root 404 search is a plain search box (no instant suggestions); the storefront 404 keeps suggestions** — instant suggestions on the root 404 cost every page ~13 KB.
+- **LP timer counts down only to the product's real promo deadline (`landingTimer`: earliest live bundle promo / flash deal end); `campaign_ends_at` only decides whether "Promo ended" is shown after it passed** — a campaign end without a price change would be a fake deadline (honesty rule).
+- **Bundle "Save extra ₦X" is computed from live prices (`bundleExtraSavingKobo`), tags are labels only; migration `20261004010000` strips typed amounts** — typed savings drift from real prices.
+- **Syne uses `display: optional` and a subset (ASCII + punctuation, wght 600–800, 16 KB)** — the late swap caused CLS 0.111 on the LP; Syne is only used for bold/extrabold headings.
+- **LP gallery slides 2–5 load after `load`/idle or on first interaction (with `<noscript>` fallback)** — they are inside Chrome's lazy-load distance and downloaded alongside the LCP image.
+- **`PW_EXECUTABLE_PATH` lets Playwright use a preinstalled Chromium** — the cloud sandbox has Chromium r1194 while Playwright 1.63 expects r1243 and Google Chrome is not installed.
+- **Desktop screenshots and `reports/{playwright,lighthouse}` are gitignored** — regenerated every run; the final Lighthouse report is committed deliberately at release.
+
+## Cart
+- **Server cart fallback = mirror for signed-in customers only (`carts.user_id`), merged on the first page after sign-in (union, larger pack count, never doubled) and re-priced from the DB** — guests keep a localStorage cart (no anonymous server rows to clean up); prices in the saved cart can never go stale because only identity + packs are stored.
+- **A readable `mbz_signed_in=1` hint cookie (no identity) is set next to the HttpOnly session** — storefront pages are static (ISR) and can't see the session; the hint lets `CartSync` skip the network entirely for guests. The server never trusts it.
+
+## Admin & dispatch
+- **Admin writes call the existing SQL functions as the signed-in user (`asUser`)** — role checks, RLS, row locks and audit logging stay in one place (the database), identical on PGlite and Supabase.
+- **Recording a bank-transfer payment requires ticking "I checked our bank app — the money has arrived" (validated server-side)** — brief §5.8: fake transfer screenshots are common; cash/POS and refunds don't need it.
+- **"Dispatched" is reached only by assigning a dispatcher and "Delivered" only through the rider's delivery form** — so every delivery records collection + proof; the order desk only offers the transitions `order_transition_allowed` permits.
+- **Customers get an SMS on confirmed / dispatched / delivered / failed / cancelled (not on internal moves like back to in_chat)** — milestone updates without noise; best-effort, never blocks a staff action.
+- **Order list "Follow up" view = unpaid orders still awaiting chat after `follow_up_after_hours` (12 h), each showing its auto-cancel time** — staff get a window before `cancel_stale_orders` (48 h) releases the stock.
+- **CSV export prefixes cells starting with = + - @ with `'`** — customer-typed names/addresses must not run as spreadsheet formulas.
+- **Proof images live in the private bucket; locally `/api/proofs` serves them only to staff or the rider assigned to that delivery (404 otherwise); in production staff get 10-minute Supabase signed URLs** — payment screenshots contain bank details.
+- **Dashboard "Verified payments" = payments recorded today minus refunds (Africa/Lagos day)** — revenue is what staff verified, not what customers claimed.
+- **The landing-page builder doesn't expose `cta_label`** — the LP order button is channel-specific ("Place Order & Pay on WhatsApp" / "…Continue on Instagram") per brief §5.5; an editable label that the page ignores would mislead admins. The column stays for compatibility.
+- **Product editor saves everything in one transaction; removed bundles are deactivated (not deleted); stock edits go through `adjust_inventory`** — orders/carts keep bundle references and every stock change is audited.
+- **Product/landing schemas refuse typed savings: bundle tags with ₦ amounts and hook banners with "%" are rejected; a promo price requires a real end date** — honesty rule; the UI computes discounts from live prices.
+- **Photo uploads don't revalidate; saving the product does and returns the fresh form state** — revalidating mid-edit re-rendered the editor and dropped unsaved changes.
+- **Admin shell stacks the nav above the content on phones (`flex-col lg:flex-row`)** — the mobile tab strip sat beside `<main>` and squeezed it; admin E2E now asserts no horizontal overflow.
+- **Login rate limit: per IP counts every attempt, per account counts only failed attempts** — successful sign-ins shouldn't consume the budget, and nobody can lock the owner out by spamming their email.
+- **All admin settings go through one `saveSettingAction` validated by a per-key Zod schema (`src/lib/schemas/settings.ts`)** — one audited write path; e.g. CAC numbers must look real (RC/BN + digits), bank accounts are 10-digit NUBANs, phones normalised to E.164.
+- **Admin creates staff/rider/admin accounts with a temporary password (auth adapter `createUser`, Supabase admin API in production)** — staff roles sign in with email + password per the brief; admins can't remove their own admin access.
+- **Analytics are tables + stat tiles over 7/30/90 days, from real orders/payments/events only** — "chat → paid" = paid-or-delivered ÷ orders whose customer opened chat; LP conversion = orders ÷ ViewContent events.
+
+## Suppliers & accounts
+- **The supplier application creates the applicant's login (email + password, role customer); approval promotes it to supplier (`review_supplier`)** — one form, no separate invite step; pending applicants see their status on /account.
+- **Supplier sales/stock are read by a server query scoped to the supplier's own products (asService + supplier_id)** — suppliers must not read orders (customer PII); they see units sold/in open orders only.
+- **Guest orders are linked to an account only via the phone verified on `auth.users` (OTP), never by email or the profile field** — prevents claiming someone else's orders.
+- **Signed-in customers' order forms prefill from their default saved address (client request only when the sign-in hint cookie exists)** — saved addresses save typing; guests make no extra request.
+- **Customer reviews go through `submit_review` (delivered-order check) and start pending for moderation** — verified purchases only; admins approve in /admin/reviews.
+
+## Performance measurement
+- **Lighthouse CI uses DevTools ("applied") slow-4G throttling instead of Lantern "simulate"** — both emulate slow 4G on a mid-range phone, but Lantern's model shares bandwidth equally across requests and ignores Chrome's request priority, so the fetchpriority=high LCP image competes with ~110 KB of low-priority framework JS. Measured 2026-10-04 on the same build: DevTools LCP Home 1.74 s / Catalog 1.70 s / LP 1.81 s (perf 98); Lantern LCP Home 2.9–3.2 s / Catalog 3.1–3.3 s / LP 2.4–3.4 s (perf 92–97). With all JS blocked Lantern still reports ~2.2 s on Catalog, i.e. the gap is the framework floor, not app code. If the owner wants Lantern numbers specifically, the remaining lever is less framework JS on storefront pages (out of scope for this build).
+- **A successful OTP verification resets that number's/email's code-request counter** — the 5-per-15-min limit exists to stop SMS-bombing someone else's phone; an attacker can't verify, so their requests keep counting, while the real owner isn't locked out after a few logins.
+- **Vercel cron runs daily (Hobby plan limit); a GitHub Actions schedule calls the same idempotent, secret-protected endpoint every 30 min** — Vercel rejected deployments with the */30 schedule on the Hobby plan; this keeps auto-cancel near its configured time at no cost.

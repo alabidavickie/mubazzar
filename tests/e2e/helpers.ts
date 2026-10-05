@@ -32,9 +32,21 @@ export function uniquePhone(): string {
   return `081${n}`;
 }
 
+/** Signs the seeded customer in through the /login one-time-code tab (mock code). */
+export async function loginCustomer(page: Page) {
+  await assignClientIp(page);
+  await page.goto("/login");
+  await page.getByLabel(/Phone number or email/).fill(ACCOUNTS.customer.phone);
+  await page.getByRole("button", { name: /Send login code/ }).click();
+  await page.getByLabel("Login code").fill(MOCK_OTP);
+  await page.getByRole("button", { name: /^sign in$/i }).click();
+  await page.waitForURL((u) => !u.pathname.startsWith("/login"));
+}
+
 /** Signs in through the /login page (email + password tab). */
 export async function login(page: Page, role: Exclude<keyof typeof ACCOUNTS, "customer">) {
   const acct = ACCOUNTS[role];
+  await assignClientIp(page); // each test signs in from its own IP so the login rate limit stays per-user
   await page.goto(`/login`);
   await page.getByRole("tab", { name: /staff|email/i }).click().catch(() => undefined);
   await page.getByLabel("Email", { exact: true }).fill(acct.email);
@@ -51,8 +63,19 @@ export interface DeliveryInput {
   address?: string;
 }
 
-/** Fills the shared order form inside `scope` (page or a sheet locator). */
+/**
+ * Each E2E customer orders from their own client IP (like real shoppers) so the per-IP order rate
+ * limit (10 per 10 min) applies per customer instead of to the whole suite running on localhost.
+ * `next start` has no proxy in front, so the app reads the IP from this header.
+ */
+export async function assignClientIp(page: Page) {
+  const n = Math.floor(Math.random() * 0xfffffe) + 1;
+  await page.setExtraHTTPHeaders({ "x-forwarded-for": `10.${(n >> 16) & 255}.${(n >> 8) & 255}.${n & 255}` });
+}
+
+/** Fills the shared order form inside `scope` (page or a sheet locator) as a new customer. */
 export async function fillOrderForm(scope: Page | ReturnType<Page["locator"]>, input: DeliveryInput = {}) {
+  await assignClientIp("page" in scope ? scope.page() : scope);
   await scope.getByLabel(/Full Name/).fill(input.name ?? "Ada Lovelace");
   await scope.getByLabel(/Active WhatsApp Phone Number/).fill(input.phone ?? uniquePhone());
   await scope.getByLabel(/Delivery State/).selectOption(input.state ?? "Lagos");
@@ -78,4 +101,10 @@ export async function saveScreenshot(page: Page, testInfo: TestInfo, name: strin
   const dir = path.join(process.cwd(), "tests", "screenshots");
   mkdirSync(dir, { recursive: true });
   await page.screenshot({ path: path.join(dir, `${name}-${testInfo.project.name}.png`), fullPage: true });
+}
+
+/** Fails when the page scrolls sideways (broken mobile layout). */
+export async function expectNoHorizontalOverflow(page: Page) {
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow, "page should not scroll horizontally").toBeLessThanOrEqual(0);
 }

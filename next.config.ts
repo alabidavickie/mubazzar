@@ -31,6 +31,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   serverExternalPackages: ["@electric-sql/pglite", "postgres"],
+  // Photo uploads (rider proof, payment screenshots, product photos) go through server actions;
+  // phone photos are 2-4 MB and the storage adapter allows up to 5 MB (default limit is 1 MB).
+  experimental: { serverActions: { bodySizeLimit: "6mb" } },
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [360, 390, 414, 640, 768, 1024, 1280],

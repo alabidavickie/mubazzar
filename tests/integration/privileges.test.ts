@@ -16,6 +16,7 @@ const AUTHENTICATED_ALLOWED = new Set([
   "is_admin",
   "is_staff",
   "effective_unit_price",
+  "effective_bundle_price",
   "quote_delivery",
   "track_order",
   "set_order_status",
@@ -31,7 +32,7 @@ const AUTHENTICATED_ALLOWED = new Set([
   "adjust_inventory",
   "admin_audit",
 ]);
-const ANON_ALLOWED = new Set(["current_app_role", "is_admin", "is_staff", "effective_unit_price", "quote_delivery", "track_order"]);
+const ANON_ALLOWED = new Set(["current_app_role", "is_admin", "is_staff", "effective_unit_price", "effective_bundle_price", "quote_delivery", "track_order"]);
 
 describe("function privileges", () => {
   it("no security-definer function is executable by anon/authenticated unless allow-listed", async () => {

@@ -2,9 +2,10 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { MAX_CART_LINES, MAX_PACKS } from "@/lib/cart";
 
 /**
- * Cart (client only, persisted to localStorage; mirrored to the server cart when signed in).
+ * Cart (persisted to localStorage; mirrored to the account's server cart by <CartSync> when a customer is signed in).
  * Prices here are for display; the server recomputes everything at checkout.
  */
 export interface CartLine {
@@ -32,7 +33,7 @@ interface CartState {
 const same = (a: { productId: string; bundleId: string | null }, b: { productId: string; bundleId: string | null }) =>
   a.productId === b.productId && (a.bundleId ?? null) === (b.bundleId ?? null);
 
-export const MAX_PACKS = 20;
+export { MAX_PACKS };
 
 export const useCart = create<CartState>()(
   persist(
@@ -47,7 +48,7 @@ export const useCart = create<CartState>()(
               lines: s.lines.map((l) => (same(l, line) ? { ...l, packs: Math.min(MAX_PACKS, l.packs + packs) } : l)),
             };
           }
-          return { lines: [...s.lines, { ...line, packs: Math.min(MAX_PACKS, packs) }].slice(0, 20) };
+          return { lines: [...s.lines, { ...line, packs: Math.min(MAX_PACKS, packs) }].slice(0, MAX_CART_LINES) };
         }),
       setPacks: (productId, bundleId, packs) =>
         set((s) => ({

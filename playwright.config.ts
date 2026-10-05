@@ -3,7 +3,9 @@ import { defineConfig, devices } from "@playwright/test";
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
 // Locally we drive the installed Google Chrome (no 150MB browser download); CI uses Playwright's Chromium.
-const channel = process.env.PW_CHANNEL ?? (process.env.CI ? undefined : "chrome");
+// PW_EXECUTABLE_PATH points at a specific Chromium binary instead (e.g. a preinstalled one in a cloud sandbox).
+const executablePath = process.env.PW_EXECUTABLE_PATH;
+const channel = executablePath ? undefined : (process.env.PW_CHANNEL ?? (process.env.CI ? undefined : "chrome"));
 
 /**
  * E2E runs against a production build with a fresh PGlite database (.data/e2e) and mock adapters.
@@ -24,6 +26,7 @@ export default defineConfig({
     screenshot: "only-on-failure",
     locale: "en-NG",
     timezoneId: "Africa/Lagos",
+    ...(executablePath ? { launchOptions: { executablePath } } : {}),
   },
   projects: [
     { name: "iphone-13", use: { ...devices["iPhone 13"], browserName: "chromium", channel } },

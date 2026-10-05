@@ -27,73 +27,102 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Primitives: Button, Chip, Badge, Input/Select/Textarea/Field, Sheet (bottom sheet), Accordion, Skeleton
 - [x] Commerce components: ProductCard (grid + list), PriceTag, DiscountBadge, Rating, Countdown (real `ends_at`), StockMeter, StickyBuyBar, BundleSelector, FreeGiftCard, ReviewCard, TrustStrip
 - [x] Layout: Header (promo strip, logo, search, delivery badge, cart count, category pills), BottomNav, Footer, FloatingWhatsApp
-- [ ] Exit check: component tests pass; visual match reviewed (Home reviewed at 375px; Catalog/LP pending)
+- [x] Exit check: component tests pass; visual match reviewed (Home, Catalog, LP screenshots at 390px in `tests/screenshots/`, reviewed 2026-10-04)
 
 ## Phase 3 — Storefront
 - [x] Home (hero from settings, categories, flash deals + Quick Order sheet, Viral Problem Solvers, reviews, supplier CTA, MUBAZZAR Standard)
-- [ ] Catalog `/shop` (URL filters: price chips/custom, POD, category, sort; live counts; Load More; skeletons; empty state)
-- [ ] Product detail `/p/[slug]` (gallery, price, hub stock, gift, bundles, features, specs, FAQ, reviews, related, sticky bar, JSON-LD)
-- [ ] Search with instant suggestions (FTS) `/search`
-- [ ] Category pages `/c/[slug]`
-- [ ] Static pages: About, FAQ, Delivery, Returns, Privacy, Terms, Become a Supplier (form wired in Phase 8), 404, 500
-- [ ] Exit check: E2E 4–6 pass; Lighthouse targets met
+- [x] Catalog `/shop` (URL filters: price chips/custom, POD, category, sort; live counts; Load More; skeletons; empty state)
+- [x] Product detail `/p/[slug]` (gallery, price, hub stock, gift, bundles, features, specs, FAQ, reviews, related, sticky bar, JSON-LD)
+- [x] Search with instant suggestions (FTS) `/search`
+- [x] Category pages `/c/[slug]`
+- [x] Static pages: About, FAQ, Delivery, Returns, Privacy, Terms, Become a Supplier (form wired in Phase 8), 404, 500
+- [x] Exit check: E2E 4–6 pass; Lighthouse mobile slow-4G (DevTools throttling): Home 98/100/100/100 LCP 1.74 s, Catalog 98/100/100/100 LCP 1.70 s, LP 98/100/100/100 LCP 1.81 s, CLS 0
 
 ## Phase 4 — Ad Landing Page template + order form
-- [ ] 👉 NEXT (in progress: integrations-engineer) `/lp/[slug]`, `/order/[token]` handoff, `/track`, auto-cancel cron, E2E 1, 2, 7, 11, 12
-- [ ] `/lp/[slug]` fully DB-driven (hook banner, headline, 5-image gallery, price module, countdown, nearest-hub stock, gift, bundles, features, FAQ, reviews, sticky bar)
-- [ ] Shared OrderForm (RHF + Zod): name, WhatsApp, alt phone, state, LGA/city, address, landmark, bundle, chat channel, honeypot; live summary with state delivery fee
-- [ ] UTM + fbclid capture
-- [ ] Exit check: E2E 1, 11, 12 pass; cro-reviewer findings fixed
+- [x] `/lp/[slug]` fully DB-driven (hook banner, headline, 5-image gallery, price module, countdown, nearest-hub stock, gift, bundles, features, FAQ, reviews, sticky bar)
+- [x] Shared OrderForm (RHF + Zod): name, WhatsApp, alt phone, state, LGA/city, address, landmark, bundle, chat channel, honeypot; live summary with state delivery fee
+- [x] UTM + fbclid capture
+- [x] Exit check: E2E 1, 11, 12 pass; cro-reviewer findings fixed (countdown now follows the real promo deadline; bundle savings computed from live prices; LP CLS 0; LP JS 147 KB)
 
 ## Phase 5 — Cart, checkout, order pipeline
-- [ ] Zustand cart (localStorage) + server cart fallback; cart page/drawer; free gift lines; delivery estimate
-- [ ] Checkout using shared OrderForm + `create_order`
-- [ ] Inventory reservation per hub; no oversell under concurrency
-- [ ] Delivery rules: fee/ETA per state, same-day cut-off (Africa/Lagos)
-- [ ] Fake-order reduction: phone normalisation, dup flag (24h), rate limits, honeypot
-- [ ] Exit check: integration tests pass, no oversell
+- [x] Zustand cart (localStorage) + server cart fallback for signed-in customers (`CartSync` → `syncCartAction`, merged + re-priced on sign-in); cart page; free gift lines; delivery estimate
+- [x] Checkout using shared OrderForm + `create_order`
+- [x] Inventory reservation per hub; no oversell under concurrency
+- [x] Delivery rules: fee/ETA per state, same-day cut-off (Africa/Lagos)
+- [x] Fake-order reduction: phone normalisation, dup flag (24h), rate limits, honeypot
+- [x] Exit check: integration tests pass, no oversell (`orders.test.ts` concurrency, `cart.test.ts`, E2E `cart-sync.spec.ts`)
 
 ## Phase 6 — Social checkout & integrations
-- [ ] Thank-you page with WhatsApp handoff (auto-open on mobile), other channels with Copy order details, chat click logging
-- [ ] Multiple WhatsApp numbers + routing stored on order
-- [ ] Manual payment recording (partial, overpayment flag, proof upload, verify reminder), payment_status auto-calc, audit log
-- [ ] Unpaid follow-up list + auto-cancel cron (releases stock)
-- [ ] Meta Pixel + CAPI with event_id dedup; Purchase once on paid/delivered
-- [ ] Notifications adapters (customer confirmation, admin new-order alert, status updates)
-- [ ] Exit check: E2E 2–3 pass; payment integration tests pass; security review done
+- [x] Thank-you page with WhatsApp handoff (auto-open on mobile), other channels with Copy order details, chat click logging
+- [x] Multiple WhatsApp numbers + routing stored on order
+- [x] Manual payment recording (partial, overpayment flag, proof upload, verify reminder), payment_status auto-calc, audit log
+- [x] Unpaid follow-up list + auto-cancel cron (releases stock)
+- [x] Meta Pixel + CAPI with event_id dedup; Purchase once on paid/delivered
+- [x] Notifications adapters (customer confirmation, admin new-order alert, status updates)
+- [x] Exit check: E2E 2–3 pass; payment integration tests pass; security review done (admin/dispatch surfaces: role re-checked in every action, SQL as the user, private proofs, upload sniffing, CSV formula-safe)
 
 ## Phase 7 — Admin, staff & dispatcher
-- [ ] Admin shell + role guard; Dashboard
-- [ ] Products CRUD + images + bundles + gifts + features/specs/FAQ + SEO
-- [ ] Flash deals; Landing page builder (publish/preview)
-- [ ] Inventory per hub + low-stock alerts
-- [ ] Orders (filters, detail timeline, WhatsApp buttons, payments, assign dispatcher, notes, CSV export, print)
-- [ ] Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Audit log; Analytics
-- [ ] `/dispatch` mobile view (assigned orders, map link, call/WhatsApp, delivered w/ collection, failed w/ reason, proof photo)
-- [ ] Exit check: E2E 8–9 pass
+- [x] Admin shell + role guard; Dashboard
+- [x] Products CRUD + images + bundles + gifts + features/specs/FAQ + SEO
+- [x] Flash deals; Landing page builder (publish/preview)
+- [x] Inventory per hub + low-stock alerts
+- [x] Orders (filters, detail timeline, WhatsApp buttons, payments, assign dispatcher, notes, CSV export, print)
+- [x] Staff & dispatchers management; Reviews moderation; Delivery zones/cut-off; Homepage content; Chat & payment settings; Categories; Analytics; Audit log
+- [x] `/dispatch` mobile view (assigned orders, map link, call/WhatsApp, delivered w/ collection, failed w/ reason, proof photo)
+- [x] Exit check: E2E 8–9 pass (iphone-13, pixel-7, desktop)
 
 ## Phase 8 — Supplier portal & customer accounts
-- [ ] Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view
-- [ ] Customer OTP login, order history, saved addresses, wishlist, verified-purchase reviews
-- [ ] Track order (order number + phone)
-- [ ] Exit check: E2E 7, 10 pass
+- [x] Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view
+- [x] Customer OTP login, order history, saved addresses, wishlist, verified-purchase reviews
+- [x] Track order (order number + phone)
+- [x] Exit check: E2E 7, 10 pass (+ account.spec: address prefill, history, verified review, wishlist)
 
 ## Phase 9 — Hardening
-- [ ] Security audit + fixes (headers/CSP, rate limits, secrets scan)
-- [ ] Performance tuning (LP < 150KB JS, LCP < 2.5s, CLS < 0.1)
-- [ ] Accessibility sweep (axe clean), SEO (metadata, OG, JSON-LD, sitemap, robots, canonical)
-- [ ] Error/empty/loading states everywhere; 404/500
-- [ ] Exit check: all §7 bars met (Lighthouse reports in `/reports`)
+- [x] Security audit + fixes (headers/CSP asserted in E2E, rate limits on order/login/OTP/supplier/cart/uploads, secrets scan clean, `pnpm audit --prod` clean, 6 MB upload bodies, per-account failed-login limit)
+- [x] Performance tuning (LP 147 KB JS gz, LCP 1.7–1.8 s, CLS 0 — see DECISIONS for Lantern numbers)
+- [x] Accessibility sweep (axe clean on every customer, admin, rider and supplier page in E2E), SEO (metadata, OG, JSON-LD, sitemap, robots, canonical)
+- [x] Error/empty/loading states everywhere; 404/500
+- [x] Exit check: all §7 bars met (Lighthouse reports in `/reports/lighthouse`)
 
 ## Phase 10 — Final verification & docs
-- [ ] README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
-- [ ] Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
-- [ ] Final summary below
+- [x] README (setup, env, tests, seeding, test accounts, deploy Vercel+Supabase, live services, WhatsApp numbers, Admin Guide)
+- [x] Full run: lint, typecheck, test, test:e2e (both mobile viewports), build
+- [x] Final summary below
 
 ## Execution notes
 - Machine has 7.9 GB RAM: run ONE workstream (one build/Playwright) at a time. Four parallel worktree agents crashed the machine on 2026-10-03.
 - Queue after Phase 4: (A) storefront pages → (C) admin orders/payments/dispatch → (D) catalogue admin, LP builder, suppliers, accounts → Phase 9 hardening → Phase 10.
-- Done & verified so far: data layer (89 unit+integration tests), Home, login (password + OTP), admin shell, function-privilege lockdown.
+- Done & verified so far: data layer, storefront (Home, Catalog, PDP, Search, Category, static pages, cart, checkout), ad landing page + handoff + Track Order + auto-cancel cron, login (password + OTP), admin shell, function-privilege lockdown.
+- 2026-10-04 verification run (cloud sandbox): lint ✅ typecheck ✅ build ✅ · Vitest 159/159 ✅ · Playwright 117 passed / 3 skipped by design (iphone-13, pixel-7, desktop) ✅ · Lighthouse see Phase 3 exit.
+- Cloud sandbox E2E: `PW_EXECUTABLE_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome pnpm test:e2e`; Lighthouse: `CHROME_PATH=… pnpm lhci`.
 
 ## Final Summary
-_(written at the end of Phase 10)_
+
+**Status (2026-10-04): every phase is complete and verified.** Final run on a fresh build and a fresh database:
+
+| Check | Result |
+|---|---|
+| `pnpm lint` / `pnpm typecheck` / `pnpm build` | ✅ clean |
+| `pnpm test` (unit + integration, PGlite with all migrations, RLS for every role) | ✅ 195/195 |
+| `pnpm test:e2e` (iPhone 13, Pixel 7, desktop; axe on every page) | ✅ 143 passed, 7 skipped by design (mobile-only auto-open on desktop; single-device checks) |
+| Brief §8 E2E journeys 1–12 | ✅ all pass on both mobile viewports |
+| `pnpm lhci` (mobile, slow-4G DevTools throttling) | ✅ Home 98/100/100/100 LCP 1.76 s · Catalog 98/100/100/100 LCP 1.72 s · LP 97/100/100/100 LCP 1.88 s · CLS 0 — reports in `reports/lighthouse-final/` |
+| LP first-load JS | ✅ 147 KB gz (budget 150, guarded by `js-budget.spec.ts`) |
+| `pnpm audit --prod` | ✅ no known vulnerabilities |
+
+**What was built**
+- **Storefront:** Home, Catalog (URL filters, Load More), Category, Search with instant suggestions, PDP (bundles, hub stock, gift, JSON-LD, wishlist), cart (with server mirror for signed-in customers), checkout, static pages, branded 404/500, sitemap/robots/OG.
+- **Ad landing page** `/lp/[slug]`: fully DB-driven, honest countdown to the real promo end, live bundle savings, nearest-hub stock, lazy order form, UTM/fbclid capture, under 150 KB JS.
+- **Order pipeline:** `create_order` (server-priced, per-hub reservation, no oversell), WhatsApp/social handoff with auto-open, chat-click logging, duplicate flag, rate limits, honeypot, auto-cancel cron, Track Order, customer status SMS.
+- **Admin** `/admin`: dashboard, order desk (filters, follow-up list, WhatsApp buttons, payment recording with bank-arrival confirmation, proof uploads, refunds, overpayment flag, dispatcher assignment, notes, timeline, CSV, print), products/bundles/gifts/images/stock editor, landing-page builder with preview/publish, flash deals, inventory with low-stock alerts, categories, reviews moderation, delivery zones, homepage content, chat & payment settings, staff/rider accounts, suppliers, audit log, analytics.
+- **Rider view** `/dispatch`: assigned orders, call/WhatsApp/map, delivered with cash/POS collected + proof photo, failed with reason.
+- **Suppliers:** `/sell/apply`, admin approval, `/supplier` portal (submissions, stock, units sold).
+- **Customer accounts:** OTP login, order history (guest orders linked by verified phone), saved addresses that prefill checkout, wishlist, verified-purchase reviews.
+- **Integrations behind adapters with mocks:** Supabase Auth/Storage, Termii SMS, Resend email, WhatsApp Cloud, Meta Pixel + CAPI (Purchase once on paid/delivered).
+
+**What you need to do to go live** (details in README §4–§6 and `KNOWN_ISSUES.md`)
+1. Create the Supabase project, `supabase db push`, load `pnpm db:seed-sql --production`, enable Email/Phone OTP, create your owner account and promote it to admin.
+2. Import the repo in Vercel and set the env vars from README §2 (`AUTH_SECRET`, `CRON_SECRET`, `IP_HASH_SALT`, `DATABASE_URL`, Supabase keys, `NEXT_PUBLIC_SITE_URL`), then add your domain.
+3. Add live keys you want: Meta Pixel + CAPI token, Termii (sender ID), Resend (verified domain), optional WhatsApp Cloud API.
+4. In Admin: set your real WhatsApp numbers/handles and routing, bank accounts, support contacts, business details/CAC, new-order alert recipients, delivery fees; switch **Sample reviews** off; load your real products and stock.
+5. Create staff and rider accounts in **Staff & riders**, then put `/lp/<slug>?utm_source=facebook&utm_campaign=…` links in your ads.

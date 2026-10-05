@@ -4,10 +4,14 @@ import "./globals.css";
 import { siteUrl } from "@/lib/site";
 
 const syne = localFont({
+  // Subset (ASCII + typographic punctuation) and limited to wght 600–800, the only weights headings use:
+  // 34.6 KB → 16.2 KB. Regenerate with fontTools if headings ever need other weights or glyphs.
   src: "./fonts/syne-latin-wght.woff2",
   variable: "--font-syne",
-  weight: "400 800",
-  display: "swap",
+  weight: "600 800",
+  // Display face for headings only. "optional": never swaps after first paint (a late Syne swap reflowed
+  // the LP headline: CLS 0.111); on a cold slow-4G visit the metric-matched fallback stays, cached views get Syne.
+  display: "optional",
   preload: false,
 });
 

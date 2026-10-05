@@ -135,7 +135,7 @@ export const PRODUCTS: SeedProduct[] = [
     ],
     bundles: [
       { key: "1x", label: "1x Turbo Vacuum Set", shortLabel: "1x Turbo Car Vacuum", description: "Vacuum + 4 nozzles + 1 extra HEPA filter", quantity: 1, price: 24_500, promo: 19_500, compareAt: null },
-      { key: "2x", label: "2x Turbo Vacuum Sets (His & Hers)", shortLabel: "2x Turbo Car Vacuum (His & Hers)", description: "2 Vacuums + 2 Extra HEPA Filters", quantity: 2, price: 45_000, promo: 35_000, compareAt: null, tag: "MOST POPULAR • SAVE EXTRA ₦4,000", note: "Perfect for 2 cars or 1 for Car + 1 for Home", popular: true },
+      { key: "2x", label: "2x Turbo Vacuum Sets (His & Hers)", shortLabel: "2x Turbo Car Vacuum (His & Hers)", description: "2 Vacuums + 2 Extra HEPA Filters", quantity: 2, price: 45_000, promo: 35_000, compareAt: null, tag: "MOST POPULAR", note: "Perfect for 2 cars or 1 for Car + 1 for Home", popular: true },
       { key: "3x", label: "3x Turbo Family Pack", shortLabel: "3x Turbo Car Vacuum (Family Pack)", description: "3 Vacuums + 3 Filters + Premium Tyre Gauge", quantity: 3, price: 63_000, promo: 49_000, compareAt: null, sideTag: "Best Value" },
     ],
     gift: { name: "Luxury Aromatherapy Car Diffuser", value: 4_500, image: "gift-diffuser.webp", conditions: "Packed free inside every vacuum order while this promo runs.", endsWithPromo: true },
@@ -171,7 +171,7 @@ export const PRODUCTS: SeedProduct[] = [
     ],
     bundles: [
       { key: "1x", label: "1x Solar Wall Light", shortLabel: "1x Solar Wall Light", description: "Single light with mounting kit", quantity: 1, price: 17_000, promo: 14_000, compareAt: null },
-      { key: "2x", label: "2x Solar Wall Lights", shortLabel: "2x Solar Wall Light", description: "Light up front gate and backyard", quantity: 2, price: 32_000, promo: 26_000, compareAt: null, tag: "MOST POPULAR • SAVE EXTRA ₦2,000", popular: true },
+      { key: "2x", label: "2x Solar Wall Lights", shortLabel: "2x Solar Wall Light", description: "Light up front gate and backyard", quantity: 2, price: 32_000, promo: 26_000, compareAt: null, tag: "MOST POPULAR", popular: true },
       { key: "4x", label: "4x Solar Wall Lights (Compound Pack)", shortLabel: "4x Solar Wall Light", description: "Cover all four corners of your compound", quantity: 4, price: 58_000, promo: 48_000, compareAt: null, sideTag: "Best Value" },
     ],
     flash: { price: 14_000, title: "Solar Light Flash Deal", promoText: null, sort: 2 },
@@ -218,7 +218,7 @@ export const PRODUCTS: SeedProduct[] = [
     ],
     bundles: [
       { key: "1x", label: "1x Veggie Chopper", shortLabel: "1x Veggie Chopper", description: "250ml bowl + 3 blades", quantity: 1, price: 12_500, compareAt: 22_000 },
-      { key: "2x", label: "2x Veggie Choppers (Gift Pack)", shortLabel: "2x Veggie Chopper", description: "One for you, one for Mama", quantity: 2, price: 23_000, compareAt: 44_000, tag: "MOST POPULAR • SAVE EXTRA ₦2,000", popular: true },
+      { key: "2x", label: "2x Veggie Choppers (Gift Pack)", shortLabel: "2x Veggie Chopper", description: "One for you, one for Mama", quantity: 2, price: 23_000, compareAt: 44_000, tag: "MOST POPULAR", popular: true },
     ],
     stock: [50, 35, 150],
     ageDays: 40,

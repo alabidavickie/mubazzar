@@ -107,3 +107,51 @@ export function formatCountdown(endsAt: Date | string, now: Date = new Date()): 
       : `${plural(r.hours, "hour")} ${plural(r.minutes, "minute")} ${plural(r.seconds, "second")}`,
   };
 }
+
+const lagosDateTime = new Intl.DateTimeFormat("en-NG", {
+  timeZone: LAGOS_TZ,
+  day: "numeric",
+  month: "short",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+});
+const lagosDateOnly = new Intl.DateTimeFormat("en-NG", { timeZone: LAGOS_TZ, day: "numeric", month: "short", year: "numeric" });
+
+/** "4 Oct, 3:05 pm" in Africa/Lagos (staff screens, timelines). */
+export function formatLagosDateTime(d: Date | string): string {
+  return lagosDateTime.format(new Date(d));
+}
+
+/** "4 Oct 2026" in Africa/Lagos. */
+export function formatLagosDate(d: Date | string): string {
+  return lagosDateOnly.format(new Date(d));
+}
+
+/** "5 min ago" / "3 h ago" / "2 d ago" (coarse, for order lists). */
+export function timeAgo(d: Date | string, now: Date = new Date()): string {
+  const mins = Math.max(0, Math.round((now.getTime() - new Date(d).getTime()) / 60_000));
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 48) return `${hours} h ago`;
+  return `${Math.round(hours / 24)} d ago`;
+}
+
+/** `<input type="datetime-local">` value ("YYYY-MM-DDTHH:mm", read as Africa/Lagos) → UTC Date; null if invalid. */
+export function lagosLocalToUtc(value: string | null | undefined): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value?.trim() ?? "");
+  if (!m) return null;
+  const [, y, mo, d, h, mi] = m.map(Number) as [number, number, number, number, number, number];
+  const utc = Date.UTC(y, mo - 1, d, h, mi) - LAGOS_OFFSET_MINUTES * 60_000;
+  const date = new Date(utc);
+  return Number.isFinite(utc) ? date : null;
+}
+
+/** UTC instant → `datetime-local` value in Africa/Lagos ("" for null). */
+export function utcToLagosLocal(value: Date | string | null | undefined): string {
+  if (!value) return "";
+  const t = new Date(value).getTime();
+  if (!Number.isFinite(t)) return "";
+  return new Date(t + LAGOS_OFFSET_MINUTES * 60_000).toISOString().slice(0, 16);
+}

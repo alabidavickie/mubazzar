@@ -21,7 +21,7 @@ export function PromoEnded() {
 }
 
 /**
- * Countdown bar to the landing page's REAL `campaign_ends_at` (never resets). Switches to the
+ * Countdown bar to the product's REAL promo deadline (`landingTimer`; never resets). Switches to the
  * "Promo ended" state as soon as the end passes on the visitor's clock.
  */
 export function PromoCountdown({ endsAt, serverNow }: { endsAt: string; serverNow: string }) {

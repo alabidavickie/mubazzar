@@ -17,7 +17,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await requireRole(STAFF_ROLES, "/admin");
   return (
     <div className="min-h-dvh bg-surface">
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 bg-navy-deep px-4 text-on-dark">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 bg-navy-deep px-4 text-on-dark print:hidden">
         <Link href="/admin" className="flex items-center gap-2 font-display text-headline-sm font-extrabold tracking-wider">
           MUBAZZAR <span className="rounded bg-gold-soft px-1.5 py-0.5 font-sans text-label-sm text-bronze-ink">Admin</span>
         </Link>
@@ -35,7 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </form>
         </div>
       </header>
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         <AdminNav items={navFor(session.role)} />
         <main id="main" className="min-w-0 flex-1 px-4 py-4 pb-16 lg:px-6">
           {children}

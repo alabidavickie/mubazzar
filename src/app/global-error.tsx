@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import { useEffect } from "react";
-import { ErrorContent } from "@/components/storefront/not-found-content";
+import { ErrorContent } from "@/components/storefront/error-content";
 
 /** Last-resort error screen (replaces the root layout, so it renders its own <html>). */
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {

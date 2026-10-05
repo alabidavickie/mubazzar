@@ -34,15 +34,23 @@ test.describe("static and utility pages", () => {
     const res = await page.goto("/this-page-does-not-exist");
     expect(res?.status()).toBe(404);
     await expect(page.getByRole("heading", { level: 1, name: /couldn.t find that page/ })).toBeVisible();
-    await expect(page.getByRole("combobox", { name: "Search MUBAZZAR" })).toBeVisible();
     await expectNoA11yViolations(page);
+    // Plain GET search (the root 404 ships no client JS — see app/not-found.tsx).
+    const box = page.getByRole("searchbox", { name: "Search MUBAZZAR" });
+    await box.fill("vacuum");
+    await box.press("Enter");
+    await expect(page).toHaveURL(/\/search\?q=vacuum$/);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 
   test("unknown products 404 inside the storefront chrome", async ({ page }) => {
     const res = await page.goto("/p/no-such-gadget");
     expect(res?.status()).toBe(404);
     await expect(page.getByTestId("not-found")).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Main" })).toBeAttached();
+    // Inside the storefront the 404 keeps instant suggestions.
+    await expect(page.getByTestId("not-found").getByRole("combobox", { name: "Search MUBAZZAR" })).toBeVisible();
+    // The storefront layout's bottom nav is in the DOM (hidden at lg+ by design, hence includeHidden).
+    await expect(page.getByRole("navigation", { name: "Main", includeHidden: true })).toBeAttached();
   });
 
   test("robots.txt and sitemap.xml are served", async ({ request }) => {
