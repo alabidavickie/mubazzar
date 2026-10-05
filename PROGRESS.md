@@ -126,3 +126,8 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 3. Add live keys you want: Meta Pixel + CAPI token, Termii (sender ID), Resend (verified domain), optional WhatsApp Cloud API.
 4. In Admin: set your real WhatsApp numbers/handles and routing, bank accounts, support contacts, business details/CAC, new-order alert recipients, delivery fees; switch **Sample reviews** off; load your real products and stock.
 5. Create staff and rider accounts in **Staff & riders**, then put `/lp/<slug>?utm_source=facebook&utm_campaign=…` links in your ads.
+
+## Post-merge checks (2026-10-05)
+- [x] Human-style walkthrough on a production build (phone 360px + laptop): one order traced shopper → admin (payment, confirm, assign) → rider (delivered) → shopper (tracking), plus a crawl of every shopper/admin/supplier/customer page checking console errors, failed requests and sideways scroll. 60/60 steps passed. Fixed: doubled "1× 1×" pack label on admin order rows; floating WhatsApp button covering checkout fields.
+- [x] Real-person test checklist for launch: `docs/UAT_CHECKLIST.md`.
+- [ ] Live site: every database-backed page returns 500 until Supabase is connected (see KNOWN_ISSUES #1).

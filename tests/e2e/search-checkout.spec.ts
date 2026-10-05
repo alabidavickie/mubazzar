@@ -48,6 +48,7 @@ test("search suggestion → PDP → cart → checkout → order", async ({ page,
   await page.getByTestId("checkout-cta").click();
   await page.waitForURL(/\/checkout$/);
   const form = page.getByTestId("order-form");
+  await expect(page.getByTestId("floating-whatsapp"), "floating button would cover form fields").toHaveCount(0);
   await expect(form.getByTestId("summary-subtotal")).toHaveText("₦35,000");
   await expectNoA11yViolations(page);
   await fillOrderForm(form, { phone: uniquePhone() });

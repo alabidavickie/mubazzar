@@ -14,6 +14,7 @@ export async function openAdminOrder(page: Page, orderNumber: string) {
   await page.goto(`/admin/orders?q=${encodeURIComponent(orderNumber)}`);
   const row = page.getByTestId("admin-order-row").filter({ hasText: orderNumber });
   await expect(row).toHaveCount(1);
+  await expect(row, "pack count is not doubled onto a '1x' bundle label").not.toContainText(/1\s*[x×]\s*1\s*[x×]/);
   await row.click();
   await expect(page.getByTestId("order-number")).toHaveText(orderNumber);
 }
