@@ -154,7 +154,7 @@ export function ProductEditor({
             />
           )}
         </Field>
-        <Field label="URL slug" required error={err("slug")} hint={`Shop link: /p/${v.slug || "…"}`}>
+        <Field label="URL slug" required error={err("slug")} hint={`Shop link: /p/${v.slug || "…"} · Ad landing page: /lp/${v.slug || "…"}`}>
           {({ id, describedBy, invalid }) => (
             <Input
               id={id}
@@ -515,9 +515,14 @@ export function ProductEditor({
 
       <div className="fixed inset-x-0 bottom-0 z-20 flex items-center justify-end gap-2 border-t border-line bg-card/95 px-4 py-3 backdrop-blur lg:left-60">
         {initial.id && v.isActive ? (
-          <a href={`/p/${initial.slug}`} target="_blank" rel="noopener" className="mr-auto text-label-md text-navy underline">
-            View in shop
-          </a>
+          <span className="mr-auto flex flex-wrap gap-x-4 gap-y-1">
+            <a href={`/p/${initial.slug}`} target="_blank" rel="noopener" className="text-label-md text-navy underline">
+              View in shop
+            </a>
+            <a href={`/lp/${initial.slug}`} target="_blank" rel="noopener" className="text-label-md text-navy underline">
+              Ad landing page
+            </a>
+          </span>
         ) : null}
         <Button type="submit" size="lg" disabled={pending}>
           <Icon name="check" /> {pending ? "Saving…" : initial.id ? "Save product" : "Create product"}

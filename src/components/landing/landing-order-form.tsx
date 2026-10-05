@@ -7,7 +7,7 @@ import { useLanding } from "./landing-provider";
 export interface LandingOrderFormProps {
   productId: string;
   productName: string;
-  landingPageId: string;
+  landingPageId: string | null;
   zones: DeliveryZone[];
   channels: OrderFormChannel[];
   cutoff: string;

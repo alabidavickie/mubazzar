@@ -130,4 +130,5 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 ## Post-merge checks (2026-10-05)
 - [x] Human-style walkthrough on a production build (phone 360px + laptop): one order traced shopper → admin (payment, confirm, assign) → rider (delivered) → shopper (tracking), plus a crawl of every shopper/admin/supplier/customer page checking console errors, failed requests and sideways scroll. 60/60 steps passed. Fixed: doubled "1× 1×" pack label on admin order rows; floating WhatsApp button covering checkout fields.
 - [x] Real-person test checklist for launch: `docs/UAT_CHECKLIST.md`.
+- [x] Automatic ad landing page for every product at `/lp/<product-slug>` (unit + E2E `lp-auto.spec.ts` on 3 devices; all 12 seeded products load).
 - [ ] Live site: every database-backed page returns 500 until Supabase is connected (see KNOWN_ISSUES #1).
