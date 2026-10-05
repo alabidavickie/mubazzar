@@ -10,5 +10,4 @@ Items here genuinely need owner input or an environment the build machine lacks.
 5. **Owner admin account** — created once in Supabase (README §4.1 step 5); everyone else is created from Admin → Staff & riders.
 
 ## Environment notes (no action needed for the product)
-- **Pushing to GitHub was refused (HTTP 403) from the cloud build session** — the Claude GitHub App isn't installed on `alabidavickie/mubazzar` (or the account link needs refreshing). All work is committed on branch `claude/wonderful-brahmagupta-8h6a26` locally in that session. Fix: install the app / reconnect GitHub at https://claude.ai/connect-github, then push the branch.
 - **Lighthouse "simulate" vs DevTools throttling** — CI measures with DevTools slow-4G throttling (LCP 1.7–1.8 s). Lantern's simulated mode reports 2.4–3.3 s for the same build because it ignores request priority; details and numbers in DECISIONS.md → "Performance measurement".
