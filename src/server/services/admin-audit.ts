@@ -23,7 +23,9 @@ export function revalidateCatalog(slug?: string) {
   revalidatePath("/search");
   revalidatePath("/c/[slug]", "page");
   revalidatePath("/lp/[slug]", "page");
+  // A bulk change (no single slug) refreshes every product page, including ones cached as "not found".
   if (slug) revalidatePath(`/p/${slug}`);
+  else revalidatePath("/p/[slug]", "page");
   revalidatePath("/sitemap.xml");
   revalidatePath("/admin/products");
   revalidatePath("/admin/inventory");

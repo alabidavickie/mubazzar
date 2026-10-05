@@ -21,7 +21,10 @@ export interface AdminProductRow {
   updatedAt: string;
 }
 
-export async function listAdminProducts(session: Session, q: string | null): Promise<AdminProductRow[]> {
+export const ADMIN_PRODUCTS_PAGE_SIZE = 100;
+
+/** One page of products (one extra row is fetched so the caller knows whether a next page exists). */
+export async function listAdminProducts(session: Session, q: string | null, page = 1): Promise<AdminProductRow[]> {
   return asUser(session.userId, (db) =>
     db.query<AdminProductRow>(
       `select p.id, p.slug, p.name, p.price_kobo as "priceKobo", p.is_active as "isActive", c.name as "categoryName",
@@ -32,8 +35,8 @@ export async function listAdminProducts(session: Session, q: string | null): Pro
               p.updated_at as "updatedAt"
          from public.products p left join public.categories c on c.id = p.category_id
         where ($1::text is null or p.name ilike '%' || $1 || '%' or p.slug ilike '%' || $1 || '%' or p.sku ilike $1)
-        order by p.is_active desc, p.updated_at desc limit 200`,
-      [q?.trim() || null],
+        order by p.is_active desc, p.updated_at desc, p.id limit $2 offset $3`,
+      [q?.trim() || null, ADMIN_PRODUCTS_PAGE_SIZE + 1, (Math.max(1, Math.floor(page)) - 1) * ADMIN_PRODUCTS_PAGE_SIZE],
     ),
   );
 }
@@ -164,4 +167,40 @@ export async function getProductForEdit(
     };
     return { values, images, stock };
   });
+}
+
+export interface ExportProductRow {
+  slug: string;
+  name: string;
+  category: string | null;
+  priceKobo: number;
+  compareAtKobo: number | null;
+  shortDescription: string | null;
+  description: string | null;
+  sku: string | null;
+  tags: string[];
+  warrantyMonths: number;
+  isActive: boolean;
+  stock: Record<string, number> | null;
+  features: { title: string; description: string }[] | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+}
+
+/** Every product in the CSV import format (Admin → Products → Export CSV). */
+export async function exportProducts(session: Session): Promise<ExportProductRow[]> {
+  return asUser(session.userId, (db) =>
+    db.query<ExportProductRow>(
+      `select p.slug, p.name, c.slug as category, p.price_kobo as "priceKobo", p.compare_at_kobo as "compareAtKobo",
+              p.short_description as "shortDescription", p.description, p.sku, p.tags, p.warranty_months as "warrantyMonths",
+              p.is_active as "isActive",
+              (select jsonb_object_agg(h.code, inv.on_hand) from public.inventory inv join public.hubs h on h.id = inv.hub_id
+                where inv.product_id = p.id) as stock,
+              (select jsonb_agg(jsonb_build_object('title', f.title, 'description', f.description) order by f.sort_order)
+                 from public.product_features f where f.product_id = p.id) as features,
+              p.seo_title as "seoTitle", p.seo_description as "seoDescription"
+         from public.products p left join public.categories c on c.id = p.category_id
+        order by p.name`,
+    ),
+  );
 }

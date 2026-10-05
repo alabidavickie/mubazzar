@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireRole } from "@/server/session";
-import { listAdminProducts } from "@/server/services/admin-catalog";
+import { ADMIN_PRODUCTS_PAGE_SIZE, listAdminProducts } from "@/server/services/admin-catalog";
 import { formatNaira } from "@/lib/money";
 import { Icon } from "@/components/icons/icon";
 import { Badge } from "@/components/ui/badge";
@@ -10,17 +10,29 @@ import { EmptyState } from "@/components/ui/misc";
 
 export const metadata: Metadata = { title: "Products" };
 
-export default async function AdminProductsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+export default async function AdminProductsPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
   const session = await requireRole(["admin"], "/admin/products");
-  const { q } = await searchParams;
-  const rows = await listAdminProducts(session, q ?? null);
+  const { q, page: pageParam } = await searchParams;
+  const page = Math.min(1000, Math.max(1, Number.parseInt(pageParam ?? "1", 10) || 1));
+  const fetched = await listAdminProducts(session, q ?? null, page);
+  const hasNext = fetched.length > ADMIN_PRODUCTS_PAGE_SIZE;
+  const rows = fetched.slice(0, ADMIN_PRODUCTS_PAGE_SIZE);
+  const pageHref = (n: number) => `/admin/products?${new URLSearchParams({ ...(q ? { q } : {}), page: String(n) })}`;
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-headline-md font-bold text-navy">Products</h1>
-        <Link href="/admin/products/new" className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-navy px-4 text-label-md font-bold text-on-dark">
-          <Icon name="add" /> New product
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/products/import" className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-surface-high px-4 text-label-md font-bold text-navy">
+            <Icon name="upload" /> Import CSV
+          </Link>
+          <a download href="/admin/products/export" className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-surface-high px-4 text-label-md font-bold text-navy">
+            <Icon name="download" /> Export CSV
+          </a>
+          <Link href="/admin/products/new" className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-navy px-4 text-label-md font-bold text-on-dark">
+            <Icon name="add" /> New product
+          </Link>
+        </div>
       </div>
       <form method="get" className="flex gap-2">
         <label className="flex-1">
@@ -58,6 +70,25 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
           ))}
         </ul>
       )}
+      {page > 1 || hasNext ? (
+        <nav aria-label="Product pages" className="flex items-center justify-between gap-2 text-label-md">
+          {page > 1 ? (
+            <Link href={pageHref(page - 1)} className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-surface-high px-4 font-bold text-navy">
+              <Icon name="chevron_left" /> Previous
+            </Link>
+          ) : (
+            <span />
+          )}
+          <span className="text-ink-muted">Page {page}</span>
+          {hasNext ? (
+            <Link href={pageHref(page + 1)} className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-surface-high px-4 font-bold text-navy">
+              Next <Icon name="chevron_right" />
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      ) : null}
     </div>
   );
 }
