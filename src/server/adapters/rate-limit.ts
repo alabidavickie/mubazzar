@@ -36,7 +36,7 @@ export async function rateLimit(key: string, limit: number, windowSeconds: numbe
 /** Hash IPs before storing/using them as keys (privacy). */
 export function hashIp(ip: string | null | undefined): string {
   return createHash("sha256")
-    .update(`${env.ipHashSalt}:${ip ?? "unknown"}`)
+    .update(`${env.ipHashSalt()}:${ip ?? "unknown"}`)
     .digest("hex")
     .slice(0, 32);
 }

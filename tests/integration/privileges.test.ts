@@ -30,6 +30,7 @@ const AUTHENTICATED_ALLOWED = new Set([
   "review_supplier",
   "review_supplier_product",
   "adjust_inventory",
+  "update_order_details",
   "admin_audit",
 ]);
 const ANON_ALLOWED = new Set(["current_app_role", "is_admin", "is_staff", "effective_unit_price", "effective_bundle_price", "quote_delivery", "track_order"]);

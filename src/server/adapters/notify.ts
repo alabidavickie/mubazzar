@@ -70,6 +70,15 @@ const whatsappCloud: Provider = {
   },
 };
 
+/** "+2348031234567" → "+234803•••4567", "ada@x.com" → "a•••@x.com" (for logs only). */
+export function maskRecipient(to: string): string {
+  if (to.includes("@")) {
+    const [user = "", domain = ""] = to.split("@");
+    return `${user.slice(0, 1)}•••@${domain}`;
+  }
+  return to.length > 8 ? `${to.slice(0, 7)}•••${to.slice(-4)}` : "•••";
+}
+
 function providerFor(channel: NotifyChannel): Provider | null {
   if (channel === "sms" && services.sms) return termii;
   if (channel === "email" && services.email) return resend;
@@ -94,15 +103,18 @@ export async function notify(n: Notification): Promise<{ status: "sent" | "mocke
       status = "failed";
       error = e instanceof Error ? e.message.slice(0, 500) : String(e);
     }
-  } else if (env.nodeEnv !== "test") {
-    console.info(`[notify:mock] ${n.channel} → ${n.to}: ${n.body.slice(0, 160)}`);
+  }
+  // Login codes are secrets: never write them to logs or the admin-readable outbox.
+  const storedBody = n.template === "otp" ? "[login code redacted]" : n.body;
+  if (!provider && env.nodeEnv !== "test") {
+    console.info(`[notify:mock] ${n.channel} → ${maskRecipient(n.to)} (${n.template}): ${storedBody.slice(0, 160)}`);
   }
   try {
     await asService((q) =>
       q.query(
         `insert into public.notifications_outbox (channel, recipient, template, subject, body, order_id, status, provider_ref, error, sent_at)
          values ($1, $2, $3, $4, $5, $6, $7, $8, $9, case when $7 = 'sent' then now() end)`,
-        [n.channel, n.to, n.template, n.subject ?? null, n.body, n.orderId ?? null, status, providerRef ?? null, error ?? null],
+        [n.channel, n.to, n.template, n.subject ?? null, storedBody, n.orderId ?? null, status, providerRef ?? null, error ?? null],
       ),
     );
   } catch (e) {

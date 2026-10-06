@@ -6,6 +6,7 @@ import { z } from "zod";
 import {
   clearSessionCookie,
   createSessionCookie,
+  readSessionCookie,
   requestOtp,
   signInWithPassword,
   verifyOtp,
@@ -14,6 +15,7 @@ import { hashIp, peekRateLimit, rateLimit, resetRateLimit } from "@/server/adapt
 import { asService } from "@/server/db";
 import { homeForRole, type AppRole } from "@/server/session";
 import { normalizeNgPhone } from "@/lib/phone";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 export type AuthState = { error?: string; step?: "code"; identifier?: string; devCode?: string } | null;
 
@@ -23,10 +25,7 @@ async function clientIp(): Promise<string | null> {
 }
 
 /** Only allow same-site relative redirects after login. */
-function safeNext(next: unknown): string | null {
-  if (typeof next !== "string" || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return null;
-  return next;
-}
+const safeNext = safeRedirectPath;
 
 async function roleOf(userId: string): Promise<AppRole> {
   const rows = await asService((q) => q.query<{ role: AppRole }>("select role from public.profiles where id = $1", [userId]));
@@ -85,19 +84,32 @@ export async function verifyOtpAction(_prev: AuthState, form: FormData): Promise
   if (!id.ok) return { error: id.error };
   if (code.length !== 6) return { step: "code", identifier: id.value, error: "Enter the 6-digit code" };
   const ip = hashIp(await clientIp());
-  const limited = await rateLimit(`otp-verify:${ip}:${id.value}`, 10, 900);
-  if (!limited.ok) return { error: "Too many attempts. Please request a new code later." };
+  // Limit per identifier regardless of IP (rotating IPs can't buy more guesses) and per IP.
+  const [byId, byIp] = await Promise.all([
+    rateLimit(`otp-verify:id:${id.value}`, 10, 900),
+    rateLimit(`otp-verify:ip:${ip}`, 30, 900),
+  ]);
+  if (!byId.ok || !byIp.ok) return { error: "Too many attempts. Please request a new code later." };
   const res = await verifyOtp(id.value, code);
   if (!res.ok) return { step: "code", identifier: id.value, error: res.error };
+  const role = await roleOf(res.userId);
+  if (role !== "customer") {
+    // Staff, riders, suppliers and admins must use their password.
+    return { error: "This account signs in with email and password. Use the Staff & partners tab." };
+  }
   // The per-number limit stops SMS-bombing someone else's phone; once the owner proves they hold the
   // number, their request budget starts fresh (an attacker can't verify, so their requests keep counting).
   await resetRateLimit(`otp:id:${id.value}`);
   await createSessionCookie({ sub: res.userId, email: res.email });
-  const role = await roleOf(res.userId);
   redirect(safeNext(form.get("next")) ?? homeForRole(role));
 }
 
 export async function logoutAction(): Promise<void> {
+  // Revoke server-side too, so a copied session cookie stops working everywhere.
+  const claims = await readSessionCookie();
+  if (claims) {
+    await asService((q) => q.query("update public.profiles set sessions_revoked_at = now() where id = $1", [claims.sub]));
+  }
   await clearSessionCookie();
   redirect("/");
 }

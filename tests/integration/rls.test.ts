@@ -68,9 +68,11 @@ describe("guest (anon)", () => {
 
   it("can track an order only with the matching phone", async () => {
     const [{ number }] = await db.query<{ number: string }>("select order_number as number from public.orders where id = $1", [guestOrderId]);
-    const ok = await as(db, "anon")((q) => q.query<{ r: unknown }>("select public.track_order($1, $2) as r", [number, "+2348099990000"]));
+    // Guests reach tracking only through the rate-limited server action (which runs as the service role).
+    await rejects(as(db, "anon")((q) => q.query("select public.track_order($1, $2)", [number, "+2348099990000"])), /permission denied/);
+    const ok = await as(db, "service")((q) => q.query<{ r: unknown }>("select public.track_order($1, $2) as r", [number, "+2348099990000"]));
     expect(ok[0]!.r).toMatchObject({ order_number: number, status: "awaiting_chat" });
-    const bad = await as(db, "anon")((q) => q.query<{ r: unknown }>("select public.track_order($1, $2) as r", [number, "+2348000000000"]));
+    const bad = await as(db, "service")((q) => q.query<{ r: unknown }>("select public.track_order($1, $2) as r", [number, "+2348000000000"]));
     expect(bad[0]!.r).toBeNull();
   });
 });
@@ -102,12 +104,12 @@ describe("customer", () => {
           [customerOrderId, ids.user("customer")],
         ),
       ),
-      /row-level security/,
+      /permission denied|row-level security/,
     );
-    const updated = await as(db, "customer")((q) =>
-      q.query("update public.orders set total_kobo = 1 where id = $1 returning id", [customerOrderId]),
+    await rejects(
+      as(db, "customer")((q) => q.query("update public.orders set total_kobo = 1 where id = $1", [customerOrderId])),
+      /permission denied/,
     );
-    expect(updated).toHaveLength(0);
   });
 
   it("can only review delivered verified purchases", async () => {
@@ -137,16 +139,22 @@ describe("order staff", () => {
   it("cannot change money or status fields directly (must use audited functions)", async () => {
     await rejects(
       as(db, "staff")((q) => q.query("update public.orders set total_kobo = 1 where id = $1", [guestOrderId])),
-      /USE_ORDER_FUNCTIONS/,
+      /permission denied|USE_ORDER_FUNCTIONS/,
     );
     await rejects(
       as(db, "staff")((q) => q.query("update public.orders set payment_status = 'paid' where id = $1", [guestOrderId])),
-      /USE_ORDER_FUNCTIONS/,
+      /permission denied|USE_ORDER_FUNCTIONS/,
     );
-    const ok = await as(db, "staff")((q) =>
-      q.query("update public.orders set landmark = 'Opposite Shoprite' where id = $1 returning id", [guestOrderId]),
+    // Even harmless-looking edits go through the audited function now.
+    await rejects(
+      as(db, "staff")((q) => q.query("update public.orders set landmark = 'Opposite Shoprite' where id = $1", [guestOrderId])),
+      /permission denied/,
     );
-    expect(ok).toHaveLength(1);
+    await as(db, "staff")((q) =>
+      q.query("select public.update_order_details($1, $2::jsonb)", [guestOrderId, { landmark: "Opposite Shoprite" }]),
+    );
+    const [row] = await db.query<{ landmark: string }>("select landmark from public.orders where id = $1", [guestOrderId]);
+    expect(row!.landmark).toBe("Opposite Shoprite");
   });
 
   it("cannot read the audit log (admin only)", async () => {

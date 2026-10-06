@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getSession, homeForRole } from "@/server/session";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 import { LoginTabs } from "./login-tabs";
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
   const { next, error } = await searchParams;
   const session = await getSession();
-  if (session && error !== "forbidden") redirect(next?.startsWith("/") && !next.startsWith("//") ? next : homeForRole(session.role));
+  if (session && error !== "forbidden") redirect(safeRedirectPath(next) ?? homeForRole(session.role));
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-4 py-8">
@@ -31,7 +32,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             Your account doesn&apos;t have access to that page. Sign in with a different account.
           </p>
         ) : null}
-        <LoginTabs next={next ?? ""} />
+        <LoginTabs next={safeRedirectPath(next) ?? ""} />
       </div>
       <p className="text-center text-body-sm text-ink-muted">
         No account needed to shop — just <Link href="/shop" className="font-bold text-navy underline">browse</Link> and order.

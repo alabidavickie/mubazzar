@@ -70,8 +70,9 @@ describe("create_order", () => {
 
   it("returns the existing order for a repeated idempotency key", async () => {
     const key = crypto.randomUUID();
-    const a = await createOrder(db, { extra: { idempotency_key: key } });
-    const b = await createOrder(db, { extra: { idempotency_key: key } });
+    const phone = "+2348031110099"; // the replay must come from the same customer (see security-hardening tests)
+    const a = await createOrder(db, { phone, extra: { idempotency_key: key } });
+    const b = await createOrder(db, { phone, extra: { idempotency_key: key } });
     expect(b).toMatchObject({ id: a.id, existing: true });
   });
 

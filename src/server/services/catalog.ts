@@ -374,7 +374,8 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
 }
 
 export async function getProductById(id: string): Promise<ProductDetail | null> {
-  if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+  // Strict UUID shape: a 36-char non-UUID ("------…") would otherwise reach the ::uuid cast and 500.
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return null;
   return asAnon((q) => loadDetail(q, "p.id = $1::uuid", id));
 }
 

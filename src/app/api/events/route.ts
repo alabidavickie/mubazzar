@@ -4,7 +4,8 @@ import { asService } from "@/server/db";
 import { rateLimit, hashIp } from "@/server/adapters/rate-limit";
 
 const schema = z.object({
-  name: z.enum(["PageView", "ViewContent", "AddToCart", "InitiateCheckout", "Lead", "Contact"]),
+  // "Lead" and order-linked "Contact" are recorded server-side; clients can only report browsing events.
+  name: z.enum(["PageView", "ViewContent", "AddToCart", "InitiateCheckout", "Contact"]),
   eventId: z.string().max(120).optional(),
   path: z.string().max(500).optional(),
   data: z.record(z.string(), z.unknown()).optional(),
@@ -18,7 +19,8 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ ok: false }, { status: 400 });
   const { name, eventId, path, data } = parsed.data;
-  const url = path ? new URL(path, "http://x") : null;
+  const safePath = path?.replace(/\/order\/[0-9a-f]{32}/gi, "/order/:token");
+  const url = safePath ? new URL(safePath, "http://x") : null;
   const lpSlug = url?.pathname.startsWith("/lp/") ? url.pathname.split("/")[2] : null;
   await asService((q) =>
     q.query(
@@ -27,7 +29,7 @@ export async function POST(req: Request) {
       [
         name,
         eventId ?? null,
-        path?.slice(0, 500) ?? null,
+        safePath?.slice(0, 500) ?? null,
         lpSlug,
         url?.searchParams.get("utm_source")?.slice(0, 200) ?? null,
         url?.searchParams.get("utm_medium")?.slice(0, 200) ?? null,

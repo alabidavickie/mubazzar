@@ -9,6 +9,7 @@ export async function GET() {
     const rows = await asAnon((q) => q.query<{ n: number }>("select count(*)::int as n from public.categories"));
     return NextResponse.json({ ok: true, categories: rows[0]?.n ?? 0 });
   } catch (e) {
-    return NextResponse.json({ ok: false, error: (e as Error).message }, { status: 503 });
+    console.error("[health] database check failed", e);
+    return NextResponse.json({ ok: false, error: "database unavailable" }, { status: 503 });
   }
 }

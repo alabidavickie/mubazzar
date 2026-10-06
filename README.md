@@ -31,8 +31,8 @@ Useful database commands:
 |---|---|
 | `pnpm db:reset` | Wipe `.data/pglite`, re-run migrations and the seed |
 | `pnpm db:types` | Regenerate `src/server/db/types.ts` from the migrations |
-| `pnpm db:seed-sql` | Write `supabase/seed.sql` (dev data incl. test accounts + sample reviews) |
-| `pnpm db:seed-sql --production` | Write `supabase/seed.production.sql` (catalogue, zones, hubs, settings — **no** test accounts, **no** sample reviews) |
+| `pnpm db:seed-sql` | Write `supabase/seed.sql` — catalogue, zones, hubs, settings. **Production-safe**: no test accounts, no sample reviews |
+| `pnpm db:seed-sql --with-test-users` | Write `supabase/seed.dev.sql` — adds the test accounts (public passwords!) and sample reviews. Never run it against production; the file is git-ignored |
 | `pnpm icons` | Regenerate the inline Material Symbols subset after adding icon names to `scripts/gen-icons.mjs` |
 | `node scripts/gen-brand-assets.mjs` | Regenerate favicon, app icons, OG image and product placeholders from `design/logo.png` |
 
@@ -120,9 +120,9 @@ pnpm lhci
    This applies everything in `supabase/migrations/` (tables, RLS, SQL functions, storage buckets `product-images` and `private-proofs`).
 3. Load the production seed (catalogue, 36 states + FCT delivery zones, hubs, settings — no test accounts):
    ```bash
-   pnpm db:seed-sql --production
+   pnpm db:seed-sql
    ```
-   then run `supabase/seed.production.sql` in the Supabase SQL editor (or `psql "$DATABASE_URL" -f supabase/seed.production.sql`).
+   then run `supabase/seed.sql` in the Supabase SQL editor (or `psql "$DATABASE_URL" -f supabase/seed.sql`).
 4. **Auth:** enable Email (OTP) and, for phone logins, Phone with an SMS provider (Supabase supports Twilio/MessageBird/Vonage, or a "Send SMS" hook to Termii). In the email template, include `{{ .Token }}` so customers receive a 6-digit code.
 5. **Create the owner account:** Authentication → Users → Add user (email + password). Then in the SQL editor:
    ```sql

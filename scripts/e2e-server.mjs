@@ -20,6 +20,10 @@ const env = {
   MOCK_OTP_CODE: "123456",
   NEXT_PUBLIC_SITE_URL: `http://localhost:${port}`,
   AUTH_SECRET: "e2e-secret-e2e-secret-e2e-secret-e2e",
+  IP_HASH_SALT: "e2e-ip-hash-salt-0123456789",
+  // Every E2E request comes from one local IP, so per-IP order limits are raised here only.
+  ORDER_RATE_PER_IP: "100000",
+  ORDER_MAX_OPEN_PER_IP: "100000",
   CRON_SECRET: "e2e-cron",
 };
 delete env.DATABASE_URL;

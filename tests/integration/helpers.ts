@@ -25,6 +25,13 @@ export function as(db: Db, who: Role | "anon" | "service") {
     runAs(db, who === "service" ? { kind: "service" } : who === "anon" ? { kind: "anon" } : { kind: "user", userId: ids.user(who) }, fn);
 }
 
+let phoneSeq = 0;
+/** Unique valid Nigerian mobile number for each call within a test file. */
+export function nextPhone(): string {
+  phoneSeq += 1;
+  return `+234803${String(1_000_000 + phoneSeq).slice(-7)}`;
+}
+
 export interface CreateOrderInput {
   state?: string;
   items?: { product_id: string; bundle_id?: string | null; packs: number }[];
@@ -39,7 +46,8 @@ export async function createOrder(db: Db, input: CreateOrderInput = {}) {
     idempotency_key: crypto.randomUUID(),
     source: "landing_page",
     customer_name: "Test Buyer",
-    phone_e164: input.phone ?? "+2348031234567",
+    // A fresh phone per order unless a test pins one: one phone may hold at most 3 unpaid open orders.
+    phone_e164: input.phone ?? nextPhone(),
     state: input.state ?? "Lagos",
     city: "Ikeja",
     address: "12 Allen Avenue, Ikeja",

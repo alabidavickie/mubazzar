@@ -44,6 +44,9 @@ next-env.d.ts
 # local data (PGlite, uploads)
 /.data/
 
+# dev seed with public test-account passwords — never commit
+/supabase/seed.dev.sql
+
 # test output
 /test-results/
 /reports/playwright/

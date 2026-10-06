@@ -4,7 +4,7 @@ import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { captureAttribution } from "@/lib/client/attribution";
-import { track } from "@/lib/client/pixel";
+import { isPrivatePath, track } from "@/lib/client/pixel";
 
 /**
  * Loads the Meta Pixel only when NEXT_PUBLIC_META_PIXEL_ID is configured, captures UTM/fbclid
@@ -24,6 +24,7 @@ export function MetaPixel() {
     const key = `${pathname}?${search.toString()}`;
     if (last.current === key) return;
     last.current = key;
+    if (isPrivatePath(pathname)) return; // order pages carry a secret token in the URL
     track("PageView");
   }, [pathname, search]);
 
@@ -35,6 +36,8 @@ n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq.disablePushState = true;
+fbq('set', 'autoConfig', false, '${pixelId.replace(/[^0-9]/g, "")}');
 fbq('init', '${pixelId.replace(/[^0-9]/g, "")}');`}
     </Script>
   );

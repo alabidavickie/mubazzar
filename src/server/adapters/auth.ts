@@ -22,11 +22,13 @@ export const SESSION_COOKIE = "mbz_session";
  */
 export const SIGNED_IN_HINT_COOKIE = "mbz_signed_in";
 const SESSION_DAYS = 30;
-const secret = () => new TextEncoder().encode(env.authSecret);
+const secret = () => new TextEncoder().encode(env.authSecret());
 
 export interface SessionClaims {
   sub: string;
   email?: string | null;
+  /** Issued-at (seconds) — sessions issued before profiles.sessions_revoked_at are rejected. */
+  iat?: number;
 }
 
 export async function createSessionCookie(claims: SessionClaims): Promise<void> {
@@ -54,7 +56,7 @@ export async function readSessionCookie(): Promise<SessionClaims | null> {
   try {
     const { payload } = await jwtVerify(token, secret(), { algorithms: ["HS256"] });
     if (!payload.sub) return null;
-    return { sub: payload.sub, email: (payload.email as string | undefined) ?? null };
+    return { sub: payload.sub, email: (payload.email as string | undefined) ?? null, iat: payload.iat };
   } catch {
     return null;
   }
@@ -119,16 +121,30 @@ export async function signInWithPassword(email: string, password: string): Promi
 }
 
 const otpHash = (identifier: string, code: string) =>
-  createHash("sha256").update(`${env.authSecret}:${identifier}:${code}`).digest("hex");
+  createHash("sha256").update(`${env.authSecret()}:${identifier}:${code}`).digest("hex");
+
+/** True when the phone/email belongs to a staff, rider, supplier or admin account (password-only). */
+export async function isPasswordOnlyIdentifier(identifier: string): Promise<boolean> {
+  const col = identifier.includes("@") ? "lower(p.email)" : "p.phone";
+  const rows = await asService((q) =>
+    q.query<{ n: number }>(`select count(*)::int as n from public.profiles p where ${col} = $1 and p.role <> 'customer'`, [
+      identifier.includes("@") ? identifier.toLowerCase() : identifier,
+    ]),
+  );
+  return (rows[0]?.n ?? 0) > 0;
+}
 
 /** Sends a 6-digit code to a phone (E.164) or email. Returns devCode only outside production. */
 export async function requestOtp(identifier: string): Promise<{ ok: true; devCode?: string } | { ok: false; error: string }> {
   const isEmail = identifier.includes("@");
+  // Staff/partner accounts must use their password: never send them a login code (and don't reveal
+  // that the account exists — respond exactly as for a successful send).
+  if (await isPasswordOnlyIdentifier(identifier)) return { ok: true };
   if (services.supabaseAuth) {
     const res = await supabaseFetch("otp", isEmail ? { email: identifier, create_user: true } : { phone: identifier, create_user: true });
     return res.ok ? { ok: true } : { ok: false, error: "Could not send the code. Try again shortly." };
   }
-  const code = env.mockOtpCode && !env.isProd ? env.mockOtpCode : String(randomInt(0, 1_000_000)).padStart(6, "0");
+  const code = env.mockOtpCode || String(randomInt(0, 1_000_000)).padStart(6, "0");
   await asService(async (q) => {
     await q.query("update auth.otp_codes set consumed_at = now() where identifier = $1 and consumed_at is null", [identifier]);
     await q.query(
@@ -156,19 +172,23 @@ export async function verifyOtp(identifier: string, code: string, fullName?: str
     return { ok: true, userId: json.user.id, email: json.user.email ?? null };
   }
   return asService(async (q) => {
-    const rows = await q.query<{ id: string; code_hash: string; attempts: number }>(
-      `select id, code_hash, attempts from auth.otp_codes
-        where identifier = $1 and consumed_at is null and expires_at > now()
-        order by created_at desc limit 1`,
+    // Atomically spend one of the code's 5 attempts BEFORE comparing, so parallel guesses can't
+    // exceed the limit; then consume the code atomically so it can only be used once.
+    const rows = await q.query<{ id: string; code_hash: string }>(
+      `update auth.otp_codes set attempts = attempts + 1
+        where id = (select id from auth.otp_codes
+                     where identifier = $1 and consumed_at is null and expires_at > now()
+                     order by created_at desc limit 1)
+          and attempts < 5
+        returning id, code_hash`,
       [identifier],
     );
     const row = rows[0];
-    if (!row || row.attempts >= 5) return { ok: false as const, error: "That code is wrong or has expired" };
-    if (row.code_hash !== otpHash(identifier, code.trim())) {
-      await q.query("update auth.otp_codes set attempts = attempts + 1 where id = $1", [row.id]);
+    if (!row || row.code_hash !== otpHash(identifier, code.trim())) {
       return { ok: false as const, error: "That code is wrong or has expired" };
     }
-    await q.query("update auth.otp_codes set consumed_at = now() where id = $1", [row.id]);
+    const consumed = await q.query("update auth.otp_codes set consumed_at = now() where id = $1 and consumed_at is null returning id", [row.id]);
+    if (!consumed.length) return { ok: false as const, error: "That code is wrong or has expired" };
     const col = isEmail ? "email" : "phone";
     const existing = await q.query<{ id: string; email: string | null }>(
       `select id, email from auth.users where ${col} = $1`,

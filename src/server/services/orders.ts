@@ -11,6 +11,7 @@ import { findDuplicateOrder } from "@/lib/duplicates";
 import { pickWhatsAppChannel, buildChannelLink, type ChatChannel, type ChatChannelKind, type WhatsAppRouting } from "@/lib/chat/links";
 import { buildCustomerOrderMessage, buildMessage, type OrderMessageData, type TemplateSet } from "@/lib/chat/templates";
 import { formatNaira } from "@/lib/money";
+import { env } from "../env";
 
 export interface RequestContext {
   ip: string | null;
@@ -30,7 +31,14 @@ const ERROR_COPY: Record<string, string> = {
   BUNDLE_UNAVAILABLE: "That package is no longer available. Please pick another.",
   INVALID_QUANTITY: "Please choose a quantity between 1 and 20.",
   TOO_MANY_ITEMS: "Too many items in one order. Please split it into two orders.",
+  TOO_MANY_OPEN_ORDERS:
+    "You already have orders waiting for payment. Please complete them on WhatsApp first — our team will help you add more items.",
+  IDEMPOTENCY_CONFLICT: "Please refresh the page and place your order again.",
 };
+
+/** Per-IP limits (env-tunable; defaults suit production). The local E2E server raises them because every test shares one IP. */
+const ORDER_RATE_PER_IP = Number(process.env.ORDER_RATE_PER_IP ?? 10);
+const ORDER_MAX_OPEN_PER_IP = Number(process.env.ORDER_MAX_OPEN_PER_IP ?? 8);
 
 export async function placeOrder(raw: OrderSubmissionInput | unknown, ctx: RequestContext): Promise<PlaceOrderResult> {
   const parsed = orderSubmissionSchema.safeParse(raw);
@@ -55,7 +63,7 @@ export async function placeOrder(raw: OrderSubmissionInput | unknown, ctx: Reque
   // Rate limits: per IP and per phone.
   const ipHash = hashIp(ctx.ip);
   const [byIp, byPhone] = await Promise.all([
-    rateLimit(`order:ip:${ipHash}`, 10, 600),
+    rateLimit(`order:ip:${ipHash}`, ORDER_RATE_PER_IP, 600),
     rateLimit(`order:phone:${phone.e164}`, 5, 3600),
   ]);
   if (!byIp.ok || !byPhone.ok) {
@@ -64,6 +72,20 @@ export async function placeOrder(raw: OrderSubmissionInput | unknown, ctx: Reque
       code: "RATE_LIMITED",
       error: "Too many orders in a short time. Please wait a few minutes or chat with us on WhatsApp.",
     };
+  }
+
+  // Anti stock-hoarding: one network may only hold a few unpaid open orders at once.
+  if (ctx.ip) {
+    const open = await asService((q) =>
+      q.query<{ n: number }>(
+        `select count(*)::int as n from public.orders
+          where client_ip_hash = $1 and status in ('awaiting_chat', 'in_chat') and payment_status in ('unpaid', 'payment_claimed')`,
+        [ipHash],
+      ),
+    );
+    if ((open[0]?.n ?? 0) >= ORDER_MAX_OPEN_PER_IP) {
+      return { ok: false, code: "TOO_MANY_OPEN_ORDERS", error: ERROR_COPY.TOO_MANY_OPEN_ORDERS! };
+    }
   }
 
   // Duplicate detection (flag, don't block — staff confirm on WhatsApp).
@@ -129,6 +151,13 @@ export async function placeOrder(raw: OrderSubmissionInput | unknown, ctx: Reque
           ok: false,
           code: "OUT_OF_STOCK",
           error: `Sorry — ${app.arg ?? "this item"} just sold out for that quantity. Choose a smaller package or chat with us on WhatsApp for restock dates.`,
+        };
+      }
+      if (app?.appCode === "TOO_MANY_UNITS") {
+        return {
+          ok: false,
+          code: "TOO_MANY_UNITS",
+          error: `That's more ${app.arg ?? "units"} than we can send in one order. For bulk or reseller orders, chat with us on WhatsApp.`,
         };
       }
       if (app && ERROR_COPY[app.appCode]) return { ok: false, code: app.appCode, error: ERROR_COPY[app.appCode]! };
@@ -376,6 +405,18 @@ export async function logChatClick(publicToken: string, channel: ChatChannelKind
         { channel },
       ]),
     );
+    // The browser pixel is silenced on order pages (their URL carries the secret token), so tell Meta
+    // server-side — once per order, with a token-free source URL.
+    const view = await getOrderViewById(orderId);
+    if (view) {
+      void sendCapiEvent({
+        eventName: "Contact",
+        eventId: `contact-${orderId}`,
+        eventSourceUrl: `${env.siteUrl}/order`,
+        user: { phoneE164: view.phoneE164, firstName: view.customerName.split(" ")[0], state: view.state, fbc: view.fbc, fbp: view.fbp },
+        customData: { channel, order_id: view.orderNumber },
+      }).catch(() => undefined);
+    }
   }
 }
 

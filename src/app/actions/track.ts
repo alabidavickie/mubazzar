@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
-import { asAnon } from "@/server/db";
+import { asService } from "@/server/db";
 import { hashIp, rateLimit } from "@/server/adapters/rate-limit";
 import { buildHandoff, getOrderViewByToken } from "@/server/services/orders";
 import { normalizeOrderNumber } from "@/lib/order-number";
@@ -114,7 +114,9 @@ export async function trackOrderAction(_prev: TrackState, formData: FormData): P
   const phone = normalizeNgPhone(parsed.data.phone);
   if (!phone.ok) return { ok: false, error: NOT_FOUND, values };
 
-  const rows = await asAnon((q) =>
+  // track_order is not exposed to anon/authenticated (it would bypass this rate limit via the Data API):
+  // only this validated, rate-limited server action may call it.
+  const rows = await asService((q) =>
     q.query<{ r: TrackRow | null }>("select public.track_order($1, $2) as r", [orderNumber, phone.e164]),
   );
   const row = rows[0]?.r;
