@@ -23,6 +23,9 @@ export default defineConfig({
   use: {
     baseURL,
     trace: "retain-on-failure",
+    // Never hang for the whole test timeout on a stuck navigation or click.
+    actionTimeout: 30_000,
+    navigationTimeout: 60_000,
     screenshot: "only-on-failure",
     locale: "en-NG",
     timezoneId: "Africa/Lagos",

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { assignClientIp, expectNoA11yViolations, loginCustomer } from "./helpers";
 import { stubWhatsApp } from "./lp-helpers";
-import { openAdminOrder, signedInPage } from "./admin-helpers";
+import { agreePayOnDelivery, openAdminOrder, signedInPage } from "./admin-helpers";
 
 // Customer account: saved address prefills the order form → order in history → delivered →
 // verified-purchase review (moderated) → wishlist.
@@ -37,6 +37,7 @@ test("customer account: address, order history, verified review, wishlist", asyn
   // Staff confirm + rider delivers.
   const staff = await signedInPage(browser, testInfo, "staff");
   await openAdminOrder(staff, orderNumber);
+  await agreePayOnDelivery(staff);
   await staff.getByRole("button", { name: "Confirm order" }).click();
   await expect(staff.getByTestId("order-status")).toHaveText("Confirmed");
   await staff.getByTestId("dispatch-section").getByRole("button", { name: "Assign" }).click();
@@ -64,7 +65,7 @@ test("customer account: address, order history, verified review, wishlist", asyn
   await expect(review).toHaveCount(0);
 
   // Wishlist.
-  await page.goto("/p/turbo-car-vacuum");
+  await page.goto("/lp/turbo-car-vacuum");
   const heart = page.getByTestId("wishlist-button");
   if ((await heart.getAttribute("aria-pressed")) === "true") await heart.click();
   await heart.click();

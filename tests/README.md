@@ -36,7 +36,7 @@ How every testing requirement in `docs/BRIEF.md` §8 is covered. Commands: `pnpm
 | 3. Staff partial + balance payment → paid, audit log; POD collected by dispatcher | `tests/e2e/admin-payments.spec.ts` |
 | 4. Home → Flash deal → Quick Order sheet → order placed | `tests/e2e/home-quick-order.spec.ts` |
 | 5. Catalog filters + sort in URL, back button, Load More | `tests/e2e/catalog.spec.ts` |
-| 6. Search suggestions → PDP → cart → checkout | `tests/e2e/search-checkout.spec.ts` |
+| 6. Search suggestions → product landing page → add to cart → cart → checkout | `tests/e2e/search-checkout.spec.ts`, `tests/e2e/lp-product-page.spec.ts` |
 | 7. Track order with number + phone | `tests/e2e/track.spec.ts` |
 | 8. Admin product + bundles → landing page → publish → live | `tests/e2e/admin-catalog-lp.spec.ts` |
 | 9. Staff confirms + assigns → dispatcher delivers → stock deducted | `tests/e2e/dispatch.spec.ts` |
@@ -46,3 +46,8 @@ How every testing requirement in `docs/BRIEF.md` §8 is covered. Commands: `pnpm
 | Auth & access control | `tests/e2e/auth.spec.ts` |
 | Smoke, overflow, health | `tests/e2e/smoke.spec.ts` |
 | Visual screenshots at 390px (Home, Catalog, Landing) → `tests/screenshots/` | `tests/e2e/visual.spec.ts` |
+
+## Crawl and security specs
+- `tests/e2e/crawl.spec.ts` visits every URL in `/sitemap.xml` (plus the transactional pages) and checks console errors, failed requests, broken images/links, one `<h1>`, sideways scroll, a **Back** control on every inner page and axe; then requests every internal link it found. Run it on `pixel-7` and `desktop`.
+- `tests/e2e/security.spec.ts` attacks the production build (access control, tampering, injection, open redirects, rate limits, headers, secret leakage). Runs once, on `pixel-7`.
+- Next caches the sitemap on disk (`.next`), so after a run that creates catalogue data use `E2E_REBUILD=1` (or run the whole suite in one go) before running the crawl again; otherwise it can list a landing page that the fresh E2E database no longer has.

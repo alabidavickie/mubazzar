@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { placeLandingOrder, stubWhatsApp } from "./lp-helpers";
-import { openAdminOrder, signedInPage } from "./admin-helpers";
+import { agreePayOnDelivery, openAdminOrder, signedInPage } from "./admin-helpers";
 
 // E2E 9 — staff confirm the order and assign a dispatcher → the rider marks it delivered →
 // status updates and on-hand stock is deducted (it was reserved when the order was placed).
@@ -25,6 +25,7 @@ test("staff confirm + assign → rider delivers → stock deducted, status deliv
   await openAdminOrder(staff, placed.orderNumber);
   await staff.getByRole("button", { name: "Mark in chat" }).click();
   await expect(staff.getByTestId("order-status")).toHaveText("In chat");
+  await agreePayOnDelivery(staff);
   await staff.getByRole("button", { name: "Confirm order" }).click();
   await expect(staff.getByTestId("order-status")).toHaveText("Confirmed");
   await staff.getByTestId("dispatch-section").getByRole("button", { name: "Assign" }).click();

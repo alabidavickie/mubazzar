@@ -6,21 +6,21 @@ test("signed-in customer's cart is restored on a second device", async ({ browse
   test.skip(testInfo.project.name !== "pixel-7", "One device pair is enough; the customer account is shared across projects");
   const device = testInfo.project.use;
 
-  // Device A: add the 2x bundle as a guest, then sign in and open any storefront page.
+  // Device A: add the 2x bundle from the landing page as a guest, then sign in and open any storefront page.
   const a = await browser.newContext({ ...device });
   const pageA = await a.newPage();
-  await pageA.goto("/p/turbo-car-vacuum");
-  const buy = pageA.getByTestId("pdp-buy");
-  await buy.locator('[data-testid="bundle-option"][data-bundle-qty="2"]').click();
-  await buy.getByRole("button", { name: /Add to Cart/ }).click();
-  await expect(pageA.getByTestId("cart-count")).toHaveText("1");
+  await pageA.goto("/lp/turbo-car-vacuum");
+  await pageA.locator('[data-testid="bundle-option"][data-bundle-qty="2"]').click();
+  await pageA.getByTestId("lp-add-to-cart").getByRole("button", { name: /Add to cart/ }).click();
+  await expect(pageA.getByTestId("lp-cart-link")).toContainText("View cart (1)");
   // Guests never call the sync action.
   expect((await a.cookies()).some((c) => c.name === "mbz_signed_in")).toBe(false);
   await loginCustomer(pageA);
   expect((await a.cookies()).find((c) => c.name === "mbz_signed_in")?.httpOnly).toBe(false);
-  const synced = pageA.waitForRequest((r) => r.method() === "POST" && !!r.headers()["next-action"]);
   await pageA.goto("/cart");
-  await synced;
+  // CartSync merges the device cart into the account once per sign-in session; wait for that to finish
+  // (the request may already be in flight from the page the sign-in landed on, so don't wait for a request).
+  await expect.poll(() => pageA.evaluate(() => sessionStorage.getItem("mbz-cart-merged")), { timeout: 20_000 }).toBe("1");
   await expect(pageA.getByTestId("cart-line").filter({ hasText: "Turbo" })).toHaveCount(1);
   await a.close();
 

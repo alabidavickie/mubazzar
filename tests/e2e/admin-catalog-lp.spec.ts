@@ -86,10 +86,11 @@ test("admin: product + bundles → landing page → publish → live", async ({ 
   await expect(page.getByTestId("lp-gallery").locator("img").first()).toHaveAttribute("alt", "Smart mini fan on an office desk");
   await expect(page.getByText("In stock — ships from Lagos Hub")).toBeVisible();
 
-  // The product is in the shop too.
+  // The landing page IS the product page: the old /p/ address and the product address both lead to it.
   const pdp = await page.goto(`/p/smart-mini-fan-${stamp}`);
   expect(pdp?.status()).toBe(200);
-  await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
+  expect(new URL(page.url()).pathname).toBe(`/lp/smart-mini-fan-${stamp}`);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Beat the Heat When NEPA Takes Light!");
 
   await admin.context().close();
 });

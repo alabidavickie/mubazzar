@@ -28,3 +28,9 @@ export async function recordPayment(page: Page, opts: { amount?: string; method?
   if (opts.verified) await form.getByRole("checkbox", { name: /money has arrived/ }).check();
   await form.getByRole("button", { name: /Record payment/ }).click();
 }
+
+/** Staff step: record that Pay on Delivery was agreed in chat. Riders can only collect money on such orders. */
+export async function agreePayOnDelivery(staff: Page) {
+  await staff.getByRole("button", { name: "Pay on delivery agreed" }).click();
+  await expect(staff.getByRole("button", { name: "Pay on delivery agreed" })).toHaveCount(0);
+}

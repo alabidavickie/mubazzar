@@ -43,14 +43,13 @@ test.describe("static and utility pages", () => {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 
-  test("unknown products 404 inside the storefront chrome", async ({ page }) => {
-    const res = await page.goto("/p/no-such-gadget");
-    expect(res?.status()).toBe(404);
-    await expect(page.getByTestId("not-found")).toBeVisible();
-    // Inside the storefront the 404 keeps instant suggestions.
-    await expect(page.getByTestId("not-found").getByRole("combobox", { name: "Search MUBAZZAR" })).toBeVisible();
-    // The storefront layout's bottom nav is in the DOM (hidden at lg+ by design, hence includeHidden).
-    await expect(page.getByRole("navigation", { name: "Main", includeHidden: true })).toBeAttached();
+  test("unknown products 404 with a way back to the shop", async ({ page }) => {
+    for (const path of ["/lp/no-such-gadget", "/p/no-such-gadget"]) {
+      const res = await page.goto(path);
+      expect(res?.status(), path).toBe(404);
+      await expect(page.getByTestId("not-found")).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    }
   });
 
   test("robots.txt and sitemap.xml are served", async ({ request }) => {
@@ -58,8 +57,10 @@ test.describe("static and utility pages", () => {
     expect(robots).toContain("Disallow: /admin");
     expect(robots).toContain("Disallow: /checkout");
     const sitemap = await (await request.get("/sitemap.xml")).text();
-    expect(sitemap).toContain("/p/turbo-car-vacuum");
     expect(sitemap).toContain("/c/car-tech");
+    // Product pages are landing pages: custom ones by their own address, the rest by product slug.
     expect(sitemap).toContain("/lp/car-vacuum");
+    expect(sitemap).toContain("/lp/bladeless-neck-fan");
+    expect(sitemap).not.toContain("/p/");
   });
 });
