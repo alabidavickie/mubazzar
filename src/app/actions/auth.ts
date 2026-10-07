@@ -108,7 +108,12 @@ export async function logoutAction(): Promise<void> {
   // Revoke server-side too, so a copied session cookie stops working everywhere.
   const claims = await readSessionCookie();
   if (claims) {
-    await asService((q) => q.query("update public.profiles set sessions_revoked_at = now() where id = $1", [claims.sub]));
+    try {
+      await asService((q) => q.query("update public.profiles set sessions_revoked_at = now() where id = $1", [claims.sub]));
+    } catch (e) {
+      // Signing out must always clear this browser's cookie, even if the revocation could not be stored.
+      console.error("[logout] could not revoke sessions", e);
+    }
   }
   await clearSessionCookie();
   redirect("/");

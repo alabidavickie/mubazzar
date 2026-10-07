@@ -3,6 +3,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { asService } from "./db";
 import { readSessionCookie } from "./adapters/auth";
+import { isMissingColumn, LEGACY_PROFILE_SQL, PROFILE_SQL } from "./schema-compat";
 
 export type AppRole = "customer" | "admin" | "staff" | "dispatcher" | "supplier";
 
@@ -14,26 +15,30 @@ export interface Session {
   phone: string | null;
 }
 
+interface ProfileRow {
+  id: string;
+  role: AppRole;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  is_active: boolean;
+  revoked_at: number | null;
+}
+
 /** The signed-in user for this request (role always read from the DB, never from the cookie). */
 export const getSession = cache(async (): Promise<Session | null> => {
   const claims = await readSessionCookie();
   if (!claims) return null;
-  const rows = await asService((q) =>
-    q.query<{
-      id: string;
-      role: AppRole;
-      full_name: string | null;
-      email: string | null;
-      phone: string | null;
-      is_active: boolean;
-      revoked_at: number | null;
-    }>(
-      `select id, role, full_name, email, phone, is_active,
-              floor(extract(epoch from sessions_revoked_at))::bigint as revoked_at
-         from public.profiles where id = $1`,
-      [claims.sub],
-    ),
-  );
+  let rows: ProfileRow[];
+  try {
+    rows = await asService((q) => q.query<ProfileRow>(PROFILE_SQL, [claims.sub]));
+  } catch (e) {
+    if (!isMissingColumn(e)) throw e;
+    // Keep people signed in during a deploy that is ahead of the database; /api/health reports it.
+    // (A failed statement aborts its transaction, so the fallback runs as a separate call.)
+    console.error("[session] profiles.sessions_revoked_at is missing: apply migration 20261006000500_security_hardening.sql (sign-out revocation is off until then)");
+    rows = await asService((q) => q.query<ProfileRow>(LEGACY_PROFILE_SQL, [claims.sub]));
+  }
   const p = rows[0];
   if (!p || !p.is_active) return null;
   // Signing out (or an admin deactivation/reset) revokes every session issued before that moment.
