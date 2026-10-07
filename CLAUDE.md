@@ -27,7 +27,7 @@ Next.js (App Router, TS strict) · Tailwind v4 (`@theme` tokens in `globals.css`
 - `src/server/adapters/*.ts` — `auth.ts` (mock JWT-cookie+scrypt / live Supabase Auth REST), `storage.ts` (local `.data/uploads` / Supabase Storage), `notify.ts` (outbox + Termii/Resend/WhatsApp Cloud), `meta.ts` (CAPI + Purchase outbox flush), `rate-limit.ts` (Postgres). Each picks the live provider only when its env keys exist (`src/server/env.ts` → `services`).
 - `src/server/services/` — domain logic used by server actions/route handlers.
 - `src/lib/` — pure, isomorphic, unit-tested helpers: `money`, `phone`, `delivery`, `pricing`, `order-number`, `chat/links`, `chat/templates`, `payments/status`, `schemas/*` (shared Zod).
-- `src/app/(shop)` storefront (header + bottom nav + floating WhatsApp) · `src/app/lp/[slug]` ad landing (logo + WhatsApp only) · `src/app/admin` · `src/app/dispatch` · `src/app/supplier` · `src/app/account` · `src/app/login`.
+- `src/app/(shop)` storefront (header + bottom nav + floating WhatsApp) · `src/app/lp/[slug]` every product's landing page = its product page and the ad landing page (logo + WhatsApp only; `/p/<slug>` redirects here) · `src/app/admin` · `src/app/dispatch` · `src/app/supplier` · `src/app/account` · `src/app/login`.
 - Icons: Material Symbols as inline SVG via `src/components/icons` (generated subset, no icon font).
 
 ## Roles (`profiles.role`)
@@ -62,3 +62,13 @@ Stock: reserved on create, released on cancel/fail, deducted on deliver; per hub
 - Times: store `timestamptz` UTC; business logic in `Africa/Lagos` via `src/lib/time.ts`.
 - Tests: unit next to code as `*.test.ts`; integration in `tests/integration`; E2E in `tests/e2e`; screenshots in `tests/screenshots`.
 - Subagent role files: `.claude/agents/*.md`. Workflow: build → qa → fix → review (architect/security/cro) → fix → commit → update PROGRESS.md.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

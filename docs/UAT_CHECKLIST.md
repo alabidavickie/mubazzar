@@ -10,9 +10,9 @@ Time: about 45 minutes together. Use small real orders and cancel them at the en
 ## Shopper — first visit (don't explain the site to them)
 - [ ] 1. Open the site from a WhatsApp/Instagram link. Does the home page appear in under ~3 seconds on mobile data?
 - [ ] 2. Without help, can you tell what the shop sells and that you pay in chat (no card)?
-- [ ] 3. Find a product with the search icon. Open it. Are the photos, price and delivery fee clear?
+- [ ] 3. Find a product with the search icon. Open it (every product opens its landing page). Are the photos, description, price and delivery fee clear? Does the **Back** arrow take you back to your search?
 - [ ] 4. Is the stock or "only X left" message believable? (It must match Admin → Inventory.)
-- [ ] 5. Add to cart, change quantity, remove it, add it again. Does the cart total make sense?
+- [ ] 5. On the product page tap **Add to cart** (try the 2x package), open **View cart**, change quantity, remove it, add it again. Does the cart total make sense?
 - [ ] 6. Go to checkout. Tap **Place Order** with nothing filled. Are the error messages clear?
 - [ ] 7. Fill your real name, WhatsApp number, state, LGA and address. Place the order.
 - [ ] 8. On the thank-you page: is the order number visible? Tap **Complete payment on WhatsApp**.

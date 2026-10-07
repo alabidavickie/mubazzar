@@ -32,7 +32,7 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 ## Phase 3 — Storefront
 - [x] Home (hero from settings, categories, flash deals + Quick Order sheet, Viral Problem Solvers, reviews, supplier CTA, MUBAZZAR Standard)
 - [x] Catalog `/shop` (URL filters: price chips/custom, POD, category, sort; live counts; Load More; skeletons; empty state)
-- [x] Product detail `/p/[slug]` (gallery, price, hub stock, gift, bundles, features, specs, FAQ, reviews, related, sticky bar, JSON-LD)
+- [x] Product page = the product's landing page `/lp/[slug]` (details, specs, bundles, add to cart, on-page checkout, JSON-LD); `/p/[slug]` redirects to it (2026-10-06)
 - [x] Search with instant suggestions (FTS) `/search`
 - [x] Category pages `/c/[slug]`
 - [x] Static pages: About, FAQ, Delivery, Returns, Privacy, Terms, Become a Supplier (form wired in Phase 8), 404, 500
@@ -132,3 +132,5 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Real-person test checklist for launch: `docs/UAT_CHECKLIST.md`.
 - [x] Automatic ad landing page for every product at `/lp/<product-slug>` (unit + E2E `lp-auto.spec.ts` on 3 devices; all 12 seeded products load).
 - [ ] Live site: every database-backed page returns 500 until Supabase is connected (see KNOWN_ISSUES #1).
+- [x] Page audit (2026-10-06): A–Z crawl of every sitemap URL (`tests/e2e/crawl.spec.ts`: console errors, failed requests, broken images/links, one h1, overflow, axe) and a **Back** control on every inner page (storefront, admin, rider, supplier, login).
+- [x] Landing page is now the product page: description, specifications, add to cart, wishlist; `/p/*` redirects; sitemap lists landing pages; rider collection UI matches the hardened SQL rules.
