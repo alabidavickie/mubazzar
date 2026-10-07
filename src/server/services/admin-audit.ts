@@ -16,14 +16,13 @@ export async function auditAdmin(actorId: string, action: string, entity: string
 }
 
 /** Revalidates every storefront page that can show a product. */
-export function revalidateCatalog(slug?: string) {
+export function revalidateCatalog() {
   revalidatePath("/");
   revalidatePath("/shop");
   revalidatePath("/deals");
   revalidatePath("/search");
   revalidatePath("/c/[slug]", "page");
   revalidatePath("/lp/[slug]", "page");
-  if (slug) revalidatePath(`/p/${slug}`);
   revalidatePath("/sitemap.xml");
   revalidatePath("/admin/products");
   revalidatePath("/admin/inventory");

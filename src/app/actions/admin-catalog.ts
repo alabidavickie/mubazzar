@@ -155,7 +155,7 @@ export async function saveProductAction(input: ProductInput): Promise<SaveProduc
     return { ok: false, error: "Couldn't save the product. Please try again." };
   }
   await auditAdmin(session.userId, p.id ? "product.update" : "product.create", "product", id, { slug: p.slug, price_kobo: p.price, is_active: p.isActive });
-  revalidateCatalog(p.slug);
+  revalidateCatalog();
   // Return the saved state (new bundle ids etc.) so the open editor continues from it without a reload.
   const fresh = await getProductForEdit(session, id);
   return { ok: true, id, slug: p.slug, message: p.id ? "Product saved." : "Product created.", values: fresh?.values, images: fresh?.images };

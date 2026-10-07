@@ -21,7 +21,7 @@ export function FloatingWhatsApp({ number, raised = false }: { number: string; r
     return () => clearTimeout(t);
   }, [pathname]);
 
-  const where = pathname.startsWith("/p/") || pathname.startsWith("/lp/") ? `the ${title}` : title || "your website";
+  const where = pathname.startsWith("/lp/") ? `the ${title}` : title || "your website";
   const message = `Hello MUBAZZAR 👋 I'm on ${where} (${pathname}) and I have a question.`;
   const href = buildWhatsAppLink(number, message);
   // Checkout: it covered form fields on phones. Thank-you page: its own button sends the order message.

@@ -49,7 +49,7 @@ export function CartView({ zones, cutoff }: { zones: DeliveryZone[]; cutoff: str
           return (
             <li key={`${l.productId}:${l.bundleId ?? ""}`} className="flex flex-col gap-2 rounded-xl bg-card p-3 shadow-card" data-testid="cart-line">
               <div className="flex gap-3">
-                <Link href={`/p/${l.slug}`} className="shrink-0" tabIndex={-1} aria-hidden>
+                <Link href={`/lp/${l.slug}`} className="shrink-0" tabIndex={-1} aria-hidden>
                   {img ? (
                     // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- decorative, alt=""
                     <img {...img} />
@@ -58,7 +58,7 @@ export function CartView({ zones, cutoff }: { zones: DeliveryZone[]; cutoff: str
                   )}
                 </Link>
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <Link href={`/p/${l.slug}`} className="line-clamp-2 text-label-md font-bold text-navy hover:underline">
+                  <Link href={`/lp/${l.slug}`} className="line-clamp-2 text-label-md font-bold text-navy hover:underline">
                     {l.name}
                   </Link>
                   {l.bundleLabel ? (

@@ -413,14 +413,6 @@ export async function searchSuggestions(term: string, limit = 6): Promise<Sugges
   );
 }
 
-export async function getAllProductSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
-  return asAnon((q) =>
-    q.query<{ slug: string; updatedAt: string }>(
-      `select slug, updated_at as "updatedAt" from public.products where is_active order by slug`,
-    ),
-  );
-}
-
 /** Largest real discount (same rule as the struck price on cards) — powers "{max_discount}" in hero copy. */
 export async function maxActiveDiscountPercent(): Promise<number> {
   const r = await asAnon((q) =>

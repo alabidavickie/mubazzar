@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
-import { getAllProductSlugs, getCategories } from "@/server/services/catalog";
-import { getPublishedLandingSlugs } from "@/server/services/storefront";
+import { getCategories } from "@/server/services/catalog";
+import { getProductPageSlugs } from "@/server/services/storefront";
 import { absoluteUrl } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -22,15 +22,11 @@ const STATIC: { path: string; priority: number; changeFrequency: MetadataRoute.S
 const iso = (v: string | Date) => new Date(v);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, categories, landings] = await Promise.all([
-    getAllProductSlugs(),
-    getCategories(),
-    getPublishedLandingSlugs(),
-  ]);
+  const [categories, productPages] = await Promise.all([getCategories(), getProductPageSlugs()]);
   return [
     ...STATIC.map((s) => ({ url: absoluteUrl(s.path), changeFrequency: s.changeFrequency, priority: s.priority })),
     ...categories.map((c) => ({ url: absoluteUrl(`/c/${c.slug}`), changeFrequency: "weekly" as const, priority: 0.7 })),
-    ...products.map((p) => ({ url: absoluteUrl(`/p/${p.slug}`), lastModified: iso(p.updatedAt), changeFrequency: "weekly" as const, priority: 0.8 })),
-    ...landings.map((l) => ({ url: absoluteUrl(`/lp/${l.slug}`), lastModified: iso(l.updatedAt), changeFrequency: "weekly" as const, priority: 0.6 })),
+    // Each product's landing page is its product page.
+    ...productPages.map((p) => ({ url: absoluteUrl(`/lp/${p.slug}`), lastModified: iso(p.updatedAt), changeFrequency: "weekly" as const, priority: 0.8 })),
   ];
 }

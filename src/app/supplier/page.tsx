@@ -29,7 +29,7 @@ export default async function SupplierHome() {
           {d.products.map((p) => (
             <li key={p.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-card p-3 shadow-card">
               <span className="min-w-0 flex-1">
-                <a href={`/p/${p.slug}`} target="_blank" rel="noopener" className="font-semibold text-navy underline-offset-2 hover:underline">
+                <a href={`/lp/${p.slug}`} target="_blank" rel="noopener" className="font-semibold text-navy underline-offset-2 hover:underline">
                   {p.name}
                 </a>
                 <span className="block text-body-sm text-ink-muted">

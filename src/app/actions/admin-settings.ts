@@ -187,7 +187,7 @@ export async function moderateReviewAction(input: z.input<typeof moderateSchema>
   );
   if (!rows[0]) return { ok: false, error: "Review not found." };
   await auditAdmin(session.userId, `review.${p.data.status}`, "review", p.data.id);
-  revalidateCatalog(rows[0].slug);
+  revalidateCatalog();
   revalidatePath("/admin/reviews");
   return { ok: true, message: `Review ${p.data.status}.` };
 }

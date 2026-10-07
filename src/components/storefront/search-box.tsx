@@ -92,7 +92,7 @@ export function SearchBox({
 
   const go = (s: Suggestion) => {
     setOpen(false);
-    router.push(`/p/${s.slug}`);
+    router.push(`/lp/${s.slug}`);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

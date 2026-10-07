@@ -70,8 +70,8 @@ export async function reviewSubmissionAction(input: z.input<typeof submission>):
   } catch (err) {
     return fail(err);
   }
-  if (p.data.approve) revalidateCatalog(slug);
+  if (p.data.approve) revalidateCatalog();
   revalidatePath("/admin/suppliers");
   revalidatePath("/supplier");
-  return { ok: true, message: p.data.approve ? `Approved — live at /p/${slug}` : "Submission rejected." };
+  return { ok: true, message: p.data.approve ? `Approved — live at /lp/${slug}` : "Submission rejected." };
 }

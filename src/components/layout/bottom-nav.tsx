@@ -10,7 +10,7 @@ export function BottomNav({ whatsappHref, maxDiscount }: { whatsappHref: string;
   const pathname = usePathname();
   const items = [
     { href: "/", label: "Home", icon: "storefront", match: (p: string) => p === "/" },
-    { href: "/shop", label: "Shop", icon: "grid_view", match: (p: string) => p.startsWith("/shop") || p.startsWith("/c/") || p.startsWith("/p/") },
+    { href: "/shop", label: "Shop", icon: "grid_view", match: (p: string) => p.startsWith("/shop") || p.startsWith("/c/") },
     { href: "/deals", label: "Deals", icon: "sell", match: (p: string) => p.startsWith("/deals"), deal: true },
     { href: "/track", label: "Track", icon: "local_shipping", match: (p: string) => p.startsWith("/track") || p.startsWith("/order") },
   ];

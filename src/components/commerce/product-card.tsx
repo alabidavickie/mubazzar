@@ -25,7 +25,7 @@ export function ProductCard({
   imageOverlay?: React.ReactNode;
   className?: string;
 }) {
-  const href = `/p/${product.slug}`;
+  const href = `/lp/${product.slug}`;
   const perk = product.perkText ?? (product.giftName ? `Free ${product.giftName}` : null);
   const perkIcon = product.perkIcon ?? (product.giftName ? "redeem" : "verified");
   const soldOut = product.availableUnits <= 0;
@@ -103,7 +103,7 @@ export function ProductCard({
 
 /** Horizontal card used by "Viral Problem Solvers" (design: Home). */
 export function ProductRow({ product }: { product: ProductCardData }) {
-  const href = `/p/${product.slug}`;
+  const href = `/lp/${product.slug}`;
   return (
     <article className="flex min-w-0 items-center gap-3 rounded-xl bg-card p-3 shadow-card" data-testid="product-row">
       <Link href={href} className="relative size-24 shrink-0 overflow-hidden rounded-lg bg-surface-high">

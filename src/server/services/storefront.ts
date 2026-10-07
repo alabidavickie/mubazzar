@@ -96,11 +96,22 @@ export async function getProductReviewSummary(productId: string): Promise<Review
   });
 }
 
-/** Published landing pages for the sitemap. */
-export async function getPublishedLandingSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
-  return asAnon((q) =>
+/**
+ * Every address that serves a product page (each product's landing page): published custom landing
+ * pages, plus the automatic page of every active product that has no published custom one.
+ */
+export async function getProductPageSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
+  const rows = await asAnon((q) =>
     q.query<{ slug: string; updatedAt: string }>(
-      `select slug, updated_at as "updatedAt" from public.landing_pages where is_published order by slug`,
+      `select slug, updated_at as "updatedAt" from (
+         select lp.slug, lp.updated_at, 0 as ord from public.landing_pages lp where lp.is_published
+         union all
+         select p.slug, p.updated_at, 1 as ord from public.products p
+          where p.is_active
+            and not exists (select 1 from public.landing_pages lp where lp.product_id = p.id and lp.is_published)
+       ) x order by slug, ord`,
     ),
   );
+  // A custom page and another product's automatic page can share an address: the custom page wins.
+  return rows.filter((r, i) => i === 0 || rows[i - 1]!.slug !== r.slug);
 }

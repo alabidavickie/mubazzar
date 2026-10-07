@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useCart, type CartLine } from "@/lib/client/cart-store";
 import { track } from "@/lib/client/pixel";
@@ -12,12 +12,15 @@ export function AddToCartButton({
   size = "full",
   label = "Add to Cart",
   className,
+  autoAdd = false,
 }: {
   line: Omit<CartLine, "packs">;
   packs?: number;
   size?: "full" | "compact";
   label?: string;
   className?: string;
+  /** Add once on mount: the visitor already tapped a placeholder while this button was still loading. */
+  autoAdd?: boolean;
 }) {
   const add = useCart((s) => s.add);
   const [added, setAdded] = useState(false);
@@ -33,6 +36,14 @@ export function AddToCartButton({
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };
+
+  const autoDone = useRef(false);
+  useEffect(() => {
+    if (!autoAdd || autoDone.current) return;
+    autoDone.current = true;
+    onClick();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, with the line the visitor had selected
+  }, []);
 
   if (size === "compact") {
     return (

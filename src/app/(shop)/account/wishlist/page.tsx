@@ -26,7 +26,7 @@ export default async function WishlistPage() {
                 // eslint-disable-next-line @next/next/no-img-element -- small thumbnail
                 <img src={p.imageUrl} alt="" className="size-14 shrink-0 rounded-lg object-cover" loading="lazy" />
               ) : null}
-              <Link href={`/p/${p.slug}`} className="min-w-0 flex-1">
+              <Link href={`/lp/${p.slug}`} className="min-w-0 flex-1">
                 <span className="block truncate font-semibold text-ink">{p.name}</span>
                 <span className="text-body-sm text-ink-muted">
                   {formatNaira(Number(p.priceKobo))} · {p.available > 0 ? "In stock" : "Sold out right now"}

@@ -14,6 +14,7 @@ import { FloatingWhatsApp } from "@/components/layout/floating-whatsapp";
 import { LandingProvider } from "@/components/landing/landing-provider";
 import { LandingBundles } from "@/components/landing/landing-bundles";
 import { DeferredLandingOrderForm } from "@/components/landing/deferred-order-form";
+import { DeferredLandingCartActions } from "@/components/landing/deferred-cart-actions";
 import { StaticImg, staticImgProps } from "@/components/landing/static-img";
 import { LandingStock } from "@/components/landing/landing-stock";
 import { LandingGallery } from "@/components/landing/gallery";
@@ -28,6 +29,7 @@ import { getDeliveryZones, getEnabledChannels, getPublicSettings } from "@/serve
 import { buildWhatsAppLink, CHANNEL_LABEL } from "@/lib/chat/links";
 import { formatNaira, koboToNairaInput, savingsKobo } from "@/lib/money";
 import { formatNgPhoneIntl } from "@/lib/phone";
+import { internalBackLink } from "@/lib/referrer";
 import { landingTimer, nearestHubFromGeo, promoPricing, youTubeEmbedUrl } from "@/lib/landing";
 import { markupToPlainText, renderMarkup } from "@/lib/markup";
 import { absoluteUrl } from "@/lib/site";
@@ -130,6 +132,33 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
   const supportHref = buildWhatsAppLink(settings.support.whatsapp, `Hello MUBAZZAR, I have a question about the ${product.name}.`);
   const embedUrl = youTubeEmbedUrl(lp.videoUrl);
   const shownReviews = reviews.slice(0, 4);
+  // Visitors who arrived from another page of this site get a way back; ad traffic does not.
+  const back = res.preview ? null : internalBackLink(h.get("referer"), h.get("x-forwarded-host") ?? h.get("host"), `/lp/${slug}`);
+  const descriptionParas = (product.description ?? "").split(/\n{2,}/).map((t) => t.trim()).filter(Boolean);
+  const cartBlock =
+    product.availableUnits > 0 ? (
+      <div className="flex flex-col gap-1.5" data-testid="lp-add-to-cart">
+        <p className="text-body-sm text-ink-muted">Want more than one gadget? Add this to your cart and keep shopping.</p>
+        <DeferredLandingCartActions
+          product={{
+            id: product.id,
+            slug: product.slug,
+            name: product.name,
+            imageUrl: product.imageUrl,
+            giftName: product.giftName,
+            priceKobo: promo.priceKobo,
+            compareAtKobo: promo.compareAtKobo,
+          }}
+          bundles={product.bundles.map((b) => ({
+            id: b.id,
+            label: b.label,
+            shortLabel: b.shortLabel,
+            priceKobo: b.priceKobo,
+            compareAtKobo: b.compareAtKobo,
+          }))}
+        />
+      </div>
+    ) : null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -175,6 +204,16 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
       <header className="sticky top-0 z-40 bg-surface/90 shadow-[0_1px_8px_rgb(0_0_0/0.04)] backdrop-blur-xl pt-safe">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between gap-2 px-4">
           <span className="flex min-w-0 items-center gap-2">
+            {back ? (
+              <Link
+                href={back.href}
+                aria-label={back.label}
+                data-testid="back-link"
+                className="-ml-2 flex size-11 shrink-0 items-center justify-center rounded-full text-navy hover:bg-surface-container"
+              >
+                <Icon name="arrow_back" />
+              </Link>
+            ) : null}
             <StaticImg src="/brand/emblem.webp" alt="" width={28} height={28} className="rounded-md" />
             <span className="font-display text-headline-sm font-extrabold tracking-wide whitespace-nowrap text-navy">MUBAZZAR</span>
           </span>
@@ -341,6 +380,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
           >
             <Icon name="inventory_2" className="text-gold-soft" /> Choose your package &amp; order now
           </a>
+          {product.bundles.length === 0 ? cartBlock : null}
 
           {/* Features */}
           {product.features.length > 0 ? (
@@ -417,6 +457,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
                 </h2>
               </div>
               <LandingBundles bundles={product.bundles} />
+              {cartBlock}
             </section>
           ) : null}
 
@@ -456,6 +497,42 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
                 : null}
             </section>
           ))}
+
+          {/* Full product details: description + specifications */}
+          {descriptionParas.length > 0 ? (
+            <section aria-labelledby="about-title" className="flex flex-col gap-2 pt-1">
+              <h2 id="about-title" className="text-headline-md font-bold text-navy">
+                About this product
+              </h2>
+              {descriptionParas.map((para, i) => (
+                <p key={i} className="text-body-md leading-relaxed text-ink-muted">
+                  {para}
+                </p>
+              ))}
+            </section>
+          ) : null}
+          {product.specs.length > 0 ? (
+            <section aria-labelledby="specs-title" className="flex flex-col gap-2 pt-1">
+              <h2 id="specs-title" className="text-headline-md font-bold text-navy">
+                Specifications
+              </h2>
+              <div className="overflow-hidden rounded-xl bg-card shadow-card">
+                <table className="w-full text-left text-body-md">
+                  <caption className="sr-only">{product.name} specifications</caption>
+                  <tbody>
+                    {product.specs.map((spec, i) => (
+                      <tr key={spec.label} className={i % 2 ? "bg-card" : "bg-surface-low"}>
+                        <th scope="row" className="w-2/5 px-4 py-2.5 align-top text-label-md font-semibold text-navy">
+                          {spec.label}
+                        </th>
+                        <td className="px-4 py-2.5 text-ink">{spec.value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ) : null}
 
           {/* Reviews */}
           {shownReviews.length > 0 ? (
@@ -531,8 +608,9 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
             </a>{" "}
             · {settings.support.hours}
           </p>
-          <nav aria-label="Policies" className="flex flex-wrap justify-center gap-x-1 text-body-sm">
+          <nav aria-label="Shop and policies" className="flex flex-wrap justify-center gap-x-1 text-body-sm">
             {[
+              ["/shop", "Shop all gadgets"],
               ["/returns", "Returns"],
               ["/delivery", "Delivery"],
               ["/privacy", "Privacy"],
