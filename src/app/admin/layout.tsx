@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireRole, STAFF_ROLES } from "@/server/session";
 import { logoutAction } from "@/app/actions/auth";
 import { Icon } from "@/components/icons/icon";
+import { BackBar } from "@/components/layout/back-bar";
 import { AdminNav } from "./admin-nav";
 import { navFor } from "./nav";
 
@@ -38,6 +39,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="flex flex-col lg:flex-row">
         <AdminNav items={navFor(session.role)} />
         <main id="main" className="min-w-0 flex-1 px-4 py-4 pb-16 lg:px-6">
+          <BackBar className="mb-2" />
           {children}
         </main>
       </div>

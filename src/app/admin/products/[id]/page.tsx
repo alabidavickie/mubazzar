@@ -15,9 +15,6 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   if (!data) notFound();
   return (
     <div className="flex flex-col gap-4">
-      <Link href="/admin/products" className="inline-flex w-fit items-center gap-1 text-label-md text-navy">
-        <Icon name="arrow_back" className="text-base" /> Products
-      </Link>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-headline-md font-bold text-navy">{data.values.name}</h1>
         <Link href={`/admin/landing-pages/new?product=${id}`} className="inline-flex min-h-10 items-center gap-1 rounded-lg bg-surface-high px-3 text-label-md font-bold text-navy">

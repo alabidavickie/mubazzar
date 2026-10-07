@@ -52,9 +52,6 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <Link href="/admin/orders" className="inline-flex w-fit items-center gap-1 text-label-md text-navy">
-          <Icon name="arrow_back" className="text-base" /> Orders
-        </Link>
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-headline-md font-bold text-navy tabular" data-testid="order-number">
             {o.orderNumber}

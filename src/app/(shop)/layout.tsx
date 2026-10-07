@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { FloatingWhatsApp } from "@/components/layout/floating-whatsapp";
 import { MetaPixel } from "@/components/analytics/meta-pixel";
+import { BackBar } from "@/components/layout/back-bar";
 import { CartSync } from "@/components/storefront/cart-sync";
 import { getCategories, maxActiveDiscountPercent } from "@/server/services/catalog";
 import { getPublicSettings } from "@/server/services/settings";
@@ -26,6 +27,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
       </a>
       <SiteHeader promoStrip={settings.promoStrip} categories={categories} supportWhatsApp={settings.support.whatsapp} />
       <main id="main" className="mx-auto min-h-[60dvh] w-full max-w-(--container-site) pb-6">
+        <BackBar className="px-4 pt-1" />
         {children}
       </main>
       <SiteFooter settings={settings} />

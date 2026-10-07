@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getSession, homeForRole } from "@/server/session";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 import { LoginTabs } from "./login-tabs";
+import { BackBar } from "@/components/layout/back-bar";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -18,6 +19,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-4 py-8">
+      <BackBar className="-mb-3" />
       <Link href="/" className="flex items-center gap-2 self-center" aria-label="MUBAZZAR home">
         <Image src="/brand/emblem.webp" alt="" width={40} height={40} className="rounded-lg" />
         <span className="font-display text-headline-md font-extrabold tracking-wider text-navy">MUBAZZAR</span>

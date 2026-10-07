@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireRole } from "@/server/session";
 import { logoutAction } from "@/app/actions/auth";
 import { Icon } from "@/components/icons/icon";
+import { BackBar } from "@/components/layout/back-bar";
 
 export const metadata: Metadata = { title: { default: "Supplier", template: "%s · Supplier | MUBAZZAR" }, robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default async function SupplierLayout({ children }: { children: React.Rea
         </div>
       </header>
       <main id="main" className="mx-auto w-full max-w-3xl px-4 py-4 pb-16">
+        <BackBar className="-mt-1" />
         {children}
       </main>
     </div>

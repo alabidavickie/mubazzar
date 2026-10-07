@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireRole } from "@/server/session";
 import { logoutAction } from "@/app/actions/auth";
 import { Icon } from "@/components/icons/icon";
+import { BackBar } from "@/components/layout/back-bar";
 
 export const metadata: Metadata = {
   title: { default: "Deliveries", template: "%s · Deliveries | MUBAZZAR" },
@@ -30,6 +31,7 @@ export default async function DispatchLayout({ children }: { children: React.Rea
         </div>
       </header>
       <main id="main" className="mx-auto w-full max-w-xl px-4 py-4 pb-16">
+        <BackBar className="-mt-1" />
         {children}
       </main>
     </div>
