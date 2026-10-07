@@ -98,16 +98,16 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 
 ## Final Summary
 
-**Status (2026-10-04): every phase is complete and verified.** Final run on a fresh build and a fresh database:
+**Status (2026-10-07): every phase is complete and verified.** Last full run (fresh build, fresh database) after the security hardening, page audit and landing-page-as-product-page work:
 
 | Check | Result |
 |---|---|
 | `pnpm lint` / `pnpm typecheck` / `pnpm build` | ✅ clean |
-| `pnpm test` (unit + integration, PGlite with all migrations, RLS for every role) | ✅ 195/195 |
-| `pnpm test:e2e` (iPhone 13, Pixel 7, desktop; axe on every page) | ✅ 143 passed, 7 skipped by design (mobile-only auto-open on desktop; single-device checks) |
+| `pnpm test` (unit + integration, PGlite with all migrations, RLS for every role, security regressions) | ✅ 251/251 |
+| `pnpm test:e2e` (iPhone 13, Pixel 7, desktop; axe on every page; A–Z crawl of every sitemap URL; security probes) | ✅ 187 passed, 38 skipped by design (single-device checks, mobile-only auto-open on desktop) |
 | Brief §8 E2E journeys 1–12 | ✅ all pass on both mobile viewports |
-| `pnpm lhci` (mobile, slow-4G DevTools throttling) | ✅ Home 98/100/100/100 LCP 1.76 s · Catalog 98/100/100/100 LCP 1.72 s · LP 97/100/100/100 LCP 1.88 s · CLS 0 — reports in `reports/lighthouse-final/` |
-| LP first-load JS | ✅ 147 KB gz (budget 150, guarded by `js-budget.spec.ts`) |
+| `pnpm lhci` (mobile, slow-4G DevTools throttling) | ✅ on 2026-10-04 (before the latest changes): Home 98/100/100/100 LCP 1.76 s · Catalog 98/100/100/100 LCP 1.72 s · LP 97/100/100/100 LCP 1.88 s · CLS 0 — reports in `reports/lighthouse-final/`. ⚠️ Re-run on a quiet machine before launch: on 2026-10-07 the build machine was starved (disk 99% full, ~1.6 GB free RAM, Lighthouse CPU benchmark 900–1700 vs ~2700), and the untouched Home page also fell to 87 / LCP 3.1 s while the landing page scored the same as Home; accessibility/best-practices/SEO stayed 100 and CLS ≈ 0 everywhere. |
+| LP first-load JS | ✅ 148 KB gz (budget 150, guarded by `js-budget.spec.ts`; the cart/wishlist code loads lazily after the page) |
 | `pnpm audit --prod` | ✅ no known vulnerabilities |
 
 **What was built**
