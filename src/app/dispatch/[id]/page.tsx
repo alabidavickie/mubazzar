@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/server/session";
 import { getMyDelivery } from "@/server/services/dispatch";
@@ -18,11 +17,12 @@ export default async function DeliveryPage({ params }: { params: Params }) {
   const d = await getMyDelivery(session, id);
   if (!d) notFound();
   const open = d.assignmentStatus === "assigned" && d.status === "dispatched";
+  // Riders may only record money on orders where staff agreed Pay on Delivery (enforced in the database too).
+  const canCollect = d.podAgreed || d.paymentStatus === "pay_on_delivery" || d.paymentStatus === "part_paid";
+  const collectKobo = canCollect ? d.balanceKobo : 0;
+  const notAgreed = d.balanceKobo > 0 && !canCollect;
   return (
     <div className="flex flex-col gap-4">
-      <Link href="/dispatch" className="inline-flex min-h-11 w-fit items-center gap-1 text-label-lg text-navy">
-        <Icon name="arrow_back" /> My deliveries
-      </Link>
       <div>
         <h1 className="text-headline-md font-bold text-navy tabular">{d.orderNumber}</h1>
         <p className="text-body-lg font-semibold">{d.customerName}</p>
@@ -72,15 +72,20 @@ export default async function DeliveryPage({ params }: { params: Params }) {
         <p className="mt-2 flex items-baseline justify-between text-body-lg">
           <span className="font-semibold">To collect</span>
           <span className="text-headline-sm font-extrabold text-navy-deep tabular" data-testid="to-collect">
-            {formatNaira(d.balanceKobo)}
+            {formatNaira(collectKobo)}
           </span>
         </p>
+        {notAgreed ? (
+          <p className="text-body-sm text-urgent-ink">
+            Pay on delivery was not agreed for this order — don&apos;t collect money. Call the office if the customer wants to pay at the door.
+          </p>
+        ) : null}
         {d.balanceKobo === 0 ? <p className="text-body-sm text-emerald-ink">Already paid in full — do not collect money.</p> : null}
         {d.podAgreed && d.balanceKobo > 0 ? <p className="text-body-sm text-bronze">Pay on delivery was agreed with the customer.</p> : null}
       </section>
 
       {open ? (
-        <DeliveryForms orderId={d.id} balanceKobo={d.balanceKobo} />
+        <DeliveryForms orderId={d.id} collectKobo={collectKobo} notAgreed={notAgreed} />
       ) : d.assignmentStatus === "delivered" ? (
         <p role="status" className="rounded-xl bg-emerald-soft p-4 text-label-lg text-emerald-ink" data-testid="delivery-done">
           Marked delivered. Thank you!

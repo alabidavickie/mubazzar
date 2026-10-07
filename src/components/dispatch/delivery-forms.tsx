@@ -9,7 +9,7 @@ import { completeDeliveryAction, failDeliveryAction, type DispatchResult } from 
 import { koboToNairaInput } from "@/lib/money";
 
 /** Delivered (with money collected + proof photo) or failed (with reason). Big targets for one-handed use. */
-export function DeliveryForms({ orderId, balanceKobo }: { orderId: string; balanceKobo: number }) {
+export function DeliveryForms({ orderId, collectKobo, notAgreed }: { orderId: string; collectKobo: number; notAgreed: boolean }) {
   const router = useRouter();
   const [mode, setMode] = useState<"delivered" | "failed" | null>(null);
   const [pending, start] = useTransition();
@@ -50,9 +50,15 @@ export function DeliveryForms({ orderId, balanceKobo }: { orderId: string; balan
       {mode === "delivered" ? (
         <form onSubmit={submit(completeDeliveryAction)} className="flex flex-col gap-3 rounded-xl bg-card p-4 shadow-card" data-testid="delivered-form">
           <input type="hidden" name="orderId" value={orderId} />
-          <Field label="Money collected at the door (₦)" hint={balanceKobo > 0 ? "Enter 0 if the customer paid the office directly." : "Order is already paid."} error={err("collected")}>
+          <Field label="Money collected at the door (₦)" hint={
+              collectKobo > 0
+                ? "Enter 0 if the customer paid the office directly."
+                : notAgreed
+                  ? "Pay on delivery wasn't agreed for this order. Leave this at 0 and call the office."
+                  : "Order is already paid."
+            } error={err("collected")}>
             {({ id, describedBy, invalid }) => (
-              <Input id={id} name="collected" inputMode="decimal" defaultValue={balanceKobo > 0 ? koboToNairaInput(balanceKobo) : "0"} aria-describedby={describedBy} aria-invalid={invalid} />
+              <Input id={id} name="collected" inputMode="decimal" defaultValue={collectKobo > 0 ? koboToNairaInput(collectKobo) : "0"} aria-describedby={describedBy} aria-invalid={invalid} />
             )}
           </Field>
           <Field label="How was it paid?" error={err("method")}>
@@ -60,7 +66,6 @@ export function DeliveryForms({ orderId, balanceKobo }: { orderId: string; balan
               <Select id={id} name="method" defaultValue="pay_on_delivery">
                 <option value="pay_on_delivery">Cash</option>
                 <option value="pos_on_delivery">POS</option>
-                <option value="bank_transfer">Transfer to company account</option>
               </Select>
             )}
           </Field>

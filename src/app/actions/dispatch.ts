@@ -17,6 +17,9 @@ const ERRORS: Record<string, string> = {
   ORDER_NOT_DISPATCHED: "This order isn't out for delivery.",
   INVALID_METHOD: "Choose how you collected the money.",
   INVALID_AMOUNT: "Enter a valid amount.",
+  COLLECTION_NOT_AGREED:
+    "Pay on delivery wasn't agreed for this order, so you can't record money for it. Enter 0 and ask the office to sort out payment.",
+  AMOUNT_EXCEEDS_BALANCE: "That is more than the customer still owes. Check the amount.",
   REASON_REQUIRED: "Say why the delivery failed.",
 };
 
@@ -42,7 +45,7 @@ async function storeProof(formData: FormData, orderId: string): Promise<{ ref: s
 const completeSchema = z.object({
   orderId: z.uuid(),
   collected: z.string().trim().default(""),
-  method: z.enum(["pay_on_delivery", "pos_on_delivery", "bank_transfer"]).nullable(),
+  method: z.enum(["pay_on_delivery", "pos_on_delivery"]).nullable(),
   note: z.string().trim().max(500).default(""),
 });
 
