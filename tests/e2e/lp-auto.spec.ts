@@ -14,6 +14,8 @@ test.describe("automatic product landing pages", () => {
     await expect(page.getByTestId("promo-timer")).toHaveAttribute("data-ends-at", "");
     await expect(page.getByTestId("promo-timer")).toHaveText("");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/lp\/bladeless-neck-fan$/);
+    // Ad-only page: it repeats the product page, so it stays out of search results.
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(0);
     await expectNoA11yViolations(page);

@@ -60,7 +60,8 @@ export async function generateMetadata({ params, searchParams }: { params: Param
     title: /mubazzar/i.test(title) ? { absolute: title } : title,
     description,
     alternates: { canonical: `/lp/${lp.slug}` },
-    robots: res.preview || !lp.isPublished ? { index: false, follow: false } : undefined,
+    // Automatic pages (no custom landing page) are ad destinations that repeat the product page: keep them out of search.
+    robots: res.preview || !lp.isPublished ? { index: false, follow: false } : lp.id === null ? { index: false, follow: true } : undefined,
     openGraph: {
       type: "website",
       title,

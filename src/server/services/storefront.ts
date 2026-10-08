@@ -96,11 +96,14 @@ export async function getProductReviewSummary(productId: string): Promise<Review
   });
 }
 
-/** Published landing pages for the sitemap. */
+/** Published landing pages for the sitemap (a hidden product's page 404s, so it must not be advertised). */
 export async function getPublishedLandingSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
   return asAnon((q) =>
     q.query<{ slug: string; updatedAt: string }>(
-      `select slug, updated_at as "updatedAt" from public.landing_pages where is_published order by slug`,
+      `select lp.slug, lp.updated_at as "updatedAt"
+         from public.landing_pages lp join public.products p on p.id = lp.product_id
+        where lp.is_published and p.is_active
+        order by lp.slug`,
     ),
   );
 }
