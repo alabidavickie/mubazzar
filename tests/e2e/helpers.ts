@@ -8,7 +8,6 @@ export const ACCOUNTS = {
   admin: { email: "admin@mubazzar.test", password: "Admin#2026!" },
   staff: { email: "staff@mubazzar.test", password: "Staff#2026!" },
   dispatcher: { email: "dispatch@mubazzar.test", password: "Dispatch#2026!" },
-  supplier: { email: "supplier@mubazzar.test", password: "Supplier#2026!" },
   customer: { email: "customer@mubazzar.test", password: "Customer#2026!", phone: "08030000005" },
 } as const;
 

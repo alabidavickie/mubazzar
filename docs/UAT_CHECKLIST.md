@@ -4,7 +4,7 @@ Run this on the **live site** after Supabase and the live keys are in (README §
 their **own Android phone on mobile data** (not Wi-Fi) and real WhatsApp. Tick each box; for anything
 odd, write the step number, what you expected, what happened, and attach a screenshot.
 
-Who: **Shopper** (someone who has never seen the site) · **Staff/Admin** (on a laptop) · **Rider** (on a phone) · **Supplier** (optional).
+Who: **Shopper** (someone who has never seen the site) · **Staff/Admin** (on a laptop) · **Rider** (on a phone).
 Time: about 45 minutes together. Use small real orders and cancel them at the end (step 30).
 
 ## Shopper — first visit (don't explain the site to them)
@@ -37,16 +37,16 @@ Time: about 45 minutes together. Use small real orders and cancel them at the en
 - [ ] 23. Print the order slip. Is it readable on paper?
 - [ ] 24. Change one product's price in **Products**. Does the shop show the new price within a minute?
 - [ ] 25. Open **Chat & payments** and check the WhatsApp numbers, bank accounts and alert recipients are the real ones.
+- [ ] 26. **Products → New product**: add a real product with 2–3 photos, a price and one package. Then open its landing page `/lp/<product link>` on a phone and place a test order from it.
+- [ ] 27. **Landing pages** lists every product. Tap **Open** on three of them: each loads with that product's photos, price and order form.
+- [ ] 28. Sign in as **order staff**: **Products → New product** must be refused (only the admin adds products). Also confirm `/sell` and `/supplier` show "page not found".
 
 ## Rider (phone)
-- [ ] 26. Sign in. Is the assigned order listed with the right address and "paid / collect ₦X" amount?
-- [ ] 27. Tap the customer's phone number. Does it open the dialler? Is the address enough to find the place?
-- [ ] 28. Mark it **Delivered** (take a proof photo if asked). Did the shopper get the "delivered" SMS?
-
-## Supplier (optional)
-- [ ] 29. Apply at `/sell/apply`. Admin approves in **Suppliers**. Supplier signs in and adds a product; admin approves it.
+- [ ] 29. Sign in. Is the assigned order listed with the right address and "paid / collect ₦X" amount?
+- [ ] 30. Tap the customer's phone number. Does it open the dialler? Is the address enough to find the place?
+- [ ] 31. Mark it **Delivered** (take a proof photo if asked). Did the shopper get the "delivered" SMS?
 
 ## Wrap-up
-- [ ] 30. Admin cancels/refunds the test orders and checks stock went back up in **Inventory**.
-- [ ] 31. Each tester: what was confusing, slow, or made you hesitate to buy? Write it down.
-- [ ] 32. Admin → **Homepage**: switch sample reviews off for launch.
+- [ ] 32. Admin cancels/refunds the test orders and checks stock went back up in **Inventory**.
+- [ ] 33. Each tester: what was confusing, slow, or made you hesitate to buy? Write it down.
+- [ ] 34. Admin → **Homepage**: switch sample reviews off for launch.

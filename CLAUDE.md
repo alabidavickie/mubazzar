@@ -14,6 +14,7 @@ Status & next task: `PROGRESS.md` (look for `👉 NEXT`). Decisions: `DECISIONS.
 8. Never hardcode hex colors in components — use Tailwind tokens defined in `src/app/globals.css` (`@theme`).
 9. No payment gateway; no card/bank fields on the site. Payment happens in WhatsApp/social chat; staff record payments in `/admin`.
 10. Server recomputes every price/total from the DB. Client totals are display-only and ignored.
+11. **Only the admin uploads or edits products** (one by one, or by CSV import). There is no supplier/reseller/seller side — no sign-up, portal, submissions or approval flow (removed 2026-10-08; the legacy `supplier` label in the `app_role` enum is unused and a CHECK constraint forbids it). Do not reintroduce one.
 
 ## Stack
 Next.js (App Router, TS strict) · Tailwind v4 (`@theme` tokens in `globals.css`) · shadcn-style primitives in `src/components/ui` · Zod + React Hook Form · Zustand (cart only) · Postgres via Supabase (prod) / **PGlite** (local dev + tests, same SQL) · Vitest · Playwright + axe-core · Lighthouse CI · pnpm.
@@ -27,11 +28,11 @@ Next.js (App Router, TS strict) · Tailwind v4 (`@theme` tokens in `globals.css`
 - `src/server/adapters/*.ts` — `auth.ts` (mock JWT-cookie+scrypt / live Supabase Auth REST), `storage.ts` (local `.data/uploads` / Supabase Storage), `notify.ts` (outbox + Termii/Resend/WhatsApp Cloud), `meta.ts` (CAPI + Purchase outbox flush), `rate-limit.ts` (Postgres). Each picks the live provider only when its env keys exist (`src/server/env.ts` → `services`).
 - `src/server/services/` — domain logic used by server actions/route handlers.
 - `src/lib/` — pure, isomorphic, unit-tested helpers: `money`, `phone`, `delivery`, `pricing`, `order-number`, `chat/links`, `chat/templates`, `payments/status`, `schemas/*` (shared Zod).
-- `src/app/(shop)` storefront (header + bottom nav + floating WhatsApp) · `src/app/lp/[slug]` ad landing (logo + WhatsApp only) · `src/app/admin` · `src/app/dispatch` · `src/app/supplier` · `src/app/account` · `src/app/login`.
+- `src/app/(shop)` storefront (header + bottom nav + floating WhatsApp) · `src/app/lp/[slug]` ad landing (logo + WhatsApp only) · `src/app/admin` · `src/app/dispatch` · `src/app/account` · `src/app/login`.
 - Icons: Material Symbols as inline SVG via `src/components/icons` (generated subset, no icon font).
 
 ## Roles (`profiles.role`)
-`customer` (default for signed-up users) · `admin` · `staff` (order staff) · `dispatcher` · `supplier`. Guests are `anon`. Only `admin`/`staff` can record payments (enforced in RLS + `record_payment` function + audit log).
+`customer` (default for signed-up users) · `admin` · `staff` (order staff) · `dispatcher`. Guests are `anon`. There is no supplier/reseller/seller role — see rule 11. Only `admin`/`staff` can record payments (enforced in RLS + `record_payment` function + audit log).
 
 ## Order model
 `status`: awaiting_chat → in_chat → confirmed → dispatched → delivered | failed_delivery | returned | cancelled.
@@ -45,7 +46,7 @@ Stock: reserved on create, released on cancel/fail, deducted on deliver; per hub
 - `pnpm lhci` — Lighthouse CI against a production build; reports to `/reports`
 
 ## Patterns (follow these)
-- Pages: async server components that call `src/server/services/*` (reads run `asAnon` so RLS applies). Storefront pages `export const revalidate = 60`; admin/dispatch/supplier/account pages are dynamic and call `requireRole([...])` from `src/server/session.ts` first.
+- Pages: async server components that call `src/server/services/*` (reads run `asAnon` so RLS applies). Storefront pages `export const revalidate = 60`; admin/dispatch/account pages are dynamic and call `requireRole([...])` from `src/server/session.ts` first.
 - Mutations: server actions in `src/app/actions/*.ts` ("use server") → validate with Zod → call SQL functions via `asUser(session.userId, …)` (so RLS + role checks run as that user) → `revalidatePath` affected pages. Map SQL errors with `parseAppError`.
 - UI kit: `src/components/ui/*` (Button, Field/Input/Select/Textarea, Badge, Chip, Sheet, Accordion, Skeleton, EmptyState, SectionHeader, Card), commerce (`ProductCard`, `ProductRow`, `Price`, `DiscountBadge`, `RatingInline`, `Stars`, `Countdown`, `StockMeter`, `ReviewCard`, `StandardSection`, `QuickOrderButton`, `AddToCartButton`), order (`OrderForm`, `BundleSelector`, `QuantityStepper`, `QuickOrderSheet`), layout (`SiteHeader`, `BottomNav`, `SiteFooter`, `FloatingWhatsApp`).
 - Icons: `<Icon name="…" filled? />`. To add an icon, append its Material Symbols name to `ICONS` in `scripts/gen-icons.mjs` and run `pnpm icons` (fetches ~1KB SVGs from jsDelivr).

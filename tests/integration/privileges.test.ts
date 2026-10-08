@@ -27,8 +27,6 @@ const AUTHENTICATED_ALLOWED = new Set([
   "complete_delivery",
   "fail_delivery",
   "submit_review",
-  "review_supplier",
-  "review_supplier_product",
   "adjust_inventory",
   "admin_audit",
 ]);

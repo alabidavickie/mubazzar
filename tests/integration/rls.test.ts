@@ -40,7 +40,6 @@ describe("guest (anon)", () => {
     expect(await count("anon", "select 1 from public.payments")).toBe(0);
     expect(await count("anon", "select 1 from public.profiles")).toBe(0);
     expect(await count("anon", "select 1 from public.audit_log")).toBe(0);
-    expect(await count("anon", "select 1 from public.suppliers")).toBe(0);
   });
 
   it("never sees bank details or disabled chat channels", async () => {
@@ -173,31 +172,43 @@ describe("dispatcher", () => {
   });
 });
 
-describe("supplier", () => {
-  it("manages only their own submissions and sees no orders", async () => {
-    expect(await count("supplier", "select 1 from public.orders")).toBe(0);
-    const rows = await as(db, "supplier")((q) =>
-      q.query<{ id: string }>(
-        `insert into public.supplier_products (supplier_id, name, description, proposed_price_kobo, status)
-         values ($1, 'Mini Sealer', 'Seals snack bags with heat', 500000, 'pending') returning id`,
-        [ids.supplier()],
-      ),
-    );
+describe("only the admin uploads products", () => {
+  const NEW_PRODUCT = `insert into public.products (slug, name, price_kobo) values ('sneaky-product', 'Sneaky Product', 100000) returning id`;
+
+  it.each(["anon", "customer", "staff", "dispatcher"] as const)("%s cannot create, edit, hide or delete products", async (who) => {
+    await rejects(as(db, who)((q) => q.query(NEW_PRODUCT)), /row-level security|permission denied/);
+    const touched = async (sql: string) => (await as(db, who)((q) => q.query(sql))).length;
+    expect(await touched(`update public.products set price_kobo = 1 where slug = '${VACUUM}' returning 1`)).toBe(0);
+    expect(await touched(`update public.products set is_active = false where slug = '${VACUUM}' returning 1`)).toBe(0);
+    expect(await touched(`delete from public.products where slug = '${VACUUM}' returning 1`)).toBe(0);
+    expect(await touched(`update public.bundles set price_kobo = 1 returning 1`)).toBe(0);
+    expect(await touched(`update public.free_gifts set is_active = false returning 1`)).toBe(0);
+    expect(await touched(`update public.product_images set alt = 'x' returning 1`)).toBe(0);
+  });
+
+  it("the admin can", async () => {
+    const rows = await as(db, "admin")((q) => q.query<{ id: string }>(NEW_PRODUCT));
     expect(rows).toHaveLength(1);
-    await rejects(
-      as(db, "supplier")((q) =>
-        q.query(
-          `insert into public.supplier_products (supplier_id, name, description, proposed_price_kobo, status)
-           values ($1, 'Sneaky', 'Self-approved product', 500000, 'approved')`,
-          [ids.supplier()],
-        ),
-      ),
-      /row-level security/,
+    await as(db, "admin")((q) => q.query("delete from public.products where id = $1", [rows[0]!.id]));
+  });
+
+  it("there are no supplier/reseller tables, functions or accounts", async () => {
+    const [t] = await db.query<{ a: string | null; b: string | null }>(
+      "select to_regclass('public.suppliers')::text as a, to_regclass('public.supplier_products')::text as b",
     );
+    expect(t).toEqual({ a: null, b: null });
+    const fns = await db.query<{ proname: string }>("select proname from pg_proc where proname like '%supplier%'");
+    expect(fns).toEqual([]);
+    const cols = await db.query("select 1 from information_schema.columns where table_schema = 'public' and table_name = 'products' and column_name = 'supplier_id'");
+    expect(cols).toEqual([]);
+  });
+
+  it("no account can ever be given the retired supplier role, not even by an admin", async () => {
     await rejects(
-      as(db, "supplier")((q) => q.query("select public.review_supplier_product($1, true)", [rows[0]!.id])),
-      /FORBIDDEN/,
+      as(db, "admin")((q) => q.query(`update public.profiles set role = 'supplier' where id = $1`, [ids.user("customer")])),
+      /profiles_no_supplier_role/,
     );
+    await rejects(db.query(`update public.profiles set role = 'supplier' where id = $1`, [ids.user("customer")]), /profiles_no_supplier_role/);
   });
 });
 

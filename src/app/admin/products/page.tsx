@@ -61,7 +61,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate font-semibold text-ink">{p.name}</span>
                   <span className="text-body-sm text-ink-muted">
-                    {formatNaira(p.priceKobo)} · {p.categoryName ?? "No category"} · {p.available} can ship · {p.bundleCount} bundle{p.bundleCount === 1 ? "" : "s"}
+                    {formatNaira(p.priceKobo)} · {p.categoryName ?? "No category"} · {p.available} can ship · {p.bundleCount} bundle{p.bundleCount === 1 ? "" : "s"}{p.isActive ? ` · landing page: ${p.landingCount > 0 ? "custom" : "automatic"}` : ""}
                   </span>
                 </span>
                 {!p.isActive ? <Badge size="xs">Hidden</Badge> : null}

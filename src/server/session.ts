@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { asService } from "./db";
 import { readSessionCookie } from "./adapters/auth";
 
-export type AppRole = "customer" | "admin" | "staff" | "dispatcher" | "supplier";
+export type AppRole = "customer" | "admin" | "staff" | "dispatcher";
 
 export interface Session {
   userId: string;
@@ -46,8 +46,6 @@ export function homeForRole(role: AppRole): string {
       return "/admin";
     case "dispatcher":
       return "/dispatch";
-    case "supplier":
-      return "/supplier";
     default:
       return "/account";
   }

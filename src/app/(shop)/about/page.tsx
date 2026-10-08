@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Icon } from "@/components/icons/icon";
 import { StandardSection } from "@/components/commerce/standard-section";
 import { HelpCard, ProseSection, StaticBody, StaticHero } from "@/components/storefront/static-page";
 import { getPublicSettings } from "@/server/services/settings";
@@ -89,17 +88,6 @@ export default async function AboutPage() {
       <StandardSection detailed />
 
       <StaticBody>
-        <section aria-labelledby="sell-cta" className="flex items-center justify-between gap-3 rounded-xl bg-gradient-to-r from-gold-soft to-gold-pale p-4 shadow-card">
-          <div>
-            <h2 id="sell-cta" className="text-headline-sm font-bold text-bronze-ink">
-              Have a product Nigerians will love?
-            </h2>
-            <p className="text-body-sm text-bronze-muted">Become a MUBAZZAR supplier.</p>
-          </div>
-          <Link href="/sell" className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-lg bg-navy px-4 text-label-md text-on-dark shadow-card">
-            Learn more <Icon name="arrow_forward" className="text-sm" />
-          </Link>
-        </section>
         <HelpCard settings={settings} />
         <p className="text-center text-body-sm text-ink-muted">
           {settings.business.legalName} · {settings.business.address}

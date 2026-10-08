@@ -12,7 +12,7 @@ Checklist
 - `security definer` functions: explicit role checks, `set search_path`, no dynamic SQL from input.
 - Payments: only admin/staff can record (RLS + function check), every record audit-logged, overpayment flagged; customers/dispatchers rejected.
 - Price tampering: server recomputes from DB; client totals ignored; bundle IDs validated against product.
-- Input: Zod on every server action/route; phone normalization; honeypot; rate limits on order, login, OTP and supplier forms.
+- Input: Zod on every server action/route; phone normalization; honeypot; rate limits on order, login and OTP.
 - Secrets: no service keys in client bundles (grep the `.next/static` output), `.env*` gitignored, `NEXT_PUBLIC_` only for public values; bank details never on public pages.
 - Headers: CSP, HSTS, X-Content-Type-Options, Referrer-Policy, frame-ancestors; cookies HttpOnly/Secure/SameSite.
 - Auth: session cookies signed, role read from DB not from client, admin routes guarded server-side.

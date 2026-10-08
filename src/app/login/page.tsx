@@ -24,7 +24,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <div className="rounded-2xl bg-card p-5 shadow-raised">
         <h1 className="mb-1 text-headline-sm font-bold text-navy">Sign in</h1>
         <p className="mb-4 text-body-sm text-ink-muted">
-          Customers sign in with a one-time code. Staff, riders and suppliers use email and password.
+          Customers sign in with a one-time code. Staff and riders use email and password.
         </p>
         {error === "forbidden" ? (
           <p role="alert" className="mb-3 rounded-lg bg-urgent-soft p-3 text-body-sm font-semibold text-urgent-ink">

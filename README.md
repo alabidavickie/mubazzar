@@ -43,7 +43,6 @@ Useful database commands:
 | Admin (owner) | Staff & partners tab | `admin@mubazzar.test` / `Admin#2026!` |
 | Order staff | Staff & partners tab | `staff@mubazzar.test` / `Staff#2026!` |
 | Dispatcher | Staff & partners tab | `dispatch@mubazzar.test` / `Dispatch#2026!` |
-| Supplier | Staff & partners tab | `supplier@mubazzar.test` / `Supplier#2026!` |
 | Customer | Customer tab (one-time code) | phone `0803 000 0005` or `customer@mubazzar.test` — the dev code is shown on screen (or set `MOCK_OTP_CODE=123456`) |
 
 These accounts are never included in the production seed.
@@ -62,7 +61,7 @@ Copy `.env.example` to `.env.local` and fill what you need. Everything is option
 | `IP_HASH_SALT` | ✅ | Salt for hashing IPs used in rate limiting |
 | `DATABASE_URL` | ✅ | Supabase Postgres **transaction pooler** URL (port 6543). If unset, PGlite is used |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase Auth (OTP/password) + Storage URLs |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Server-only: creating staff/supplier accounts, Storage uploads, signed URLs |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Server-only: creating staff accounts, Storage uploads, signed URLs |
 | `NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_ACCESS_TOKEN` | optional | Meta Pixel (browser) + Conversions API (server). `META_TEST_EVENT_CODE` while testing |
 | `TERMII_API_KEY`, `TERMII_SENDER_ID` | optional | SMS (order confirmations, admin alerts, OTP fallback) |
 | `RESEND_API_KEY`, `EMAIL_FROM` | optional | Email notifications |
@@ -128,7 +127,7 @@ pnpm lhci
    ```sql
    update public.profiles set role = 'admin', full_name = 'Your Name' where email = 'you@yourdomain.com';
    ```
-   All other staff, dispatchers and suppliers are created from the admin panel.
+   All other staff and dispatchers are created from the admin panel.
 6. Copy the **transaction pooler** connection string (port 6543) as `DATABASE_URL`, plus the URL, anon key and service-role key.
 
 ### 4.2 Vercel
@@ -171,7 +170,7 @@ Admin → **Products** → **New product**. Enter name, category, price and (opt
 Admin → **Products** → **Import CSV**. Download the **template** (or **Export CSV** to get every current product), edit it in Excel/Google Sheets, save as CSV and upload. Rows are matched by `slug`: an existing slug is updated, a new one creates a product (needs `name` + `price`). Empty cells leave a field unchanged; lists use `|` (tags, `https://` photo links — copied into the shop's storage, JPG/PNG/WebP ≤ 5 MB — and features as `Title: description`). **Preview** checks every row against the database and saves nothing; **Import** saves the valid rows and lists any skipped ones with the reason. Bundles, FAQs, gifts and badges stay in each product's editor. Up to 500 rows per file; every import is in the **Audit log**.
 
 ### Every product already has an ad landing page
-Each active product is live at `/lp/<product-link>` (e.g. `/lp/bladeless-neck-fan`) with no extra work: photos, price, packages, features, trust points, reviews, FAQ and the built-in order form all come from the product, and the countdown/"PROMO" label appear only while the product has a real promo. The product editor shows the **Ad landing page** link. Build a custom page (below) when you want a hook headline, video or your own trust blocks — once published, it is also shown at the product's `/lp/` address.
+Each active product is live at `/lp/<product-link>` (e.g. `/lp/bladeless-neck-fan`) with no extra work: photos, price, packages, features, trust points, reviews, FAQ and the built-in order form all come from the product, and the countdown/"PROMO" label appear only while the product has a real promo. Admin → **Landing pages** lists *every* product with its page address, whether it is **Automatic** or **Custom**, an **Open** link, and **Customize** (or **Edit custom page**); the product editor and product list show the same. Products you add (one by one or by CSV import) get their landing page the moment they are visible. Build a custom page (below) when you want a hook headline, video or your own trust blocks — once published, it is also shown at the product's `/lp/` address.
 
 ### Launch a new ad landing page
 Admin → **Landing pages** → **New landing page** (or **Create ad landing page** on a product). Pick the product, set the page link (this becomes `/lp/<link>`), hook banner (no typed percentages — the real discount is shown), headline (`~~₦4,000~~` shows struck-through red, `**text**` bold), sub-headline, photo caption, trust blocks, video and sharing fields. Price, bundles, gift, photos, stock, reviews and the **countdown come from the product**: the timer counts down to the product's real promo end (bundle promo or flash deal) and never resets; the optional campaign end only makes the page say "Promo ended" after it. Save, use **Preview** (staff only), then tap **Draft — publish** in the list. Put the URL in your ad with UTM tags, e.g. `https://mubazzar.ng/lp/car-vacuum?utm_source=facebook&utm_campaign=oct-vacuum`. UTM/fbclid are saved on every order for ROI reporting (**Analytics**).
@@ -190,8 +189,8 @@ Every payment is permanently recorded with who recorded it and when (see **Audit
 ### Onboard a dispatcher
 Admin → **Staff & riders**: name, email, phone, role **Dispatcher (rider)**, hub and a temporary password → **Create account**. Share the login with the rider. On an order, choose **Assign dispatcher**; the rider sees it at `/dispatch` with map, call and WhatsApp buttons, and marks it **Delivered** (recording any money collected and a proof photo) or **Failed** (with a reason, which releases the stock).
 
-### Approve a supplier
-Suppliers apply at `/sell/apply` (they choose their own password; you get an email). Admin → **Suppliers** → **Approve** (they're emailed and can now sign in at `/login` → Staff & partners) or **Reject** with a note. Approved suppliers submit products at `/supplier`; each submission appears at the top of **Suppliers** under *Products waiting for review* — set the selling price and **Approve & publish** (the product goes live with their photos and stock in the warehouse hub) or reject with a note. Suppliers see their stock, units sold and units in open orders.
+### Who can add products
+**Only the admin.** Products are added under Admin → **Products** → **New product** (one at a time) or **Import CSV** (many at once). There is no seller or supplier sign-up on the platform: order staff, riders and customers cannot create or edit products (enforced in the database, not just the screens), and every product automatically has its own ad landing page (see below).
 
 ### Run a flash deal
 Admin → **Flash deals**: choose the product, a deal price below its regular price, and real start/end times (Lagos time). The deal price is charged only inside that window; the homepage countdown counts to the real end.
@@ -206,7 +205,7 @@ Admin → **Flash deals**: choose the product, a deal price below its regular pr
 ```
 supabase/migrations/   SQL schema, RLS policies, business functions (single source of truth)
 supabase/local/        Local-only Supabase auth shim for PGlite
-src/app/               Routes: (shop) storefront, lp/[slug], admin, dispatch, supplier, account, login, api
+src/app/               Routes: (shop) storefront, lp/[slug], admin, dispatch, account, login, api
 src/components/        ui kit, commerce, order form, layout, admin
 src/server/            db drivers + seed, adapters (auth, storage, notify, meta, rate-limit), services, session
 src/lib/               pure helpers shared by client and server (money, phone, delivery, chat links, schemas)

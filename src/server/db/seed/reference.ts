@@ -136,7 +136,7 @@ export interface SeedUser {
   phone: string;
   password: string;
   fullName: string;
-  role: "admin" | "staff" | "dispatcher" | "supplier" | "customer";
+  role: "admin" | "staff" | "dispatcher" | "customer";
   hub?: string;
 }
 
@@ -145,18 +145,8 @@ export const USERS: SeedUser[] = [
   { key: "admin", email: "admin@mubazzar.test", phone: "+2348030000001", password: "Admin#2026!", fullName: "Ada Owner", role: "admin" },
   { key: "staff", email: "staff@mubazzar.test", phone: "+2348030000002", password: "Staff#2026!", fullName: "Sola Staff", role: "staff" },
   { key: "dispatcher", email: "dispatch@mubazzar.test", phone: "+2348030000003", password: "Dispatch#2026!", fullName: "Musa Rider", role: "dispatcher", hub: "lagos" },
-  { key: "supplier", email: "supplier@mubazzar.test", phone: "+2348030000004", password: "Supplier#2026!", fullName: "Kemi Supplier", role: "supplier" },
   { key: "customer", email: "customer@mubazzar.test", phone: "+2348030000005", password: "Customer#2026!", fullName: "Chinedu Customer", role: "customer" },
 ];
-
-export const SAMPLE_SUPPLIER = {
-  businessName: "Kemi Gadgets Enterprise",
-  contactName: "Kemi Supplier",
-  phone: "+2348030000004",
-  email: "supplier@mubazzar.test",
-  cac: "BN 1234567",
-  categories: ["Kitchen Hacks", "Home Tech"],
-};
 
 /** Sample reviews — always stored with is_sample = true and labelled in the UI. */
 export const SAMPLE_REVIEWS: { product: string; name: string; location: string; rating: number; body: string; daysAgo: number }[] = [

@@ -12,7 +12,6 @@ export type PaymentMethod = "bank_transfer" | "pay_on_delivery" | "pos_on_delive
 export type PaymentStatus = "unpaid" | "payment_claimed" | "paid" | "pay_on_delivery" | "part_paid" | "refunded";
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type SubmissionStatus = "draft" | "pending" | "approved" | "rejected";
-export type SupplierStatus = "pending" | "approved" | "rejected" | "suspended";
 
 export interface Tables {
   analytics_events: {
@@ -770,7 +769,6 @@ export interface Tables {
       short_description: string | null;
       description: string | null;
       category_id: string | null;
-      supplier_id: string | null;
       price_kobo: number;
       compare_at_kobo: number | null;
       sku: string | null;
@@ -805,7 +803,6 @@ export interface Tables {
       short_description?: string | null;
       description?: string | null;
       category_id?: string | null;
-      supplier_id?: string | null;
       price_kobo: number;
       compare_at_kobo?: number | null;
       sku?: string | null;
@@ -915,84 +912,6 @@ export interface Tables {
       description?: string | null;
       updated_at?: string;
       updated_by?: string | null;
-    };
-  };
-  supplier_products: {
-    Row: {
-      id: string;
-      supplier_id: string;
-      name: string;
-      description: string;
-      category_id: string | null;
-      proposed_price_kobo: number;
-      compare_at_kobo: number | null;
-      image_urls: string[];
-      stock_available: number;
-      status: SubmissionStatus;
-      review_note: string | null;
-      reviewed_by: string | null;
-      reviewed_at: string | null;
-      product_id: string | null;
-      created_at: string;
-      updated_at: string;
-    };
-    Insert: {
-      id?: string;
-      supplier_id: string;
-      name: string;
-      description: string;
-      category_id?: string | null;
-      proposed_price_kobo: number;
-      compare_at_kobo?: number | null;
-      image_urls?: string[];
-      stock_available?: number;
-      status?: SubmissionStatus;
-      review_note?: string | null;
-      reviewed_by?: string | null;
-      reviewed_at?: string | null;
-      product_id?: string | null;
-      created_at?: string;
-      updated_at?: string;
-    };
-  };
-  suppliers: {
-    Row: {
-      id: string;
-      user_id: string | null;
-      business_name: string;
-      contact_name: string;
-      phone_e164: string;
-      email: string;
-      cac_number: string | null;
-      categories: string[];
-      sample_links: string[];
-      sample_photo_urls: string[];
-      message: string | null;
-      status: SupplierStatus;
-      review_note: string | null;
-      reviewed_by: string | null;
-      reviewed_at: string | null;
-      created_at: string;
-      updated_at: string;
-    };
-    Insert: {
-      id?: string;
-      user_id?: string | null;
-      business_name: string;
-      contact_name: string;
-      phone_e164: string;
-      email: string;
-      cac_number?: string | null;
-      categories?: string[];
-      sample_links?: string[];
-      sample_photo_urls?: string[];
-      message?: string | null;
-      status?: SupplierStatus;
-      review_note?: string | null;
-      reviewed_by?: string | null;
-      reviewed_at?: string | null;
-      created_at?: string;
-      updated_at?: string;
     };
   };
   wishlists: {

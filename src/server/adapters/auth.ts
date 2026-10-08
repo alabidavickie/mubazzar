@@ -192,7 +192,7 @@ export async function verifyOtp(identifier: string, code: string, fullName?: str
   });
 }
 
-/** Admin provisioning (staff, dispatchers, approved suppliers). Returns the new user id. */
+/** Admin provisioning (staff and dispatchers). Returns the new user id. */
 export async function createUser(input: {
   email: string;
   phone?: string | null;

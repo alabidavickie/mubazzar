@@ -26,6 +26,41 @@ export async function listLandingPages(session: Session): Promise<LandingListRow
   );
 }
 
+export interface ProductLandingRow {
+  productId: string;
+  productName: string;
+  /** The page every product has: /lp/<productSlug> (custom page if one is published for it, otherwise built automatically). */
+  productSlug: string;
+  productActive: boolean;
+  /** Custom landing pages for this product, published first. */
+  custom: { id: string; slug: string; published: boolean }[];
+}
+
+export const PRODUCT_LANDING_LIMIT = 200;
+
+/** Every product with its landing page status (a search narrows the list; capped so the page stays fast). */
+export async function listProductLandingPages(session: Session, q: string | null): Promise<{ rows: ProductLandingRow[]; total: number }> {
+  return asUser(session.userId, async (db) => {
+    const term = q?.trim() || null;
+    const rows = await db.query<ProductLandingRow>(
+      `select p.id as "productId", p.name as "productName", p.slug as "productSlug", p.is_active as "productActive",
+              coalesce((select jsonb_agg(jsonb_build_object('id', lp.id, 'slug', lp.slug, 'published', lp.is_published)
+                                         order by lp.is_published desc, lp.created_at)
+                          from public.landing_pages lp where lp.product_id = p.id), '[]'::jsonb) as custom
+         from public.products p
+        where ($1::text is null or p.name ilike '%' || $1 || '%' or p.slug ilike '%' || $1 || '%')
+        order by p.is_active desc, p.name
+        limit $2`,
+      [term, PRODUCT_LANDING_LIMIT],
+    );
+    const [{ n }] = await db.query<{ n: number }>(
+      `select count(*)::int as n from public.products p where ($1::text is null or p.name ilike '%' || $1 || '%' or p.slug ilike '%' || $1 || '%')`,
+      [term],
+    );
+    return { rows, total: n! };
+  });
+}
+
 export async function landingProductOptions(session: Session) {
   return asUser(session.userId, (q) =>
     q.query<{ id: string; name: string; slug: string; isActive: boolean }>(

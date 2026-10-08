@@ -55,7 +55,6 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
             <FooterLink href="/about">The MUBAZZAR Standard</FooterLink>
             <FooterLink href="/shop">Shop All Gadgets</FooterLink>
             <FooterLink href="/deals">Flash Deals</FooterLink>
-            <FooterLink href="/sell">Become a Supplier</FooterLink>
             <FooterLink href="/login">Sign In</FooterLink>
           </nav>
           <div className="col-span-2 flex flex-col gap-1 md:col-span-1">

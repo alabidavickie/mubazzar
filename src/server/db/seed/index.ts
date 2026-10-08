@@ -7,7 +7,6 @@ import {
   HUBS,
   LANDING_PAGE,
   SAMPLE_REVIEWS,
-  SAMPLE_SUPPLIER,
   SETTINGS,
   USERS,
   ZONES,
@@ -204,20 +203,6 @@ export function buildSeedStatements(opts: SeedOptions): string[] {
         )}, email = ${lit(u.email)}, hub_code = ${lit(u.hub ?? null)} where id = ${lit(id)};`,
       );
     }
-    out.push(
-      insert("public.suppliers", {
-        id: seedId("supplier", "sample"),
-        user_id: seedId("user", "supplier"),
-        business_name: SAMPLE_SUPPLIER.businessName,
-        contact_name: SAMPLE_SUPPLIER.contactName,
-        phone_e164: SAMPLE_SUPPLIER.phone,
-        email: SAMPLE_SUPPLIER.email,
-        cac_number: SAMPLE_SUPPLIER.cac,
-        categories: SAMPLE_SUPPLIER.categories,
-        status: raw("'approved'::public.supplier_status"),
-        reviewed_at: raw("now()"),
-      }),
-    );
   }
 
   // Products and their children

@@ -68,7 +68,6 @@ describe("manual payment recording", () => {
     const o = await createOrder(db, { extra: { user_id: ids.user("customer") } });
     await rejects(as(db, "customer")((q) => q.query("select public.record_payment($1, 1000, 'bank_transfer')", [o.id])), /FORBIDDEN/);
     await rejects(as(db, "dispatcher")((q) => q.query("select public.record_payment($1, 1000, 'bank_transfer')", [o.id])), /FORBIDDEN/);
-    await rejects(as(db, "supplier")((q) => q.query("select public.record_payment($1, 1000, 'bank_transfer')", [o.id])), /FORBIDDEN/);
   });
 });
 

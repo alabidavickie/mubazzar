@@ -10,7 +10,7 @@ export default async function TeamAdmin() {
   const [members, hubs] = await asUser(session.userId, async (q) => [
     await q.query<{ id: string; fullName: string | null; email: string | null; phone: string | null; role: string; isActive: boolean; hubCode: string | null }>(
       `select id, full_name as "fullName", email, phone, role, is_active as "isActive", hub_code as "hubCode"
-         from public.profiles where role in ('admin', 'staff', 'dispatcher', 'supplier') order by role, full_name`,
+         from public.profiles where role in ('admin', 'staff', 'dispatcher') order by role, full_name`,
     ),
     await q.query<{ code: string; name: string }>("select code, name from public.hubs where is_active order by sort_order"),
   ]);

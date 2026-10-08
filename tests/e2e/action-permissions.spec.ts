@@ -11,8 +11,8 @@ import { login, loginCustomer } from "./helpers";
  * so nobody can ship an ungated action by accident.
  */
 
-type Role = "anon" | "customer" | "staff" | "dispatcher" | "supplier" | "admin";
-const ROLES: Role[] = ["anon", "customer", "staff", "dispatcher", "supplier", "admin"];
+type Role = "anon" | "customer" | "staff" | "dispatcher" | "admin";
+const ROLES: Role[] = ["anon", "customer", "staff", "dispatcher", "admin"];
 
 /** requireRole() actions: who gets past the gate (everyone else is redirected to /login). */
 const ADMIN: Role[] = ["admin"];
@@ -21,12 +21,11 @@ const REDIRECT_GATED: Record<string, Role[]> = {
   importProductsAction: ADMIN, saveProductAction: ADMIN, saveFlashDealAction: ADMIN, saveLandingAction: ADMIN,
   setLandingPublishedAction: ADMIN, saveSettingAction: ADMIN, saveCategoryAction: ADMIN, saveChannelAction: ADMIN,
   saveZoneAction: ADMIN, createTeamMemberAction: ADMIN, updateTeamMemberAction: ADMIN, moderateReviewAction: ADMIN,
-  reviewSupplierAction: ADMIN, reviewSubmissionAction: ADMIN, uploadProductImageAction: ADMIN, uploadCatalogImageAction: ADMIN,
+  uploadProductImageAction: ADMIN, uploadCatalogImageAction: ADMIN,
   adjustInventoryAction: ADMIN,
   addOrderNoteAction: STAFF, assignDispatcherAction: STAFF, recordPaymentAction: STAFF, setOrderStatusAction: STAFF,
   setPaymentFlagAction: STAFF,
   completeDeliveryAction: ["dispatcher"], failDeliveryAction: ["dispatcher"],
-  saveSupplierProductAction: ["supplier"], uploadSupplierImageAction: ["supplier"],
 };
 
 /** Customer-only actions that answer a non-customer with a sign-in message instead of redirecting. */
@@ -36,9 +35,9 @@ const SOFT_GATED_CUSTOMER: Record<string, RegExp> = {
   getDefaultAddressAction: /\n1:null/, isWishlistedAction: /\n1:false/,
 };
 
-/** Meant for visitors (checkout, tracking, login, applying as a supplier…); they validate and rate-limit their own input. */
+/** Meant for visitors (checkout, tracking, login…); they validate and rate-limit their own input. */
 const PUBLIC = new Set([
-  "applySupplierAction", "claimPaymentAction", "passwordLoginAction", "requestOtpAction", "verifyOtpAction",
+  "claimPaymentAction", "passwordLoginAction", "requestOtpAction", "verifyOtpAction",
   "submitOrderAction", "trackOrderAction", "logoutAction",
 ]);
 
@@ -80,7 +79,7 @@ test("every server action enforces its role gate", async ({ browser, request }, 
   expect([...known].filter((n) => !names.has(n)), "classified actions that no longer exist").toEqual([]);
 
   const apis: Record<Role, APIRequestContext> = { anon: request } as Record<Role, APIRequestContext>;
-  for (const role of ["staff", "dispatcher", "supplier", "admin"] as const) {
+  for (const role of ["staff", "dispatcher", "admin"] as const) {
     const page = await (await browser.newContext({ ...testInfo.project.use })).newPage();
     await login(page, role);
     apis[role] = page.context().request;
