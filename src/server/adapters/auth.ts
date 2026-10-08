@@ -5,6 +5,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { asService } from "../db";
 import { env, services } from "../env";
 import { notify } from "./notify";
+import { otpRequestError } from "@/lib/otp-errors";
 
 /**
  * Auth adapter.
@@ -135,7 +136,11 @@ export async function requestOtp(identifier: string): Promise<{ ok: true; devCod
   const isEmail = identifier.includes("@");
   if (services.supabaseAuth) {
     const res = await supabaseFetch("otp", isEmail ? { email: identifier, create_user: true } : { phone: identifier, create_user: true });
-    return res.ok ? { ok: true } : { ok: false, error: "Could not send the code. Try again shortly." };
+    if (res.ok) return { ok: true };
+    const body = (await res.json().catch(() => null)) as { error_code?: string } | null;
+    // The code (never the person's email/phone) goes to the server log so a misconfigured Supabase project is easy to diagnose.
+    console.error("[auth] Supabase refused to send a login code:", res.status, body?.error_code ?? "unknown");
+    return { ok: false, error: otpRequestError(res.status, body?.error_code) };
   }
   const code = env.mockOtpCode && !env.isProd ? env.mockOtpCode : String(randomInt(0, 1_000_000)).padStart(6, "0");
   await asService(async (q) => {

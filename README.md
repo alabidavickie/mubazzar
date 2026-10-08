@@ -122,7 +122,12 @@ pnpm lhci
    pnpm db:seed-sql --production
    ```
    then run `supabase/seed.production.sql` in the Supabase SQL editor (or `psql "$DATABASE_URL" -f supabase/seed.production.sql`).
-4. **Auth:** enable Email (OTP) and, for phone logins, Phone with an SMS provider (Supabase supports Twilio/MessageBird/Vonage, or a "Send SMS" hook to Termii). In the email template, include `{{ .Token }}` so customers receive a 6-digit code.
+4. **Auth** (Supabase → Authentication). Customers sign in with a one-time code, so all of this matters before launch:
+   - **Providers → Email:** enabled (it is by default).
+   - **Email Templates → "Magic Link" and "Confirm signup":** put `{{ .Token }}` in the body (e.g. `Your MUBAZZAR code is {{ .Token }}`) so customers receive the 6-digit code, not a link.
+   - **SMTP Settings → custom SMTP (required for real customers).** Supabase's built-in sender only delivers to your own team members and allows just a few emails an hour. Use Resend: host `smtp.resend.com`, port `465`, username `resend`, password = your Resend API key, sender = an address on your verified domain.
+   - **Providers → Phone (optional):** enable with an SMS provider (Twilio/MessageBird/Vonage, or a "Send SMS" hook to Termii). Until it is on, a customer who types a phone number is told to use their email instead.
+   - The site logs the reason whenever Supabase refuses to send a code (Vercel → project → Logs, search "refused to send a login code").
 5. **Create the owner account:** Authentication → Users → Add user (email + password). Then in the SQL editor:
    ```sql
    update public.profiles set role = 'admin', full_name = 'Your Name' where email = 'you@yourdomain.com';

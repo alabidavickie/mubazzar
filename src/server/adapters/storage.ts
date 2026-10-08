@@ -50,6 +50,7 @@ export async function uploadImage(bucket: Bucket, folder: string, data: Buffer, 
       method: "POST",
       headers: {
         authorization: `Bearer ${env.supabaseServiceKey}`,
+        apikey: env.supabaseServiceKey, // Supabase's own clients send both; the database API rejects a bearer-only call
         "content-type": contentType,
         "x-upsert": "false",
       },
@@ -88,7 +89,7 @@ export async function privateObjectUrl(ref: string): Promise<string | null> {
   if (services.supabaseStorage) {
     const res = await fetch(`${env.supabaseUrl}/storage/v1/object/sign/private-proofs/${objectPath}`, {
       method: "POST",
-      headers: { authorization: `Bearer ${env.supabaseServiceKey}`, "content-type": "application/json" },
+      headers: { authorization: `Bearer ${env.supabaseServiceKey}`, apikey: env.supabaseServiceKey, "content-type": "application/json" },
       body: JSON.stringify({ expiresIn: 600 }),
     });
     if (!res.ok) return null;

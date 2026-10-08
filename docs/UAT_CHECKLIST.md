@@ -22,7 +22,7 @@ Time: about 45 minutes together. Use small real orders and cancel them at the en
 - [ ] 12. Try a landing page link (e.g. `/lp/car-vacuum`) and order from it with **Quick Order**. Is it fast and simple?
 
 ## Shopper — account
-- [ ] 13. Sign in with your phone number. Does the login code arrive by SMS? Does it work?
+- [ ] 13. Sign in with your phone number. Does the login code arrive by SMS? Does it work? (If phone codes aren't switched on yet you should see "use your email address instead" — then sign in with your email and check the 6-digit code arrives within a minute, and not in spam.)
 - [ ] 14. Do your earlier orders show under **My account**?
 - [ ] 15. Save an address; start a new order. Is the form filled in for you?
 - [ ] 16. Add a product to your wishlist, sign out, sign back in. Is it still there?
