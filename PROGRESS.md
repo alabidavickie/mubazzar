@@ -132,4 +132,5 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Real-person test checklist for launch: `docs/UAT_CHECKLIST.md`.
 - [x] Automatic ad landing page for every product at `/lp/<product-slug>` (unit + E2E `lp-auto.spec.ts` on 3 devices; all 12 seeded products load).
 - [x] Admin CSV import/export of products (preview + apply, per-row errors, photo re-hosting) and paged admin product list. Unit: csv, product-import, remote-image (SSRF guards); E2E `admin-import.spec.ts`.
+- [x] Security audit (2026-10-08): all 41 server actions × 6 roles gated (new permanent test); live Supabase attacked as stranger / other customer / owner with real rolled-back data — 0 leaks, no privilege escalation, internal functions refuse non-staff; security headers, no secrets in bundles or git, `pnpm audit` clean. Fixed: health endpoint leaked an internal path, sign-in fail-closed without AUTH_SECRET, hardened post-login redirect, events API size cap, photo-import DNS pinning, localhost site URL fallback. Added the admin "Before you go live" panel.
 - [ ] Live site: every database-backed page returns 500 until Supabase is connected (see KNOWN_ISSUES #1).

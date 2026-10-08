@@ -11,3 +11,11 @@ Items here genuinely need owner input or an environment the build machine lacks.
 
 ## Environment notes (no action needed for the product)
 - **Lighthouse "simulate" vs DevTools throttling** — CI measures with DevTools slow-4G throttling (LCP 1.7–1.8 s). Lantern's simulated mode reports 2.4–3.3 s for the same build because it ignores request priority; details and numbers in DECISIONS.md → "Performance measurement".
+
+## Security notes (audited 2026-10-08 — accepted trade-offs, no action needed unless you disagree)
+- **Stock counts are public by design.** Product pages show real stock honestly, so the database lets anyone read units on hand per hub (anyone with the public Supabase key can list them). If you don't want competitors to scrape exact stock, replace the public read of `inventory` with a function that returns "in stock / low / out" only.
+- **Order tracking** (`track_order`) can be called directly on the Supabase API without the website's per-IP limit. It needs the order number *and* the phone on the order (about 700 million possible numbers) and returns only status, city and items — never the address or phone.
+- **Sessions are stateless (30 days).** Deactivating a person in Admin → Staff takes effect on their next request; "log out" clears the browser's cookie but can't recall a stolen one. For staff devices, deactivate and re-create the account if a phone is lost.
+- **Content-Security-Policy allows inline scripts** because Next.js needs them for page hydration without per-request nonces (which would make every page uncacheable and slower). There is no raw-HTML rendering anywhere in the app (headline markup renders as escaped text), so the practical XSS surface is minimal.
+- **Supabase advisor warnings (harmless):** five pure helper functions (`lagos_now`, `touch_updated_at`, …) have no fixed `search_path`; and the "security definer function executable" notices are the intended role-checked functions (verified with real data — see PROGRESS).
+

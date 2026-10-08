@@ -11,6 +11,7 @@ import {
   verifyOtp,
 } from "@/server/adapters/auth";
 import { hashIp, peekRateLimit, rateLimit, resetRateLimit } from "@/server/adapters/rate-limit";
+import { safeNext } from "@/lib/safe-next";
 import { asService } from "@/server/db";
 import { homeForRole, type AppRole } from "@/server/session";
 import { normalizeNgPhone } from "@/lib/phone";
@@ -23,11 +24,6 @@ async function clientIp(): Promise<string | null> {
 }
 
 /** Only allow same-site relative redirects after login. */
-function safeNext(next: unknown): string | null {
-  if (typeof next !== "string" || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return null;
-  return next;
-}
-
 async function roleOf(userId: string): Promise<AppRole> {
   const rows = await asService((q) => q.query<{ role: AppRole }>("select role from public.profiles where id = $1", [userId]));
   return rows[0]?.role ?? "customer";

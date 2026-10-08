@@ -1,5 +1,7 @@
 import "server-only";
 
+import { siteUrl } from "@/lib/site";
+
 /**
  * Central place to read server env. Every external service is optional: when its keys are
  * missing, the mock adapter is used (see src/server/adapters/*). Nothing here throws at import.
@@ -7,7 +9,7 @@ import "server-only";
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   isProd: process.env.NODE_ENV === "production" && process.env.MUBAZZAR_E2E !== "1",
-  siteUrl: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+  siteUrl: siteUrl(),
   authSecret: process.env.AUTH_SECRET ?? "dev-only-insecure-secret-change-me-in-production-please",
   cronSecret: process.env.CRON_SECRET ?? "",
   ipHashSalt: process.env.IP_HASH_SALT ?? "dev-salt",
@@ -37,6 +39,10 @@ export const services = {
   email: Boolean(env.resendApiKey),
   whatsappCloud: Boolean(env.waCloudToken && env.waCloudPhoneId),
 };
+
+if (env.isProd && env.siteUrl.startsWith("http://localhost")) {
+  console.warn("[mubazzar] NEXT_PUBLIC_SITE_URL is not set — canonical URLs, the sitemap and SMS tracking links will point at localhost.");
+}
 
 if (env.isProd && env.authSecret.startsWith("dev-only")) {
   console.warn("[mubazzar] AUTH_SECRET is not set — sessions are signed with an insecure development secret.");

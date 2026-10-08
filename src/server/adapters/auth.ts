@@ -22,7 +22,16 @@ export const SESSION_COOKIE = "mbz_session";
  */
 export const SIGNED_IN_HINT_COOKIE = "mbz_signed_in";
 const SESSION_DAYS = 30;
-const secret = () => new TextEncoder().encode(env.authSecret);
+/**
+ * The session signing key. In production a missing/short AUTH_SECRET fails closed: nobody can sign in
+ * and no cookie verifies, instead of falling back to the development key (which is public in the repo
+ * and would let anyone forge an admin session).
+ */
+export const authSecretConfigured = () => !env.isProd || (!env.authSecret.startsWith("dev-only") && env.authSecret.length >= 32);
+const secret = () => {
+  if (!authSecretConfigured()) throw new Error("AUTH_SECRET_NOT_CONFIGURED");
+  return new TextEncoder().encode(env.authSecret);
+};
 
 export interface SessionClaims {
   sub: string;

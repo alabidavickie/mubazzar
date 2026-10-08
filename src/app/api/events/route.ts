@@ -15,6 +15,7 @@ export async function POST(req: Request) {
   const ip = req.headers.get("x-real-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
   const limited = await rateLimit(`events:${hashIp(ip)}`, 120, 60);
   if (!limited.ok) return new NextResponse(null, { status: 204 });
+  if (Number(req.headers.get("content-length") ?? 0) > 8_192) return new NextResponse(null, { status: 413 });
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ ok: false }, { status: 400 });
   const { name, eventId, path, data } = parsed.data;
@@ -32,7 +33,8 @@ export async function POST(req: Request) {
         url?.searchParams.get("utm_source")?.slice(0, 200) ?? null,
         url?.searchParams.get("utm_medium")?.slice(0, 200) ?? null,
         url?.searchParams.get("utm_campaign")?.slice(0, 200) ?? null,
-        JSON.parse(JSON.stringify(data ?? {}).slice(0, 4000) || "{}"),
+        // Oversized extra data is dropped whole (cutting JSON in half would make it unreadable).
+        (JSON.stringify(data ?? {}).length <= 4000 ? (data ?? {}) : {}),
       ],
     ),
   ).catch(() => undefined);
