@@ -1,18 +1,23 @@
 import "server-only";
 import { asUser } from "../db";
 import { getSession, STAFF_ROLES } from "../session";
-import { getProductById, getRecentReviews } from "./catalog";
-import type { LandingBundle, LandingPageData } from "./landing";
+import { getProductAsStaff, getRecentReviews } from "./catalog";
+import { landingForProduct, type LandingBundle, type LandingPageData } from "./landing";
 
 /**
- * Admin/staff preview of a landing page (published or not). The page row is read as the signed-in
- * user so RLS (`landing_pages_read`: is_published or is_staff()) decides — never as service role.
- * Returns null for guests, customers and other roles.
+ * Admin/staff preview of a landing page (published or not, product visible or still a draft). Everything
+ * is read as the signed-in user so RLS (`landing_pages_read`: is_published or is_staff(); `products_read`:
+ * is_active or is_staff()) decides — never as service role. Returns null for guests, customers and other roles.
  */
 export async function getLandingPreview(slug: string): Promise<LandingBundle | null> {
   if (!/^[a-z0-9-]{1,80}$/.test(slug)) return null;
   const session = await getSession();
   if (!session || !STAFF_ROLES.includes(session.role)) return null;
+  return loadLandingPreview(session, slug);
+}
+
+/** The data half of the preview, free of cookies so it can be integration-tested. The caller has checked the role. */
+export async function loadLandingPreview(session: { userId: string; email: string | null }, slug: string): Promise<LandingBundle | null> {
   const rows = await asUser(
     session.userId,
     (q) =>
@@ -33,11 +38,16 @@ export async function getLandingPreview(slug: string): Promise<LandingBundle | n
     session.email,
   );
   const lp = rows[0];
-  if (!lp) return null;
-  const [product, reviews] = await Promise.all([
-    getProductById(lp.productId),
-    getRecentReviews({ productId: lp.productId, limit: 6 }),
-  ]);
-  if (!product) return null;
-  return { lp, product, reviews };
+  if (lp) {
+    const [found, reviews] = await Promise.all([
+      getProductAsStaff(session, { id: lp.productId }),
+      getRecentReviews({ productId: lp.productId, limit: 6 }),
+    ]);
+    if (!found) return null;
+    return { lp, product: found.product, reviews, isDraft: !found.isActive };
+  }
+  // No page row at this address: preview the product's own page (what /lp/<product-slug> shows once it is visible).
+  const found = await getProductAsStaff(session, { slug });
+  if (!found) return null;
+  return { ...(await landingForProduct(found.product)), isDraft: !found.isActive };
 }

@@ -76,6 +76,8 @@ export function ProductEditor({
   const [slugTouched, setSlugTouched] = useState(Boolean(initial.id));
   const [pending, start] = useTransition();
   const [result, setResult] = useState<SaveProductResult | null>(null);
+  // What the shop has right now (the last save), not the unsaved edits: decides which landing-page link to offer.
+  const [saved, setSaved] = useState({ slug: initial.slug ?? "", active: initial.isActive ?? true });
   const [uploadMsg, setUploadMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const giftFileRef = useRef<HTMLInputElement>(null);
@@ -99,6 +101,7 @@ export function ProductEditor({
         else {
           if (r.values) setV(r.values);
           if (r.images) setImages(r.images);
+          setSaved({ slug: r.slug, active: r.values?.isActive ?? v.isActive ?? true });
         }
       } else {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -137,6 +140,16 @@ export function ProductEditor({
           data-testid={result.ok ? "save-ok" : "save-error"}
         >
           {result.ok ? result.message : result.error}
+        </p>
+      ) : null}
+
+      {initial.id && !saved.active ? (
+        <p role="status" className="rounded-lg bg-gold-soft px-3 py-2 text-label-md text-bronze-ink" data-testid="draft-note">
+          Draft — customers can&apos;t see this product or its landing page (/lp/{saved.slug}) yet.{" "}
+          <a href={`/lp/${saved.slug}?preview=1`} target="_blank" rel="noopener" className="font-bold underline">
+            Preview the landing page
+          </a>
+          , then tick “Visible in the shop” below and save to publish it.
         </p>
       ) : null}
 
@@ -184,7 +197,7 @@ export function ProductEditor({
           <div className="flex flex-col justify-end gap-2">
             <label className="flex min-h-11 items-center gap-2 text-label-md">
               <input type="checkbox" checked={v.isActive ?? true} onChange={(e) => set("isActive", e.target.checked)} className="size-5 accent-navy" />
-              Visible in the shop
+              Visible in the shop (publishes its landing page)
             </label>
             <label className="flex min-h-11 items-center gap-2 text-label-md">
               <input type="checkbox" checked={v.podAvailable ?? true} onChange={(e) => set("podAvailable", e.target.checked)} className="size-5 accent-navy" />
@@ -514,11 +527,17 @@ export function ProductEditor({
       </Section>
 
       <div className="fixed inset-x-0 bottom-0 z-20 flex items-center justify-end gap-2 border-t border-line bg-card/95 px-4 py-3 backdrop-blur lg:left-60">
-        {initial.id && v.isActive ? (
+        {initial.id ? (
           <span className="mr-auto flex flex-wrap gap-x-4 gap-y-1">
-            <a href={`/lp/${initial.slug}`} target="_blank" rel="noopener" className="text-label-md text-navy underline">
-              View product page
-            </a>
+            {saved.active ? (
+              <a href={`/lp/${saved.slug}`} target="_blank" rel="noopener" className="text-label-md text-navy underline" data-testid="landing-link">
+                View landing page
+              </a>
+            ) : (
+              <a href={`/lp/${saved.slug}?preview=1`} target="_blank" rel="noopener" className="text-label-md text-navy underline" data-testid="landing-preview-link">
+                Preview landing page (draft — hidden from customers)
+              </a>
+            )}
           </span>
         ) : null}
         <Button type="submit" size="lg" disabled={pending}>

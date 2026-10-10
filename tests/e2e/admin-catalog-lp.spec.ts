@@ -72,6 +72,9 @@ test("admin: product + bundles → landing page → publish → live", async ({ 
   // 4. Publish from the list → live.
   await admin.goto("/admin/landing-pages");
   await expectNoHorizontalOverflow(admin);
+  // New products are not missing a landing page: the screen says every product already has an automatic one.
+  await expect(admin.getByTestId("lp-auto-note")).toContainText("Every product already has a landing page");
+  await expectNoA11yViolations(admin);
   const row = admin.locator(`[data-testid="landing-row"][data-slug="${lpSlug}"]`);
   await row.getByRole("button", { name: `Publish /lp/${lpSlug}` }).click();
   await expect(row.getByRole("button", { name: `Unpublish /lp/${lpSlug}` })).toBeVisible();
@@ -91,6 +94,54 @@ test("admin: product + bundles → landing page → publish → live", async ({ 
   expect(pdp?.status()).toBe(200);
   expect(new URL(page.url()).pathname).toBe(`/lp/smart-mini-fan-${stamp}`);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Beat the Heat When NEPA Takes Light!");
+
+  await admin.context().close();
+});
+
+// A product the admin has just created is a draft: customers get "Offer not found" at its landing page,
+// staff can preview it (the editor says so and links to the preview), and ticking "Visible in the shop"
+// publishes it at that same address. A bare product (no photo, no stock, no bundles) must still render.
+test("admin: a new product is a draft with a staff preview, then goes live when made visible", async ({ page, browser }, testInfo) => {
+  const stamp = `${Date.now().toString(36)}${testInfo.project.name.replace(/\W/g, "")}`;
+  const name = `Draft Desk Lamp ${stamp}`;
+  const slug = `draft-desk-lamp-${stamp}`;
+  const admin = await signedInPage(browser, testInfo, "admin");
+
+  await admin.goto("/admin/products/new");
+  await admin.getByLabel("Product name").fill(name);
+  await expect(admin.getByLabel("URL slug")).toHaveValue(slug);
+  await expect(admin.getByLabel(/Visible in the shop/)).not.toBeChecked();
+  await admin.getByRole("region", { name: "Price" }).getByRole("textbox", { name: "Price (₦)", exact: true }).fill("9,500");
+  await admin.getByRole("button", { name: "Create product" }).click();
+  await admin.waitForURL(/\/admin\/products\/[0-9a-f-]{36}$/);
+  const editUrl = admin.url();
+
+  // The editor says it is a draft and offers the preview instead of a dead link.
+  await expect(admin.getByTestId("draft-note")).toContainText(`/lp/${slug}`);
+  await expect(admin.getByTestId("landing-preview-link")).toHaveAttribute("href", `/lp/${slug}?preview=1`);
+  await expect(admin.getByTestId("landing-link")).toHaveCount(0);
+
+  // Customers cannot reach it yet…
+  expect((await page.goto(`/lp/${slug}`))?.status()).toBe(404);
+  // …staff can preview it, with a banner that says why.
+  const pre = await admin.goto(`/lp/${slug}?preview=1`);
+  expect(pre?.status()).toBe(200);
+  await expect(admin.getByTestId("lp-preview-banner")).toContainText("still a draft");
+  await expect(admin.getByRole("heading", { level: 1 })).toHaveText(name);
+  await expectNoA11yViolations(admin);
+
+  // Make it visible → the same address is public.
+  await admin.goto(editUrl);
+  await admin.getByLabel(/Visible in the shop/).check();
+  await admin.getByRole("button", { name: "Save product" }).click();
+  await expect(admin.getByTestId("save-ok")).toBeVisible();
+  await expect(admin.getByTestId("draft-note")).toHaveCount(0);
+  await expect(admin.getByTestId("landing-link")).toHaveAttribute("href", `/lp/${slug}`);
+
+  const live = await page.goto(`/lp/${slug}`);
+  expect(live?.status()).toBe(200);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(name);
+  await expect(page.getByTestId("lp-preview-banner")).toHaveCount(0);
 
   await admin.context().close();
 });

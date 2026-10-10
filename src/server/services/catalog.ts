@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { asAnon } from "../db";
+import { asAnon, asUser } from "../db";
 import type { Queryable } from "../db";
 
 /** Read models for the storefront. All queries run as `anon` so RLS decides what is public. */
@@ -315,7 +315,11 @@ export interface ProductDetail extends ProductCardData {
   promoEndsAt: string | null;
 }
 
-async function loadDetail(q: Queryable, where: string, param: string): Promise<ProductDetail | null> {
+/**
+ * `includeInactive` is for the staff preview only: the storefront never shows a product that is not
+ * visible, and RLS (`products_read`) still hides drafts from everyone who is not staff.
+ */
+async function loadDetail(q: Queryable, where: string, param: string, opts: { includeInactive?: boolean } = {}): Promise<ProductDetail | null> {
   const rows = await q.query<ProductDetail & { categoryId: string | null }>(
     `select ${CARD_SELECT}, p.description, p.price_kobo as "basePriceKobo", p.warranty_months as "warrantyMonths",
             p.specs, p.seo_title as "seoTitle", p.seo_description as "seoDescription", p.tags,
@@ -325,7 +329,7 @@ async function loadDetail(q: Queryable, where: string, param: string): Promise<P
               (select min(b.promo_ends_at) from public.bundles b where b.product_id = p.id and b.is_active and ${BUNDLE_PROMO_LIVE})
             ) as "promoEndsAt"
        from public.products p left join public.categories c on c.id = p.category_id
-      where ${where} and p.is_active`,
+      where ${where}${opts.includeInactive ? "" : " and p.is_active"}`,
     [param],
   );
   const p = rows[0];
@@ -371,6 +375,30 @@ async function loadDetail(q: Queryable, where: string, param: string): Promise<P
 
 export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
   return asAnon((q) => loadDetail(q, "p.slug = $1", slug));
+}
+
+/**
+ * A product for the staff preview of its landing page, including a draft the admin has not made visible
+ * yet. Runs as the signed-in user so RLS decides (staff only); `isActive` tells the preview whether the
+ * shop can show it yet. Callers still gate on the staff role.
+ */
+export async function getProductAsStaff(
+  session: { userId: string; email: string | null },
+  by: { slug: string } | { id: string },
+): Promise<{ product: ProductDetail; isActive: boolean } | null> {
+  if ("id" in by && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(by.id)) return null;
+  const where = "slug" in by ? "p.slug = $1" : "p.id = $1::uuid";
+  const param = "slug" in by ? by.slug : by.id;
+  return asUser(
+    session.userId,
+    async (q) => {
+      const product = await loadDetail(q, where, param, { includeInactive: true });
+      if (!product) return null;
+      const [row] = await q.query<{ isActive: boolean }>('select is_active as "isActive" from public.products where id = $1', [product.id]);
+      return { product, isActive: row?.isActive ?? false };
+    },
+    session.email,
+  );
 }
 
 export async function getProductById(id: string): Promise<ProductDetail | null> {

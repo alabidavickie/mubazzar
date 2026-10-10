@@ -191,7 +191,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
       fallbackPriceKobo={promo.priceKobo}
     >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <TrackViewContent productId={product.id} valueKobo={promo.priceKobo} />
+      {res.preview ? null : <TrackViewContent productId={product.id} valueKobo={promo.priceKobo} />}
 
       <a
         href="#order-form"
@@ -230,8 +230,10 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
       <main id="main" className="mx-auto w-full max-w-2xl pb-28">
         {res.preview ? (
-          <p role="status" className="bg-gold-soft px-4 py-2 text-center text-label-md text-bronze-ink">
-            Preview{lp.isPublished ? "" : " — this page is NOT published yet"}. Only staff can see this view.
+          <p role="status" className="bg-gold-soft px-4 py-2 text-center text-label-md text-bronze-ink" data-testid="lp-preview-banner">
+            {res.data.isDraft
+              ? "Preview — this product is still a draft (not visible in the shop), so customers can't see or order it yet. Tick “Visible in the shop” on the product and save to publish this page. Only staff can see this view."
+              : `Preview${lp.isPublished ? "" : " — this page is NOT published yet"}. Only staff can see this view.`}
           </p>
         ) : null}
 

@@ -20,8 +20,13 @@ export default async function LandingPagesAdmin() {
           <Icon name="add" /> New landing page
         </Link>
       </div>
+      <p className="rounded-lg bg-surface-high px-3 py-2 text-body-sm text-ink-muted" data-testid="lp-auto-note">
+        Every product already has a landing page of its own at <span className="font-semibold text-ink">/lp/&lt;product-slug&gt;</span>, built from the
+        product and live as soon as the product is visible in the shop. Create a custom page below only for a product you advertise with its own
+        headline, video and offer; once published it replaces the automatic one.
+      </p>
       {rows.length === 0 ? (
-        <EmptyState icon="campaign" title="No landing pages yet" body="Create one per product you advertise." />
+        <EmptyState icon="campaign" title="No custom landing pages yet" body="Optional — every product already has an automatic landing page." />
       ) : (
         <ul className="flex flex-col gap-2" data-testid="admin-landing-pages">
           {rows.map((r) => (

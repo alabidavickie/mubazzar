@@ -36,6 +36,8 @@ export interface LandingBundle {
   lp: LandingPageData;
   product: ProductDetail;
   reviews: ReviewData[];
+  /** Staff preview only: the product is not visible in the shop yet, so customers cannot reach this page. */
+  isDraft?: boolean;
 }
 
 export async function getLandingPage(slug: string, opts: { preview?: boolean } = {}): Promise<LandingBundle | null> {
@@ -73,7 +75,11 @@ function selectLandingPages(where: string, param: string) {
  */
 async function getAutoLandingPage(productSlug: string): Promise<LandingBundle | null> {
   const product = await getProductBySlug(productSlug);
-  if (!product) return null;
+  return product ? landingForProduct(product) : null;
+}
+
+/** What `/lp/<product-slug>` shows for a product: its published custom page if it has one, else one built from the product. */
+export async function landingForProduct(product: ProductDetail): Promise<LandingBundle> {
   const [custom] = await selectLandingPages("product_id = $1::uuid and is_published order by created_at limit 1", product.id);
   const reviews = await getRecentReviews({ productId: product.id, limit: 6 });
   return { lp: custom ?? autoLandingPage(product), product, reviews };
