@@ -98,17 +98,17 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 
 ## Final Summary
 
-**Status (2026-10-07): every phase is complete and verified.** Last full run (fresh build, fresh database) after the security hardening, page audit and landing-page-as-product-page work:
+**Status (2026-10-10): the merged `launch-candidate` branch — the local security hardening, landing-page-as-product-page, Back control and rider fix together with the cloud session's CSV import, role-gate tests, go-live panel, supplier removal and live-services fixes — is code-complete and verified. The live site is NOT yet launch-ready: Vercel has no database connection and two migrations are pending (KNOWN_ISSUES #0, #1).**
 
 | Check | Result |
 |---|---|
 | `pnpm lint` / `pnpm typecheck` / `pnpm build` | ✅ clean |
-| `pnpm test` (unit + integration, PGlite with all migrations, RLS for every role, security regressions) | ✅ 251/251 |
-| `pnpm test:e2e` (iPhone 13, Pixel 7, desktop; axe on every page; A–Z crawl of every sitemap URL; security probes) | ✅ 187 passed, 38 skipped by design (single-device checks, mobile-only auto-open on desktop) |
-| Brief §8 E2E journeys 1–12 | ✅ all pass on both mobile viewports |
-| `pnpm lhci` (mobile, slow-4G DevTools throttling) | ✅ on 2026-10-04 (before the latest changes): Home 98/100/100/100 LCP 1.76 s · Catalog 98/100/100/100 LCP 1.72 s · LP 97/100/100/100 LCP 1.88 s · CLS 0 — reports in `reports/lighthouse-final/`. ⚠️ Re-run on a quiet machine before launch: on 2026-10-07 the build machine was starved (disk 99% full, ~1.6 GB free RAM, Lighthouse CPU benchmark 900–1700 vs ~2700), and the untouched Home page also fell to 87 / LCP 3.1 s while the landing page scored the same as Home; accessibility/best-practices/SEO stayed 100 and CLS ≈ 0 everywhere. |
-| LP first-load JS | ✅ 148 KB gz (budget 150, guarded by `js-budget.spec.ts`; the cart/wishlist code loads lazily after the page) |
-| `pnpm audit --prod` | ✅ no known vulnerabilities |
+| `pnpm test` (unit + integration, PGlite with every migration in order incl. 20261008000100, 20261008000200, 20261010000100; RLS for every role; security regressions) | ✅ 302/302 (43 files) |
+| `pnpm test:e2e` (iPhone 13, Pixel 7, desktop; axe on every page; A–Z crawl of every sitemap URL; security probes; every server action × every role) | ✅ 201 passed, 0 failed, 72 skipped by design ("run once" guards) |
+| Brief §8 E2E journeys 1–12 | ✅ all pass |
+| `pnpm lhci` (mobile, slow-4G DevTools throttling) | Accessibility, best-practices and SEO 100 and CLS ≈ 0 on /, /shop, /lp/car-vacuum and /lp/bladeless-neck-fan. Performance scored 74–83 / LCP 2.3–3.5 s on the 2026-10-10 build machine, whose Lighthouse CPU benchmark (1.0–1.7k) is about half the 2026-10-04 run's (2.7–3.0k; that run: 97–98 / LCP ≤ 1.9 s, reports in `reports/lighthouse-final/`) with unchanged page weight and JS budget, so the number is not comparable. ⚠️ GitHub Actions (`ci.yml` runs `pnpm lhci`) is the authoritative measurement; do not launch ads before it is green. |
+| LP first-load JS | ✅ within the 150 KB gz budget (guarded by `js-budget.spec.ts`) |
+| `pnpm audit --prod` | ✅ no known vulnerabilities (2026-10-10) |
 
 **What was built**
 - **Storefront:** Home, Catalog (URL filters, Load More), Category, Search with instant suggestions, PDP (bundles, hub stock, gift, JSON-LD, wishlist), cart (with server mirror for signed-in customers), checkout, static pages, branded 404/500, sitemap/robots/OG.
@@ -141,3 +141,4 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Page audit (2026-10-06): A–Z crawl of every sitemap URL (`tests/e2e/crawl.spec.ts`: console errors, failed requests, broken images/links, one h1, overflow, axe) and a **Back** control on every inner page (storefront, admin, rider, supplier, login).
 - [x] Landing page is now the product page: description, specifications, add to cart, wishlist; `/p/*` redirects; sitemap lists landing pages; rider collection UI matches the hardened SQL rules.
 - [x] Draft products (2026-10-10): a newly created product (hidden by default) has a staff preview of its landing page, the editor links to it (live or preview) and says why customers get 404 until "Visible in the shop" is ticked, and Admin → Landing pages explains the automatic pages (integration `landing-preview.test.ts`; E2E `admin-catalog-lp.spec.ts` on 3 devices).
+- [x] Merge (2026-10-10): the cloud-session branch `claude/wonderful-brahmagupta-8h6a26` and the local line were merged on `launch-candidate` (14 textual conflicts + semantic ones: automatic landing pages made indexable again, supplier remnants removed, hardening migration re-ordered to `20261010000100`). Live state checked the same day: Vercel `mubazzar` production = `main` @ a9395e0 (2026-10-05) with no database connection (`/shop`, search, categories and every `/lp/<slug>` return 500); database has migrations up to `20261008000100`.
