@@ -62,6 +62,8 @@ export async function generateMetadata({ params, searchParams }: { params: Param
     title: /mubazzar/i.test(title) ? { absolute: title } : title,
     description,
     alternates: { canonical: `/lp/${lp.slug}` },
+    // Automatic pages (no custom landing page) are ad destinations that repeat the product page: keep them out of search.
+    // The landing page IS the product page (the old /p/ address only redirects here), so even the automatic page is indexable.
     robots: res.preview || !lp.isPublished ? { index: false, follow: false } : undefined,
     openGraph: {
       type: "website",

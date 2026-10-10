@@ -14,16 +14,10 @@ export const dynamic = "force-dynamic";
 
 export default async function AccountPage() {
   const session = await requireRole(["customer"], "/account");
-  const { orders, supplier } = await getAccount(session);
+  const { orders } = await getAccount(session);
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-5">
       <AccountNav current="/account" name={session.fullName?.split(" ")[0] ?? "there"} />
-      {supplier ? (
-        <p role="status" className="rounded-lg bg-gold-soft/30 px-3 py-2 text-label-md text-bronze-ink" data-testid="supplier-status">
-          Supplier application for {supplier.businessName}: <strong>{supplier.status}</strong>
-          {supplier.status === "pending" ? " — we'll email you when it's reviewed." : ""}
-        </p>
-      ) : null}
       <h2 className="text-label-lg font-bold text-navy">Your orders</h2>
       {orders.length === 0 ? (
         <EmptyState icon="receipt_long" title="No orders yet" body="Orders you place while signed in (or with your verified phone number) appear here." action={<Link href="/shop" className="text-label-md text-navy underline">Start shopping</Link>} />

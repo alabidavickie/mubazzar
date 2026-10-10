@@ -1,5 +1,5 @@
 /**
- * Compatibility with a database that has not had migration 20261006000500_security_hardening.sql
+ * Compatibility with a database that has not had migration 20261010000100_security_hardening.sql
  * applied yet (deploys can briefly run ahead of `supabase db push`). Kept free of server-only imports
  * so integration tests can run these statements against PGlite.
  */

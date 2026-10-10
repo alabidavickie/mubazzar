@@ -43,11 +43,7 @@ export async function getAccount(session: Session) {
          from public.orders o where o.user_id = $1 order by o.created_at desc limit 50`,
       [session.userId],
     );
-    const supplier = await q.query<{ businessName: string; status: string }>(
-      `select business_name as "businessName", status from public.suppliers where user_id = $1`,
-      [session.userId],
-    );
-    return { orders, supplier: supplier[0] ?? null };
+    return { orders };
   });
 }
 

@@ -25,8 +25,8 @@ How every testing requirement in `docs/BRIEF.md` §8 is covered. Commands: `pnpm
 | SQL payment-status logic mirrors TypeScript | `tests/integration/orders.test.ts` |
 | Recording payments: partial → paid, overpayment flagged, audit log | `tests/integration/payments.test.ts` |
 | `Purchase` fires once when paid/delivered | `tests/integration/payments.test.ts` |
-| Customer / dispatcher / supplier recording a payment is rejected | `tests/integration/payments.test.ts`, `rls.test.ts` |
-| RLS for every role (guest, customer, staff, dispatcher, supplier, admin) | `tests/integration/rls.test.ts` |
+| Customer / dispatcher recording a payment is rejected | `tests/integration/payments.test.ts`, `rls.test.ts` |
+| RLS for every role (guest, customer, staff, dispatcher, admin); only the admin can create/edit/delete products; no supplier tables or role exist | `tests/integration/rls.test.ts` |
 
 ## E2E (Playwright, mobile viewports + desktop, axe-core on every customer page)
 | Brief journey | Spec |
@@ -40,7 +40,7 @@ How every testing requirement in `docs/BRIEF.md` §8 is covered. Commands: `pnpm
 | 7. Track order with number + phone | `tests/e2e/track.spec.ts` |
 | 8. Admin product + bundles → landing page → publish → live | `tests/e2e/admin-catalog-lp.spec.ts` |
 | 9. Staff confirms + assigns → dispatcher delivers → stock deducted | `tests/e2e/dispatch.spec.ts` |
-| 10. Supplier applies → approved → submits → approved → live | `tests/e2e/supplier.spec.ts` |
+| 10. Only the admin can add products; no seller sign-up anywhere | `tests/e2e/admin-only-products.spec.ts` |
 | 11. Form validation messages | `tests/e2e/form-validation.spec.ts` |
 | 12. Countdown real time + ended state | `tests/e2e/countdown.spec.ts` |
 | Auth & access control | `tests/e2e/auth.spec.ts` |

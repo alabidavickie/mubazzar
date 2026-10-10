@@ -1,4 +1,6 @@
 -- Security hardening (audit of 2026-10-06). Each block names the finding it closes.
+-- Ordered after 20261008000100 (RLS initplan/indexes) and 20261008000200 (supplier marketplace removed): the live database
+-- already has the first, so this file must sort after it for `supabase db push` to apply it without --include-all.
 
 -- ─── Tunables (private settings, editable by admin) ─────────────────────────
 insert into public.settings (key, value, is_public, description) values
@@ -388,29 +390,6 @@ begin
   return new;
 end $$;
 
--- ─── L7: suppliers can't set review/approval fields on their submissions ────
-create or replace function public.supplier_products_guard() returns trigger
-language plpgsql security definer set search_path = public as $$
-begin
-  if auth.uid() is not null and not public.is_admin() then
-    if tg_op = 'INSERT' then
-      if new.product_id is not null or new.reviewed_by is not null or new.reviewed_at is not null
-         or new.review_note is not null then
-        raise exception 'FORBIDDEN' using errcode = '42501';
-      end if;
-    elsif new.product_id is distinct from old.product_id
-       or new.reviewed_by is distinct from old.reviewed_by
-       or new.reviewed_at is distinct from old.reviewed_at
-       or new.review_note is distinct from old.review_note
-       or new.supplier_id is distinct from old.supplier_id then
-      raise exception 'FORBIDDEN' using errcode = '42501';
-    end if;
-  end if;
-  return new;
-end $$;
-create trigger supplier_products_guard before insert or update on public.supplier_products
-  for each row execute function public.supplier_products_guard();
-
 -- ─── L11: server-side session revocation ────────────────────────────────────
 alter table public.profiles add column sessions_revoked_at timestamptz;
 
@@ -418,5 +397,4 @@ alter table public.profiles add column sessions_revoked_at timestamptz;
 revoke execute on function public.track_order(text, text) from public, anon, authenticated;
 
 -- Trigger functions run regardless of EXECUTE grants; keep internals private.
-revoke execute on function public.profiles_guard_role(), public.supplier_products_guard(),
-  public.orders_guard_direct_update() from public, anon, authenticated;
+revoke execute on function public.profiles_guard_role(), public.orders_guard_direct_update() from public, anon, authenticated;

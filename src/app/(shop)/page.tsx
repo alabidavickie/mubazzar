@@ -216,32 +216,6 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* Supplier hub */}
-      <section className="px-4 py-3" aria-labelledby="supplier-title">
-        <div className="relative flex flex-col gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-gold-soft to-gold-pale p-5 shadow-card">
-          <div className="flex items-start justify-between">
-            <div className="max-w-[80%]">
-              <span className="rounded bg-bronze-ink px-2 py-0.5 text-label-sm font-extrabold text-gold-pale uppercase">Supplier Hub</span>
-              <h2 id="supplier-title" className="mt-1 text-headline-sm font-bold text-bronze-ink">
-                Got Unique or Viral Products?
-              </h2>
-              <p className="mt-0.5 text-body-sm text-bronze-muted">
-                Partner with MUBAZZAR and reach Nigerian buyers nationwide. Fast payouts & zero listing fees.
-              </p>
-            </div>
-            <Icon name="handshake" className="text-4xl text-bronze-ink/30" />
-          </div>
-          <div>
-            <Link
-              href="/sell"
-              className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-navy px-5 py-2 text-label-md text-on-dark shadow-card hover:opacity-90"
-            >
-              Apply to Sell <Icon name="arrow_forward" className="text-sm" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       <StandardSection />
     </>
   );

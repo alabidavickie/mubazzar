@@ -94,7 +94,7 @@ export async function verifyOtpAction(_prev: AuthState, form: FormData): Promise
   if (!res.ok) return { step: "code", identifier: id.value, error: res.error };
   const role = await roleOf(res.userId);
   if (role !== "customer") {
-    // Staff, riders, suppliers and admins must use their password.
+    // Staff, riders and admins must use their password.
     return { error: "This account signs in with email and password. Use the Staff & partners tab." };
   }
   // The per-number limit stops SMS-bombing someone else's phone; once the owner proves they hold the

@@ -71,7 +71,7 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] `/dispatch` mobile view (assigned orders, map link, call/WhatsApp, delivered w/ collection, failed w/ reason, proof photo)
 - [x] Exit check: E2E 8–9 pass (iphone-13, pixel-7, desktop)
 
-## Phase 8 — Supplier portal & customer accounts
+## Phase 8 — Supplier portal & customer accounts (the supplier portal was removed 2026-10-08 by owner decision; customer accounts remain)
 - [x] Supplier application form, admin approve/reject, supplier login, product submission (draft→pending→approved/rejected), sales/stock view
 - [x] Customer OTP login, order history, saved addresses, wishlist, verified-purchase reviews
 - [x] Track order (order number + phone)
@@ -116,7 +116,7 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - **Order pipeline:** `create_order` (server-priced, per-hub reservation, no oversell), WhatsApp/social handoff with auto-open, chat-click logging, duplicate flag, rate limits, honeypot, auto-cancel cron, Track Order, customer status SMS.
 - **Admin** `/admin`: dashboard, order desk (filters, follow-up list, WhatsApp buttons, payment recording with bank-arrival confirmation, proof uploads, refunds, overpayment flag, dispatcher assignment, notes, timeline, CSV, print), products/bundles/gifts/images/stock editor, landing-page builder with preview/publish, flash deals, inventory with low-stock alerts, categories, reviews moderation, delivery zones, homepage content, chat & payment settings, staff/rider accounts, suppliers, audit log, analytics.
 - **Rider view** `/dispatch`: assigned orders, call/WhatsApp/map, delivered with cash/POS collected + proof photo, failed with reason.
-- **Suppliers:** `/sell/apply`, admin approval, `/supplier` portal (submissions, stock, units sold).
+- **Suppliers:** removed 2026-10-08 (owner decision) — only the admin uploads products.
 - **Customer accounts:** OTP login, order history (guest orders linked by verified phone), saved addresses that prefill checkout, wishlist, verified-purchase reviews.
 - **Integrations behind adapters with mocks:** Supabase Auth/Storage, Termii SMS, Resend email, WhatsApp Cloud, Meta Pixel + CAPI (Purchase once on paid/delivered).
 
@@ -131,6 +131,12 @@ Legend: `[x]` done & verified · `[ ]` todo · `👉 NEXT` = the next task to pi
 - [x] Human-style walkthrough on a production build (phone 360px + laptop): one order traced shopper → admin (payment, confirm, assign) → rider (delivered) → shopper (tracking), plus a crawl of every shopper/admin/supplier/customer page checking console errors, failed requests and sideways scroll. 60/60 steps passed. Fixed: doubled "1× 1×" pack label on admin order rows; floating WhatsApp button covering checkout fields.
 - [x] Real-person test checklist for launch: `docs/UAT_CHECKLIST.md`.
 - [x] Automatic ad landing page for every product at `/lp/<product-slug>` (unit + E2E `lp-auto.spec.ts` on 3 devices; all 12 seeded products load).
+- [x] Admin CSV import/export of products (preview + apply, per-row errors, photo re-hosting) and paged admin product list. Unit: csv, product-import, remote-image (SSRF guards); E2E `admin-import.spec.ts`.
+- [x] Security audit (2026-10-08): all 41 server actions × 6 roles gated (new permanent test); live Supabase attacked as stranger / other customer / owner with real rolled-back data — 0 leaks, no privilege escalation, internal functions refuse non-staff; security headers, no secrets in bundles or git, `pnpm audit` clean. Fixed: health endpoint leaked an internal path, sign-in fail-closed without AUTH_SECRET, hardened post-login redirect, events API size cap, photo-import DNS pinning, localhost site URL fallback. Added the admin "Before you go live" panel.
+- [x] Final A–Z pass (2026-10-08): full Playwright suite on 3 devices 159 passed / 0 failed (15 skipped by design) + sitemap + permissions + go-live specs; Vitest 245/245; human walkthrough 68/68 steps; Lighthouse 92–98 perf, LCP ≤ 1.9 s on home, shop, both landing pages and a product page; `pnpm audit` clean. Fixed on the way: sitemap listed landing pages of hidden products; live DB performance advisories (RLS initplan + FK indexes, applied to Supabase).
+- [x] Owner change (2026-10-08): supplier/reseller side removed — only the admin uploads products (migration `20261008000200`, UI/actions/seed/tests/docs); every product's landing page listed in Admin with Automatic/Custom status. Tests: `admin-only-products`, `admin-landing-overview` E2E; RLS tests per role for product writes; no supplier tables/functions/role (DB constraint).
+- [x] Final verification after that change (2026-10-08): Vitest 251/251; Playwright 166 passed / 0 failed (41 skipped by design — admin-only specs run once on desktop); human walkthrough 65/65 steps with all 43 product landing pages 200; Lighthouse (mobile, slow 4G) performance 93–97, accessibility 100, best-practices 100, LCP ≤ 2.0 s, CLS 0 on home, shop, product page and both landing-page kinds; product-write rules and the retired supplier role re-verified on the live Supabase project in a rolled-back transaction. **Owner still to run** the one-time SQL (live DB drops need the owner's confirmation in the Supabase SQL editor) — see the hand-off message.
+- [ ] Live Supabase still contains the (empty) supplier tables until the owner runs that SQL; the app no longer references them.
 - [ ] Live site: every database-backed page returns 500 until Supabase is connected (see KNOWN_ISSUES #1).
 - [x] Page audit (2026-10-06): A–Z crawl of every sitemap URL (`tests/e2e/crawl.spec.ts`: console errors, failed requests, broken images/links, one h1, overflow, axe) and a **Back** control on every inner page (storefront, admin, rider, supplier, login).
 - [x] Landing page is now the product page: description, specifications, add to cart, wishlist; `/p/*` redirects; sitemap lists landing pages; rider collection UI matches the hardened SQL rules.

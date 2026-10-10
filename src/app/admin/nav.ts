@@ -20,7 +20,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin/inventory", label: "Inventory", icon: "inventory", roles: ADMIN, group: "Catalogue" },
   { href: "/admin/categories", label: "Categories", icon: "category", roles: ADMIN, group: "Catalogue" },
   { href: "/admin/flash-deals", label: "Flash deals", icon: "bolt", roles: ADMIN, group: "Catalogue" },
-  { href: "/admin/suppliers", label: "Suppliers", icon: "handshake", roles: ADMIN, group: "Catalogue" },
   { href: "/admin/landing-pages", label: "Landing pages", icon: "campaign", roles: ADMIN, group: "Content" },
   { href: "/admin/reviews", label: "Reviews", icon: "rate_review", roles: ADMIN, group: "Content" },
   { href: "/admin/homepage", label: "Homepage", icon: "storefront", roles: ADMIN, group: "Content" },

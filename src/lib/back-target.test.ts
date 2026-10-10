@@ -3,7 +3,7 @@ import { backTarget } from "./back-target";
 
 describe("backTarget", () => {
   it("is hidden on section roots", () => {
-    for (const p of ["/", "/admin", "/dispatch", "/supplier", "/admin/"]) expect(backTarget(p)).toBeNull();
+    for (const p of ["/", "/admin", "/dispatch", "/admin/"]) expect(backTarget(p)).toBeNull();
   });
 
   it("sends storefront pages home and product/category pages to the shop", () => {
@@ -12,12 +12,9 @@ describe("backTarget", () => {
     expect(backTarget("/lp/turbo-car-vacuum")?.href).toBe("/shop");
     expect(backTarget("/c/car-tech")?.href).toBe("/shop");
     expect(backTarget("/account/addresses")?.href).toBe("/account");
-    expect(backTarget("/sell/apply")?.href).toBe("/sell");
   });
 
   it("never points at a route that has no page", () => {
-    expect(backTarget("/supplier/products/new")?.href).toBe("/supplier");
-    expect(backTarget("/supplier/products/abc")?.href).toBe("/supplier");
     expect(backTarget("/dispatch/abc")?.href).toBe("/dispatch");
   });
 

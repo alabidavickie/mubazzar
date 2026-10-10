@@ -137,7 +137,7 @@ describe("M2 — staff can only change money and orders through audited function
   });
 });
 
-describe("L6/L7 — guarded profile and supplier fields", () => {
+describe("L6 — guarded profile fields", () => {
   it("customers cannot change their hub or email; phone/name edits still work", async () => {
     await rejects(
       as(db, "customer")((q) => q.query("update public.profiles set hub_code = 'lagos' where id = $1", [ids.user("customer")])),
@@ -151,19 +151,6 @@ describe("L6/L7 — guarded profile and supplier fields", () => {
       q.query("update public.profiles set full_name = 'Chinedu C.' where id = $1 returning id", [ids.user("customer")]),
     );
     expect(ok).toHaveLength(1);
-  });
-
-  it("suppliers cannot pre-fill review fields or link a live product", async () => {
-    await rejects(
-      as(db, "supplier")((q) =>
-        q.query(
-          `insert into public.supplier_products (supplier_id, name, description, proposed_price_kobo, status, product_id, review_note)
-           values ($1, 'x', 'y', 100, 'pending', $2, 'ok')`,
-          [ids.supplier(), ids.product(VACUUM)],
-        ),
-      ),
-      /FORBIDDEN/,
-    );
   });
 });
 

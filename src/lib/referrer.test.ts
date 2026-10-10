@@ -23,7 +23,7 @@ describe("internalBackLink", () => {
   });
 
   it("never links to private, transactional or staff pages", () => {
-    for (const p of ["/order/0123456789abcdef0123456789abcdef", "/checkout", "/login?next=/x", "/admin/orders", "/dispatch", "/supplier", "/api/events"]) {
+    for (const p of ["/order/0123456789abcdef0123456789abcdef", "/checkout", "/login?next=/x", "/admin/orders", "/dispatch", "/api/events"]) {
       expect(back(`https://${HOST}${p}`), p).toBeNull();
     }
   });

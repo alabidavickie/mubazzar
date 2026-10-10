@@ -227,7 +227,7 @@ export function MemberRow({ member, hubs }: { member: { id: string; role: string
   return (
     <span className="flex flex-wrap items-center gap-2">
       <select aria-label="Role" value={v.role} onChange={(e) => setV({ ...v, role: e.target.value })} className="rounded-lg border border-line bg-card px-2 py-2 text-label-md">
-        {["admin", "staff", "dispatcher", "supplier", "customer"].map((r) => (
+        {["admin", "staff", "dispatcher", "customer"].map((r) => (
           <option key={r} value={r}>
             {r}
           </option>

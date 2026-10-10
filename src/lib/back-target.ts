@@ -16,22 +16,19 @@ const SEGMENT_LABEL: Record<string, string> = {
   products: "Products",
   "landing-pages": "Landing pages",
   dispatch: "My deliveries",
-  supplier: "Supplier home",
   account: "Account",
-  sell: "Sell on MUBAZZAR",
   shop: "Shop",
 };
 
 export function backTarget(pathname: string): BackTarget | null {
   const path = pathname.replace(/\/+$/, "") || "/";
-  if (path === "/" || path === "/admin" || path === "/dispatch" || path === "/supplier") return null;
+  if (path === "/" || path === "/admin" || path === "/dispatch") return null;
   const parts = path.split("/").filter(Boolean);
 
   // Category and product (landing) pages sit under the catalogue.
   if (parts[0] === "c" || parts[0] === "lp") return { href: "/shop", label: "Back to Shop", preferHistory: true };
   // The thank-you page must not walk back into a submitted order form.
   if (parts[0] === "order") return { href: "/", label: "Back to Home", preferHistory: false };
-  if (parts[0] === "supplier") return { href: "/supplier", label: "Back to Supplier home", preferHistory: true };
   if (parts[0] === "dispatch") return { href: "/dispatch", label: "Back to My deliveries", preferHistory: true };
 
   if (parts[0] === "admin") {

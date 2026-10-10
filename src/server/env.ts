@@ -1,5 +1,7 @@
 import "server-only";
 
+import { siteUrl } from "@/lib/site";
+
 const isProd = process.env.NODE_ENV === "production";
 /** Local E2E server only (scripts/e2e-server.mjs). Never true on Vercel, whatever env vars are set. */
 const testHooks = process.env.MUBAZZAR_E2E === "1" && !process.env.VERCEL && !process.env.VERCEL_ENV;
@@ -25,7 +27,7 @@ export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   isProd,
   testHooks,
-  siteUrl: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+  siteUrl: siteUrl(),
   authSecret: requiredSecret("AUTH_SECRET", process.env.AUTH_SECRET, 32, "dev-only-insecure-secret-change-me-in-production-please"),
   cronSecret: process.env.CRON_SECRET ?? "",
   ipHashSalt: requiredSecret("IP_HASH_SALT", process.env.IP_HASH_SALT, 16, "dev-only-ip-hash-salt"),
@@ -57,3 +59,6 @@ export const services = {
   whatsappCloud: Boolean(env.waCloudToken && env.waCloudPhoneId),
 };
 
+if (env.isProd && env.siteUrl.startsWith("http://localhost")) {
+  console.warn("[mubazzar] NEXT_PUBLIC_SITE_URL is not set — canonical URLs, the sitemap and SMS tracking links will point at localhost.");
+}

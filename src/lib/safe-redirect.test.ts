@@ -18,6 +18,7 @@ describe("safeRedirectPath", () => {
     ["relative without slash", "evil.com"],
     ["empty", ""],
     ["non-string", 42],
+    ["null", null],
   ])("rejects %s", (_name, value) => {
     expect(safeRedirectPath(value)).toBeNull();
   });

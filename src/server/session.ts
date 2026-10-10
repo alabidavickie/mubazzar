@@ -5,7 +5,7 @@ import { asService } from "./db";
 import { readSessionCookie } from "./adapters/auth";
 import { isMissingColumn, LEGACY_PROFILE_SQL, PROFILE_SQL } from "./schema-compat";
 
-export type AppRole = "customer" | "admin" | "staff" | "dispatcher" | "supplier";
+export type AppRole = "customer" | "admin" | "staff" | "dispatcher";
 
 export interface Session {
   userId: string;
@@ -36,7 +36,7 @@ export const getSession = cache(async (): Promise<Session | null> => {
     if (!isMissingColumn(e)) throw e;
     // Keep people signed in during a deploy that is ahead of the database; /api/health reports it.
     // (A failed statement aborts its transaction, so the fallback runs as a separate call.)
-    console.error("[session] profiles.sessions_revoked_at is missing: apply migration 20261006000500_security_hardening.sql (sign-out revocation is off until then)");
+    console.error("[session] profiles.sessions_revoked_at is missing: apply migration 20261010000100_security_hardening.sql (sign-out revocation is off until then)");
     rows = await asService((q) => q.query<ProfileRow>(LEGACY_PROFILE_SQL, [claims.sub]));
   }
   const p = rows[0];
@@ -63,8 +63,6 @@ export function homeForRole(role: AppRole): string {
       return "/admin";
     case "dispatcher":
       return "/dispatch";
-    case "supplier":
-      return "/supplier";
     default:
       return "/account";
   }

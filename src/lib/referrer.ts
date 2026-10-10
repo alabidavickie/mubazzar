@@ -7,7 +7,7 @@ export interface BackLink {
 }
 
 /** Pages a "Back" link must never send the visitor to (private, transactional or staff pages). */
-const NEVER_BACK = /^\/(order|checkout|login|admin|dispatch|supplier|api)(\/|\?|$)/;
+const NEVER_BACK = /^\/(order|checkout|login|admin|dispatch|api)(\/|\?|$)/;
 
 const LABELS: [RegExp, string][] = [
   [/^\/(\?|$)/, "Home"],

@@ -3,14 +3,25 @@
 const port = process.env.LHCI_PORT || "3200";
 const base = `http://localhost:${port}`;
 
+const ASSERTIONS = {
+  "categories:performance": ["error", { minScore: 0.9 }],
+  "categories:accessibility": ["error", { minScore: 0.95 }],
+  "categories:best-practices": ["error", { minScore: 0.95 }],
+  "categories:seo": ["error", { minScore: 0.95 }],
+  "largest-contentful-paint": ["error", { maxNumericValue: 2500 }],
+  "cumulative-layout-shift": ["error", { maxNumericValue: 0.1 }],
+};
+
 module.exports = {
   ci: {
     collect: {
       startServerCommand: `node scripts/e2e-server.mjs ${port}`,
       startServerReadyPattern: "Ready in",
       startServerReadyTimeout: 300000,
-      url: [`${base}/`, `${base}/shop`, `${base}/lp/car-vacuum`],
-      numberOfRuns: 3,
+      // The pages ads and shoppers land on: home, catalog, a hand-built landing page and an automatic landing page
+      // (built from the product alone; it is also the product's page). LHCI_PATHS="/a,/b" / LHCI_RUNS=1 narrow a local run.
+      url: (process.env.LHCI_PATHS ? process.env.LHCI_PATHS.split(",") : ["/", "/shop", "/lp/car-vacuum", "/lp/bladeless-neck-fan"]).map((p) => `${base}${p}`),
+      numberOfRuns: Number(process.env.LHCI_RUNS || 3),
       chromePath: process.env.CHROME_PATH || undefined,
       settings: {
         // Mobile form factor + slow-4G emulation applied in the browser (DevTools throttling: 562 ms RTT,
@@ -21,16 +32,7 @@ module.exports = {
         skipAudits: ["uses-http2"], // local http server; production is served over HTTP/2 by Vercel
       },
     },
-    assert: {
-      assertions: {
-        "categories:performance": ["error", { minScore: 0.9 }],
-        "categories:accessibility": ["error", { minScore: 0.95 }],
-        "categories:best-practices": ["error", { minScore: 0.95 }],
-        "categories:seo": ["error", { minScore: 0.95 }],
-        "largest-contentful-paint": ["error", { maxNumericValue: 2500 }],
-        "cumulative-layout-shift": ["error", { maxNumericValue: 0.1 }],
-      },
-    },
+    assert: { assertions: ASSERTIONS },
     upload: { target: "filesystem", outputDir: "reports/lighthouse" },
   },
 };

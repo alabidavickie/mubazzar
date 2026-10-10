@@ -5,6 +5,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { asService } from "../db";
 import { env, services } from "../env";
 import { notify } from "./notify";
+import { otpRequestError } from "@/lib/otp-errors";
 
 /**
  * Auth adapter.
@@ -22,7 +23,21 @@ export const SESSION_COOKIE = "mbz_session";
  */
 export const SIGNED_IN_HINT_COOKIE = "mbz_signed_in";
 const SESSION_DAYS = 30;
+/**
+ * The session signing key. In production a missing/short AUTH_SECRET fails closed: nobody can sign in
+ * and no cookie verifies, instead of falling back to the development key (which is public in the repo
+ * and would let anyone forge an admin session).
+ */
 const secret = () => new TextEncoder().encode(env.authSecret());
+/** False when a production server has no strong AUTH_SECRET (sign-in is disabled; /api/health says "not ready"). */
+export const authSecretConfigured = () => {
+  try {
+    env.authSecret();
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 export interface SessionClaims {
   sub: string;
@@ -123,7 +138,7 @@ export async function signInWithPassword(email: string, password: string): Promi
 const otpHash = (identifier: string, code: string) =>
   createHash("sha256").update(`${env.authSecret()}:${identifier}:${code}`).digest("hex");
 
-/** True when the phone/email belongs to a staff, rider, supplier or admin account (password-only). */
+/** True when the phone/email belongs to a staff, rider or admin account (password-only). */
 export async function isPasswordOnlyIdentifier(identifier: string): Promise<boolean> {
   const col = identifier.includes("@") ? "lower(p.email)" : "p.phone";
   const rows = await asService((q) =>
@@ -142,7 +157,11 @@ export async function requestOtp(identifier: string): Promise<{ ok: true; devCod
   if (await isPasswordOnlyIdentifier(identifier)) return { ok: true };
   if (services.supabaseAuth) {
     const res = await supabaseFetch("otp", isEmail ? { email: identifier, create_user: true } : { phone: identifier, create_user: true });
-    return res.ok ? { ok: true } : { ok: false, error: "Could not send the code. Try again shortly." };
+    if (res.ok) return { ok: true };
+    const body = (await res.json().catch(() => null)) as { error_code?: string } | null;
+    // The code (never the person's email/phone) goes to the server log so a misconfigured Supabase project is easy to diagnose.
+    console.error("[auth] Supabase refused to send a login code:", res.status, body?.error_code ?? "unknown");
+    return { ok: false, error: otpRequestError(res.status, body?.error_code) };
   }
   const code = env.mockOtpCode || String(randomInt(0, 1_000_000)).padStart(6, "0");
   await asService(async (q) => {
@@ -203,7 +222,7 @@ export async function verifyOtp(identifier: string, code: string, fullName?: str
   });
 }
 
-/** Admin provisioning (staff, dispatchers, approved suppliers). Returns the new user id. */
+/** Admin provisioning (staff and dispatchers). Returns the new user id. */
 export async function createUser(input: {
   email: string;
   phone?: string | null;

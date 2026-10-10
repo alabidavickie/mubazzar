@@ -73,7 +73,7 @@ test("admin: product + bundles → landing page → publish → live", async ({ 
   await admin.goto("/admin/landing-pages");
   await expectNoHorizontalOverflow(admin);
   // New products are not missing a landing page: the screen says every product already has an automatic one.
-  await expect(admin.getByTestId("lp-auto-note")).toContainText("Every product already has a landing page");
+  await expect(admin.getByText("Every product already has its own landing page")).toBeVisible();
   await expectNoA11yViolations(admin);
   const row = admin.locator(`[data-testid="landing-row"][data-slug="${lpSlug}"]`);
   await row.getByRole("button", { name: `Publish /lp/${lpSlug}` }).click();

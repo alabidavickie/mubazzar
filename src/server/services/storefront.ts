@@ -98,13 +98,16 @@ export async function getProductReviewSummary(productId: string): Promise<Review
 
 /**
  * Every address that serves a product page (each product's landing page): published custom landing
- * pages, plus the automatic page of every active product that has no published custom one.
+ * pages of visible products (a hidden product's page 404s, so it must not be advertised), plus the
+ * automatic page of every active product that has no published custom one.
  */
 export async function getProductPageSlugs(): Promise<{ slug: string; updatedAt: string }[]> {
   const rows = await asAnon((q) =>
     q.query<{ slug: string; updatedAt: string }>(
       `select slug, updated_at as "updatedAt" from (
-         select lp.slug, lp.updated_at, 0 as ord from public.landing_pages lp where lp.is_published
+         select lp.slug, lp.updated_at, 0 as ord
+           from public.landing_pages lp join public.products p on p.id = lp.product_id
+          where lp.is_published and p.is_active
          union all
          select p.slug, p.updated_at, 1 as ord from public.products p
           where p.is_active

@@ -8,7 +8,6 @@ const PAGES: { path: string; h1: RegExp }[] = [
   { path: "/returns", h1: /Returns & Refund Policy/ },
   { path: "/privacy", h1: /Privacy Policy/ },
   { path: "/terms", h1: /Terms of Service/ },
-  { path: "/sell", h1: /unique or viral products/i },
   { path: "/deals", h1: /deals|Save up to/i },
   { path: "/search", h1: /Search MUBAZZAR/ },
   { path: "/cart", h1: /Your Cart/ },

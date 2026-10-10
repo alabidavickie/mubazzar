@@ -3,7 +3,7 @@ import { seedId } from "@/server/db/seed/ids";
 import type { Db, Queryable } from "@/server/db/types-core";
 import { generateOrderNumber } from "@/lib/order-number";
 
-export type Role = "admin" | "staff" | "dispatcher" | "supplier" | "customer";
+export type Role = "admin" | "staff" | "dispatcher" | "customer";
 
 export const ids = {
   user: (role: Role) => seedId("user", role),
@@ -11,7 +11,6 @@ export const ids = {
   bundle: (slug: string, key: string) => seedId("bundle", `${slug}:${key}`),
   hub: (code: string) => seedId("hub", code),
   lp: (slug: string) => seedId("lp", slug),
-  supplier: () => seedId("supplier", "sample"),
 };
 
 export const VACUUM = "turbo-car-vacuum";

@@ -86,9 +86,6 @@ export function SiteHeader({
             {c.shortName ?? c.name}
           </Link>
         ))}
-        <Link href="/sell" className="shrink-0 rounded-full bg-surface-container px-3 py-1 text-label-md font-bold text-bronze">
-          Sell on Mubazzar
-        </Link>
       </nav>
     </header>
   );

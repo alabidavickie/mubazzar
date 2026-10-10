@@ -236,7 +236,7 @@ export async function createTeamMemberAction(input: z.input<typeof memberSchema>
 
 const updateMemberSchema = z.object({
   id: z.uuid(),
-  role: z.enum(["admin", "staff", "dispatcher", "supplier", "customer"]),
+  role: z.enum(["admin", "staff", "dispatcher", "customer"]),
   isActive: z.boolean(),
   hubCode: z.string().trim().max(20).nullable().optional().transform((v) => v || null),
 });

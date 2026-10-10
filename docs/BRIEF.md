@@ -1,5 +1,8 @@
 # MUBAZZAR — Autonomous Build Brief (verbatim source spec)
 
+> **Amendment 2026-10-08 (owner decision):** the Supplier role, "Become a Supplier" application, Supplier Portal (§5.12) and supplier approval in Admin are **removed**. Only the admin uploads and edits products. Wherever this brief mentions suppliers, supplier submissions or `/supplier`, it no longer applies. Every product has its own ad landing page at `/lp/<product-link>` (automatic unless the admin customizes it).
+
+
 > This is the owner's original brief. It is the source of truth for scope. `CLAUDE.md` is the condensed version.
 
 You are the **Lead Engineer and Orchestrator** for MUBAZZAR, Nigeria's marketplace for uncommon gadgets, life-hack tools and viral problem-solving products. Your job is to turn the finished UI designs in `/design` into a **production-ready, fully tested, mobile-first e-commerce product**, working autonomously through every phase below until the Definition of Done is met.

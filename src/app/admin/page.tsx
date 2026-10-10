@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireRole, STAFF_ROLES } from "@/server/session";
 import { getDashboard } from "@/server/services/admin-dashboard";
 import { lowStockCount } from "@/server/services/admin-inventory";
+import { getGoLiveChecks } from "@/server/services/go-live";
 import { formatNaira } from "@/lib/money";
 import { formatLagosDateTime } from "@/lib/time";
 import { cn } from "@/lib/cn";
@@ -40,10 +41,43 @@ function Queue({ href, label, count, icon, urgent }: { href: string; label: stri
 
 export default async function AdminDashboard() {
   const session = await requireRole(STAFF_ROLES, "/admin");
-  const [d, low] = await Promise.all([getDashboard(session), session.role === "admin" ? lowStockCount(session) : Promise.resolve(0)]);
+  const [d, low, goLive] = await Promise.all([
+    getDashboard(session),
+    session.role === "admin" ? lowStockCount(session) : Promise.resolve(0),
+    getGoLiveChecks(session),
+  ]);
   return (
     <div className="flex flex-col gap-5">
       <h1 className="text-headline-md font-bold text-navy">Hello, {session.fullName?.split(" ")[0] ?? "team"} 👋</h1>
+
+      {goLive.length > 0 ? (
+        <section aria-label="Before you go live" className="flex flex-col gap-2 rounded-xl bg-card p-3 shadow-card" data-testid="go-live">
+          <h2 className="text-label-lg font-bold text-navy">Before you go live</h2>
+          <p className="text-body-sm text-ink-muted">
+            {goLive.filter((g) => g.severity === "blocker").length > 0
+              ? "These are still demo or test settings. Fix the red ones before sending customers here."
+              : "Everything essential is set. These would make the shop stronger."}
+          </p>
+          <ul className="flex flex-col gap-2">
+            {goLive.map((g) => (
+              <li key={g.key} className={cn("flex items-start gap-2 rounded-lg p-2.5", g.severity === "blocker" ? "bg-urgent-soft text-urgent-ink" : "bg-surface-high text-ink")} data-testid="go-live-item" data-severity={g.severity}>
+                <Icon name={g.severity === "blocker" ? "warning" : "info"} className="mt-0.5 shrink-0 text-lg" />
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="text-label-md font-bold">{g.title}</span>
+                  <span className="text-body-sm">{g.detail}</span>
+                  {g.href ? (
+                    <Link href={g.href} className="mt-0.5 text-label-md font-bold underline underline-offset-2">
+                      Fix this →
+                    </Link>
+                  ) : (
+                    <span className="mt-0.5 text-body-sm font-semibold">Add it in Vercel → Settings → Environment Variables (README §2).</span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section aria-label="Today" className="flex flex-col gap-2">
         <h2 className="text-label-lg font-bold text-navy">Today</h2>

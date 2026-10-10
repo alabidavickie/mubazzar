@@ -14,6 +14,8 @@ test.describe("automatic product landing pages", () => {
     await expect(page.getByTestId("promo-timer")).toHaveAttribute("data-ends-at", "");
     await expect(page.getByTestId("promo-timer")).toHaveText("");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/lp\/bladeless-neck-fan$/);
+    // The automatic page is the product's page (the old /p/ address only redirects), so it must be indexable.
+    await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(0);
     await expectNoA11yViolations(page);
