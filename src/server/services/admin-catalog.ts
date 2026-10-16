@@ -72,7 +72,7 @@ export async function getProductForEdit(
       imageBadgeStyle: "navy" | "emerald" | "gold" | "bronze" | "red"; imageBadgeIcon: string | null; perkText: string | null;
       perkIcon: string | null; perkStyle: "gold" | "neutral"; deliveryNote: string | null; deliveryNoteIcon: string | null;
       podAvailable: boolean; warrantyMonths: number; isActive: boolean; curatedRank: number | null; curatedLabel: string | null;
-      seoTitle: string | null; seoDescription: string | null; specs: { label: string; value: string }[];
+      seoTitle: string | null; seoDescription: string | null; videoUrl: string | null; specs: { label: string; value: string }[];
     }>(
       `select id, slug, name, short_description as "shortDescription", description, category_id as "categoryId",
               price_kobo as "priceKobo", compare_at_kobo as "compareAtKobo", sku, tags, image_badge as "imageBadge",
@@ -80,7 +80,7 @@ export async function getProductForEdit(
               perk_icon as "perkIcon", perk_style as "perkStyle", delivery_note as "deliveryNote",
               delivery_note_icon as "deliveryNoteIcon", pod_available as "podAvailable", warranty_months as "warrantyMonths",
               is_active as "isActive", curated_rank as "curatedRank", curated_label as "curatedLabel",
-              seo_title as "seoTitle", seo_description as "seoDescription", specs
+              seo_title as "seoTitle", seo_description as "seoDescription", video_url as "videoUrl", specs
          from public.products where id = $1`,
       [id],
     );
@@ -140,6 +140,7 @@ export async function getProductForEdit(
       curatedLabel: p.curatedLabel ?? "",
       seoTitle: p.seoTitle ?? "",
       seoDescription: p.seoDescription ?? "",
+      videoUrl: p.videoUrl ?? "",
       specs: Array.isArray(p.specs) ? p.specs : [],
       features: features.map((f) => ({ icon: f.icon, title: f.title, description: f.description })),
       faqs,
@@ -185,6 +186,7 @@ export interface ExportProductRow {
   features: { title: string; description: string }[] | null;
   seoTitle: string | null;
   seoDescription: string | null;
+  videoUrl: string | null;
 }
 
 /** Every product in the CSV import format (Admin → Products → Export CSV). */
@@ -198,7 +200,7 @@ export async function exportProducts(session: Session): Promise<ExportProductRow
                 where inv.product_id = p.id) as stock,
               (select jsonb_agg(jsonb_build_object('title', f.title, 'description', f.description) order by f.sort_order)
                  from public.product_features f where f.product_id = p.id) as features,
-              p.seo_title as "seoTitle", p.seo_description as "seoDescription"
+              p.seo_title as "seoTitle", p.seo_description as "seoDescription", p.video_url as "videoUrl"
          from public.products p left join public.categories c on c.id = p.category_id
         order by p.name`,
     ),

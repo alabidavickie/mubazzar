@@ -429,6 +429,8 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
                     poster={
                       lp.videoPosterUrl ? (
                         <StaticImg src={lp.videoPosterUrl} alt="" fill sizes="(min-width: 768px) 672px, 100vw" className="object-cover" />
+                      ) : images[0]?.url ? (
+                        <StaticImg src={images[0].url} alt="" fill sizes="(min-width: 768px) 672px, 100vw" className="object-cover" />
                       ) : null
                     }
                   />

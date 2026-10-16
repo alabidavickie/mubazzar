@@ -44,7 +44,7 @@ export async function loadLandingPreview(session: { userId: string; email: strin
       getRecentReviews({ productId: lp.productId, limit: 6 }),
     ]);
     if (!found) return null;
-    return { lp, product: found.product, reviews, isDraft: !found.isActive };
+    return { lp: { ...lp, videoUrl: lp.videoUrl || found.product.videoUrl }, product: found.product, reviews, isDraft: !found.isActive };
   }
   // No page row at this address: preview the product's own page (what /lp/<product-slug> shows once it is visible).
   const found = await getProductAsStaff(session, { slug });

@@ -317,19 +317,46 @@ export function OrderForm(props: OrderFormProps) {
         <fieldset className="flex flex-col gap-2">
           <legend className="mb-1 text-label-md font-semibold text-navy">Where should we chat to confirm & take payment?</legend>
           <div className="grid grid-cols-2 gap-2">
-            {(hasWhatsApp ? [{ kind: "whatsapp" as const, label: "WhatsApp" }, ...otherChannels] : otherChannels).map((c) => (
-              <label
-                key={c.kind}
-                className={cn(
-                  "flex min-h-12 cursor-pointer items-center gap-2 rounded-lg border-[1.5px] bg-card px-3 py-2 text-label-md text-navy",
-                  chatChannel === c.kind ? "border-gold bg-gold-soft/15" : "border-line",
-                )}
-              >
-                <input type="radio" value={c.kind} className="size-4 accent-navy" {...register("chatChannel")} />
-                {c.kind === "whatsapp" ? <WhatsAppIcon className="text-emerald-ink" /> : null}
-                <span>{c.kind === "whatsapp" ? "WhatsApp (fastest)" : c.label}</span>
-              </label>
-            ))}
+            {(hasWhatsApp ? [{ kind: "whatsapp" as const, label: "WhatsApp" }, ...otherChannels] : otherChannels).map((c) => {
+              const isComingSoon = c.kind === "instagram";
+              if (isComingSoon) {
+                return (
+                  <div
+                    key={c.kind}
+                    aria-disabled="true"
+                    className="flex min-h-12 items-center justify-between gap-2 rounded-lg border-[1.5px] border-line/60 bg-surface-low/60 px-3 py-2 text-label-md text-ink-muted opacity-75 cursor-not-allowed select-none"
+                    title="Instagram DM is coming soon"
+                  >
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        disabled
+                        tabIndex={-1}
+                        aria-label={`${c.label} (Coming soon)`}
+                        className="size-4 cursor-not-allowed opacity-40 accent-navy"
+                      />
+                      <span>{c.label}</span>
+                    </div>
+                    <span className="rounded-full bg-surface-container px-2 py-0.5 text-label-xs font-semibold text-ink-muted">
+                      Coming soon
+                    </span>
+                  </div>
+                );
+              }
+              return (
+                <label
+                  key={c.kind}
+                  className={cn(
+                    "flex min-h-12 cursor-pointer items-center gap-2 rounded-lg border-[1.5px] bg-card px-3 py-2 text-label-md text-navy",
+                    chatChannel === c.kind ? "border-gold bg-gold-soft/15" : "border-line",
+                  )}
+                >
+                  <input type="radio" value={c.kind} className="size-4 accent-navy" {...register("chatChannel")} />
+                  {c.kind === "whatsapp" ? <WhatsAppIcon className="text-emerald-ink" /> : null}
+                  <span>{c.kind === "whatsapp" ? "WhatsApp (fastest)" : c.label}</span>
+                </label>
+              );
+            })}
           </div>
         </fieldset>
       ) : null}

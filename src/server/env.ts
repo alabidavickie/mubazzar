@@ -42,8 +42,6 @@ export const env = {
   metaCapiToken: process.env.META_CAPI_ACCESS_TOKEN ?? "",
   metaTestEventCode: process.env.META_TEST_EVENT_CODE ?? "",
 
-  termiiApiKey: process.env.TERMII_API_KEY ?? "",
-  termiiSenderId: process.env.TERMII_SENDER_ID ?? "MUBAZZAR",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
   emailFrom: process.env.EMAIL_FROM ?? "MUBAZZAR <orders@mubazzar.ng>",
   waCloudToken: process.env.WHATSAPP_CLOUD_TOKEN ?? "",
@@ -54,7 +52,6 @@ export const services = {
   supabaseAuth: Boolean(env.supabaseUrl && env.supabaseAnonKey && env.supabaseServiceKey),
   supabaseStorage: Boolean(env.supabaseUrl && env.supabaseServiceKey),
   metaCapi: Boolean(env.metaPixelId && env.metaCapiToken),
-  sms: Boolean(env.termiiApiKey),
   email: Boolean(env.resendApiKey),
   whatsappCloud: Boolean(env.waCloudToken && env.waCloudPhoneId),
 };

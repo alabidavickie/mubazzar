@@ -41,4 +41,11 @@ describe("autoLandingPage", () => {
     const lp = autoLandingPage({ ...base, features: [{ title: "Fast Nationwide Delivery " }] });
     expect(lp.sections[0]!.items.map((i) => i.title)).toEqual(["Pay On Delivery (Arrange in Chat)"]);
   });
+
+  it("includes the product's demo video when set", () => {
+    const lp = autoLandingPage({ ...base, videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" });
+    expect(lp.videoUrl).toBe("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+    expect(lp.videoTitle).toBe("See the Bladeless Hanging Neck Fan in action");
+    expect(lp.videoSubtitle).toBe("Demonstration preview");
+  });
 });

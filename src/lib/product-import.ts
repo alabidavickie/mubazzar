@@ -12,7 +12,7 @@ import { SLUG_RE } from "./slug";
 export const IMPORT_COLUMNS = [
   "slug", "name", "category", "price", "compare_at_price", "short_description", "description", "sku", "tags",
   "warranty_months", "visible", "stock_lagos", "stock_abuja", "stock_warehouse", "image_urls", "features",
-  "seo_title", "seo_description",
+  "seo_title", "seo_description", "video_url",
 ] as const;
 export type ImportColumn = (typeof IMPORT_COLUMNS)[number];
 
@@ -39,6 +39,7 @@ export interface ImportValues {
   features?: { title: string; description: string }[];
   seoTitle?: string;
   seoDescription?: string;
+  videoUrl?: string;
 }
 
 export interface ImportRow {
@@ -204,6 +205,11 @@ export function parseProductImport(text: string): ParsedImport {
     if (seoTitle !== undefined) values.seoTitle = seoTitle;
     const seoDescription = cell("seo_description");
     if (seoDescription !== undefined) values.seoDescription = seoDescription;
+    const videoUrl = cell("video_url");
+    if (videoUrl !== undefined) {
+      if (videoUrl && !isImportableImageUrl(videoUrl)) errors.push('video_url: must be a valid https:// link.');
+      else values.videoUrl = videoUrl || undefined;
+    }
     return { line, slug, values, errors };
   });
   return { rows, fileErrors: [], ignoredColumns };

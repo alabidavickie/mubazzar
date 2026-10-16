@@ -12,7 +12,7 @@ export default async function NewProductPage() {
     <div className="flex flex-col gap-4">
       <h1 className="text-headline-md font-bold text-navy">New product</h1>
       <ProductEditor
-        initial={{ name: "", slug: "", price: "", isActive: false, podAvailable: true, bundles: [], features: [], specs: [], faqs: [], images: [], gift: null, stock: hubs.map((h) => ({ hubId: h.id, onHand: 0, threshold: 10 })) }}
+        initial={{ name: "", slug: "", price: "", videoUrl: "", isActive: false, podAvailable: true, bundles: [], features: [], specs: [], faqs: [], images: [], gift: null, stock: hubs.map((h) => ({ hubId: h.id, onHand: 0, threshold: 10 })) }}
         initialImages={[]}
         categories={categories}
         hubs={hubs}

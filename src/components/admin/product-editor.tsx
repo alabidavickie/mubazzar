@@ -276,6 +276,28 @@ export function ProductEditor({
         ) : null}
       </Section>
 
+      <Section
+        title="Demo video"
+        hint="Embed a video demonstration on the product's landing page. Paste a YouTube link or direct video link."
+      >
+        <Field
+          label="Video link (YouTube or direct video)"
+          hint="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/... (or a direct .mp4 link). Displayed on the product's landing page."
+          error={err("videoUrl")}
+        >
+          {({ id, describedBy, invalid }) => (
+            <Input
+              id={id}
+              value={v.videoUrl ?? ""}
+              placeholder="https://www.youtube.com/watch?v=..."
+              aria-describedby={describedBy}
+              aria-invalid={invalid}
+              onChange={(e) => set("videoUrl", e.target.value)}
+            />
+          )}
+        </Field>
+      </Section>
+
       <Section title="Bundles (multi-packs)" hint="Each bundle is priced in the database and recomputed at checkout. A promo price needs a real end date; after it, the regular price applies automatically.">
         {err("bundles") ? (
           <p role="alert" className="text-body-sm font-semibold text-urgent">

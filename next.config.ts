@@ -19,7 +19,7 @@ const csp = [
   "font-src 'self' data:",
   `connect-src 'self' https://www.facebook.com https://connect.facebook.net${supabaseHost ? ` https://${supabaseHost}` : ""}`,
   "media-src 'self' blob: https:",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

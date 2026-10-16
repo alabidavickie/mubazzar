@@ -63,8 +63,7 @@ Copy `.env.example` to `.env.local` and fill what you need. Everything is option
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase Auth (OTP/password) + Storage URLs |
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Server-only: creating staff accounts, Storage uploads, signed URLs |
 | `NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_ACCESS_TOKEN` | optional | Meta Pixel (browser) + Conversions API (server). `META_TEST_EVENT_CODE` while testing |
-| `TERMII_API_KEY`, `TERMII_SENDER_ID` | optional | SMS (order confirmations, admin alerts, OTP fallback) |
-| `RESEND_API_KEY`, `EMAIL_FROM` | optional | Email notifications |
+| `RESEND_API_KEY`, `EMAIL_FROM` | optional | Email notifications (free tier: 3,000 emails/mo) |
 | `WHATSAPP_CLOUD_TOKEN`, `WHATSAPP_CLOUD_PHONE_NUMBER_ID` | optional | Automated WhatsApp status messages (customer checkout still uses `wa.me` links) |
 | `MOCK_OTP_CODE` | dev only | Fixed OTP for the mock auth adapter (ignored in production) |
 

@@ -37,4 +37,14 @@ describe("productInput", () => {
     const twoPopular = productInput.safeParse({ ...base, bundles: [{ ...bundle, isPopular: true }, { ...bundle, label: "3x", isPopular: true }] });
     expect(twoPopular.error!.issues[0]!.message).toMatch(/Only one bundle/);
   });
+
+  it("accepts valid video URLs and normalises empty ones", () => {
+    const p = productInput.parse({ ...base, videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" });
+    expect(p.videoUrl).toBe("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+    const empty = productInput.parse({ ...base, videoUrl: "   " });
+    expect(empty.videoUrl).toBeNull();
+    const bad = productInput.safeParse({ ...base, videoUrl: "not-a-valid-url" });
+    expect(bad.success).toBe(false);
+    expect(bad.error!.issues[0]!.path).toEqual(["videoUrl"]);
+  });
 });

@@ -17,26 +17,6 @@ interface Provider {
   send(n: Notification): Promise<{ providerRef?: string }>;
 }
 
-/** Termii is the most common Nigerian SMS gateway (DND-friendly "dnd" channel for transactional SMS). */
-const termii: Provider = {
-  async send(n) {
-    const res = await fetch("https://api.ng.termii.com/api/sms/send", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        api_key: env.termiiApiKey,
-        to: n.to.replace("+", ""),
-        from: env.termiiSenderId,
-        sms: n.body,
-        type: "plain",
-        channel: "dnd",
-      }),
-    });
-    if (!res.ok) throw new Error(`Termii ${res.status}: ${await res.text()}`);
-    const json = (await res.json()) as { message_id?: string };
-    return { providerRef: json.message_id };
-  },
-};
 
 const resend: Provider = {
   async send(n) {
@@ -80,7 +60,6 @@ export function maskRecipient(to: string): string {
 }
 
 function providerFor(channel: NotifyChannel): Provider | null {
-  if (channel === "sms" && services.sms) return termii;
   if (channel === "email" && services.email) return resend;
   if (channel === "whatsapp" && services.whatsappCloud) return whatsappCloud;
   return null;

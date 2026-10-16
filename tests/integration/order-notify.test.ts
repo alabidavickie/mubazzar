@@ -5,7 +5,6 @@ import { createOrder } from "./helpers";
 // Customer status-update SMS go through the notify adapter (mock → notifications_outbox without keys).
 process.env.PGLITE_DATA_DIR = "memory";
 delete process.env.DATABASE_URL;
-delete process.env.TERMII_API_KEY;
 
 let db: Db;
 let svc: typeof import("@/server/services/order-notify");

@@ -15,7 +15,7 @@ export interface GoLiveInput {
   showSampleReviews: boolean;
   cac: string | null;
   siteUrl: string;
-  services: { supabaseAuth: boolean; sms: boolean; email: boolean; metaCapi: boolean };
+  services: { supabaseAuth: boolean; email: boolean; metaCapi: boolean };
 }
 
 export interface GoLiveItem {
@@ -57,9 +57,6 @@ export function goLiveChecks(i: GoLiveInput): GoLiveItem[] {
   }
   if (i.showSampleReviews) {
     add({ key: "sample-reviews", severity: "recommended", title: "Sample reviews are switched on", detail: "Demo reviews are labelled \"Sample review\", but turn them off before launch so only real buyers' reviews show.", href: "/admin/homepage" });
-  }
-  if (!i.services.sms) {
-    add({ key: "sms", severity: "recommended", title: "SMS (Termii) is not connected", detail: "Order confirmations and login codes are only recorded, not sent. Customers can't sign in with a phone code.", href: null });
   }
   if (!i.services.email) {
     add({ key: "email", severity: "recommended", title: "Email (Resend) is not connected", detail: "Order alerts and email login codes are only recorded, not sent.", href: null });

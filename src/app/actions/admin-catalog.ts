@@ -38,7 +38,7 @@ export async function saveProductAction(input: ProductInput): Promise<SaveProduc
         p.slug, p.name, p.shortDescription, p.description, p.categoryId, p.price, p.compareAt, p.sku, p.tags,
         p.imageBadge, p.imageBadgeStyle, p.imageBadgeIcon, p.perkText, p.perkIcon, p.perkStyle, p.deliveryNote,
         p.deliveryNoteIcon, p.podAvailable, p.warrantyMonths, p.isActive, p.curatedRank, p.curatedLabel, p.seoTitle,
-        p.seoDescription, JSON.stringify(p.specs),
+        p.seoDescription, JSON.stringify(p.specs), p.videoUrl,
       ] as const;
       let productId: string;
       if (p.id) {
@@ -47,8 +47,8 @@ export async function saveProductAction(input: ProductInput): Promise<SaveProduc
                   price_kobo = $6, compare_at_kobo = $7, sku = $8, tags = $9, image_badge = $10, image_badge_style = $11,
                   image_badge_icon = $12, perk_text = $13, perk_icon = $14, perk_style = $15, delivery_note = $16,
                   delivery_note_icon = $17, pod_available = $18, warranty_months = $19, is_active = $20, curated_rank = $21,
-                  curated_label = $22, seo_title = $23, seo_description = $24, specs = $25::jsonb
-            where id = $26 returning id`,
+                  curated_label = $22, seo_title = $23, seo_description = $24, specs = $25::jsonb, video_url = $26
+            where id = $27 returning id`,
           [...cols, p.id],
         );
         if (!rows[0]) throw new Error("PRODUCT_NOT_FOUND");
@@ -57,8 +57,8 @@ export async function saveProductAction(input: ProductInput): Promise<SaveProduc
         const rows = await q.query<{ id: string }>(
           `insert into public.products (slug, name, short_description, description, category_id, price_kobo, compare_at_kobo, sku, tags,
                   image_badge, image_badge_style, image_badge_icon, perk_text, perk_icon, perk_style, delivery_note, delivery_note_icon,
-                  pod_available, warranty_months, is_active, curated_rank, curated_label, seo_title, seo_description, specs)
-           values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25::jsonb)
+                  pod_available, warranty_months, is_active, curated_rank, curated_label, seo_title, seo_description, specs, video_url)
+           values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25::jsonb, $26)
            returning id`,
           [...cols],
         );

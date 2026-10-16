@@ -82,5 +82,6 @@ async function getAutoLandingPage(productSlug: string): Promise<LandingBundle | 
 export async function landingForProduct(product: ProductDetail): Promise<LandingBundle> {
   const [custom] = await selectLandingPages("product_id = $1::uuid and is_published order by created_at limit 1", product.id);
   const reviews = await getRecentReviews({ productId: product.id, limit: 6 });
-  return { lp: custom ?? autoLandingPage(product), product, reviews };
+  const lp = custom ? { ...custom, videoUrl: custom.videoUrl || product.videoUrl } : autoLandingPage(product);
+  return { lp, product, reviews };
 }

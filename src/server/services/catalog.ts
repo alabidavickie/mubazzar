@@ -313,6 +313,7 @@ export interface ProductDetail extends ProductCardData {
    * Null when no promo is live — then no countdown and no promo/save copy anywhere.
    */
   promoEndsAt: string | null;
+  videoUrl: string | null;
 }
 
 /**
@@ -322,7 +323,7 @@ export interface ProductDetail extends ProductCardData {
 async function loadDetail(q: Queryable, where: string, param: string, opts: { includeInactive?: boolean } = {}): Promise<ProductDetail | null> {
   const rows = await q.query<ProductDetail & { categoryId: string | null }>(
     `select ${CARD_SELECT}, p.description, p.price_kobo as "basePriceKobo", p.warranty_months as "warrantyMonths",
-            p.specs, p.seo_title as "seoTitle", p.seo_description as "seoDescription", p.tags,
+            p.specs, p.seo_title as "seoTitle", p.seo_description as "seoDescription", p.video_url as "videoUrl", p.tags,
             (select min(fd.ends_at) from public.flash_deals fd where fd.product_id = p.id and ${FLASH_LIVE}) as "flashEndsAt",
             least(
               (select min(fd.ends_at) from public.flash_deals fd where fd.product_id = p.id and ${FLASH_LIVE}),

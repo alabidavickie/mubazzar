@@ -789,6 +789,7 @@ export interface Tables {
       curated_label: string | null;
       seo_title: string | null;
       seo_description: string | null;
+      video_url: string | null;
       rating_avg: number;
       review_count: number;
       sold_count: number;
@@ -823,6 +824,7 @@ export interface Tables {
       curated_label?: string | null;
       seo_title?: string | null;
       seo_description?: string | null;
+      video_url?: string | null;
       rating_avg?: number;
       review_count?: number;
       sold_count?: number;

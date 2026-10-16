@@ -10,7 +10,7 @@ const ready: GoLiveInput = {
   showSampleReviews: false,
   cac: "RC1234567",
   siteUrl: "https://mubazzar.ng",
-  services: { supabaseAuth: true, sms: true, email: true, metaCapi: true },
+  services: { supabaseAuth: true, email: true, metaCapi: true },
 };
 const keys = (i: Partial<GoLiveInput>) => goLiveChecks({ ...ready, ...i }).map((x) => x.key);
 

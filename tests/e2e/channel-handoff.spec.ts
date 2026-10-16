@@ -2,20 +2,22 @@ import { expect, test } from "@playwright/test";
 import { expectNoA11yViolations } from "./helpers";
 import { placeLandingOrder, stubWhatsApp } from "./lp-helpers";
 
-// E2E 2 — Instagram (enabled in admin) → "Copy order details" copies the exact message; the open-chat
-// link points at the configured handle; disabled channels (Messenger, Telegram) never appear.
+// E2E 2 — Instagram is marked Coming Soon & disabled; Phone call tests non-WhatsApp handoff;
+// disabled channels (Messenger, Telegram) never appear.
 test.describe("social channel handoff", () => {
-  test("Instagram: copy order details, then open the configured DM", async ({ page, context, baseURL }) => {
+  test("Instagram DM is Coming Soon; Phone call handoff works cleanly", async ({ page, context, baseURL }) => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseURL });
     await stubWhatsApp(page);
 
     await page.goto("/lp/car-vacuum");
     const form = page.getByTestId("order-form");
-    await expect(form.getByLabel("Instagram DM")).toBeVisible();
+    await expect(form.getByText("Instagram DM")).toBeVisible();
+    await expect(form.getByText("Coming soon")).toBeVisible();
+    await expect(form.getByLabel(/Instagram DM/)).toBeDisabled();
     await expect(form.getByText(/Messenger|Telegram/)).toHaveCount(0);
 
     const order = await placeLandingOrder(page, {
-      channelLabel: "Instagram DM",
+      channelLabel: "Phone call",
       delivery: { name: "Ada Lovelace", state: "Lagos" },
     });
     expect(order.orderNumber).toMatch(/^MBZ-[A-Z0-9]{6}$/);
@@ -31,7 +33,7 @@ test.describe("social channel handoff", () => {
     expect(clipboard).toBe(expected);
     await expect(page.getByTestId("order-message")).toHaveText(expected);
 
-    await expect(page.getByTestId("open-chat")).toHaveAttribute("href", "https://ig.me/m/mubazzar.ng");
+    await expect(page.getByTestId("open-chat")).toHaveAttribute("href", /^tel:\+234/);
     // WhatsApp is still offered as a way back.
     await expect(page.getByTestId("whatsapp-continue")).toHaveAttribute("href", /^https:\/\/wa\.me\/\d+\?text=/);
 

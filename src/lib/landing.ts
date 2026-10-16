@@ -96,8 +96,8 @@ export function landingTimer(
   return { kind: "none" };
 }
 
-/** Safe `https://www.youtube-nocookie.com/embed/<id>` for YouTube URLs, else null (use <video>). */
-export function youTubeEmbedUrl(url: string | null | undefined): string | null {
+/** Safe embed URL for YouTube and Vimeo URLs, else null (use native <video>). */
+export function videoEmbedUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   let u: URL;
   try {
@@ -115,6 +115,16 @@ export function youTubeEmbedUrl(url: string | null | undefined): string | null {
       id = m?.[1] ?? null;
     }
   }
-  if (!id || !/^[A-Za-z0-9_-]{6,20}$/.test(id)) return null;
-  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+  if (id && /^[A-Za-z0-9_-]{6,20}$/.test(id)) {
+    return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+  }
+  if (host === "vimeo.com" || host === "player.vimeo.com") {
+    const m = /(?:\/video\/|\/|^)(\d{6,12})/.exec(u.pathname);
+    if (m?.[1]) {
+      return `https://player.vimeo.com/video/${m[1]}?autoplay=1&dnt=1`;
+    }
+  }
+  return null;
 }
+
+export const youTubeEmbedUrl = videoEmbedUrl;

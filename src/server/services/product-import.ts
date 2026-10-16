@@ -123,6 +123,7 @@ async function importRow(
   set("is_active", v.isActive);
   set("seo_title", v.seoTitle);
   set("seo_description", v.seoDescription);
+  set("video_url", v.videoUrl);
 
   let productId: string;
   let action: "create" | "update";

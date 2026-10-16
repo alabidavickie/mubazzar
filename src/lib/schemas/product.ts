@@ -118,6 +118,22 @@ export const productInput = z
     curatedLabel: optText(30),
     seoTitle: optText(70),
     seoDescription: optText(170),
+    videoUrl: z
+      .string()
+      .trim()
+      .max(500)
+      .optional()
+      .transform((v, ctx) => {
+        if (!v) return null;
+        try {
+          const u = new URL(v);
+          if (u.protocol !== "https:" && u.protocol !== "http:") throw new Error("http/https only");
+          return u.toString();
+        } catch {
+          ctx.addIssue({ code: "custom", message: "Enter a valid video URL (e.g. YouTube or direct video link)." });
+          return z.NEVER;
+        }
+      }),
     specs: z.array(z.object({ label: text(60).min(1), value: text(200).min(1) })).max(30).default([]),
     features: z
       .array(z.object({ icon: icon.transform((v) => v ?? "check_circle"), title: text(80).min(1, "Feature title required."), description: text(400).min(1, "Feature description required.") }))

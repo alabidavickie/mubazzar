@@ -17,6 +17,7 @@ export interface AutoLandingProduct {
   promoEndsAt: string | null;
   /** Feature titles already shown on the page; trust points that repeat one are left out. */
   features: { title: string }[];
+  videoUrl?: string | null;
 }
 
 export interface AutoLandingSection {
@@ -65,10 +66,10 @@ export function autoLandingPage(p: AutoLandingProduct) {
     campaignEndsAt: null,
     featuresTitle: null,
     featuresSubtitle: null,
-    videoUrl: null,
+    videoUrl: p.videoUrl ?? null,
     videoPosterUrl: null,
-    videoTitle: null,
-    videoSubtitle: null,
+    videoTitle: p.videoUrl ? `See the ${p.name} in action` : null,
+    videoSubtitle: p.videoUrl ? "Demonstration preview" : null,
     ctaLabel: "Order now",
     seoTitle: p.seoTitle,
     seoDescription: p.seoDescription,
