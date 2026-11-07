@@ -57,7 +57,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
           eyebrow="Category"
           title={category.name}
           description={category.description}
-          icon={category.emoji ? <span aria-hidden>{category.emoji}</span> : <Icon name={category.icon} />}
+          icon={<Icon name={category.icon} />}
         />
       }
     />

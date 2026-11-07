@@ -251,7 +251,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
         {/* Official store ribbon */}
         <div className="flex items-center justify-between gap-2 bg-surface-low px-4 py-1.5 shadow-card">
-          <span className="text-label-sm tracking-wider text-navy uppercase">Official MUBAZZAR Store</span>
+          <span className="text-label-sm text-navy">Official MUBAZZAR store</span>
           <span className="flex items-center gap-1 rounded-full bg-surface-highest px-2 py-0.5 text-label-sm text-ink">
             <Icon name="verified" filled className="text-xs text-emerald-ink" /> Tested before dispatch
           </span>
@@ -261,7 +261,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
           {/* Headline */}
           <div className="flex flex-col gap-1.5">
             {lp.trendBadge ? (
-              <span className="flex items-center gap-1 self-start rounded bg-gold-soft/30 px-2 py-0.5 text-label-sm tracking-wider text-bronze uppercase">
+              <span className="flex items-center gap-1 self-start rounded bg-gold-soft/30 px-2 py-0.5 text-label-sm text-bronze">
                 <Icon name="trending_up" className="text-sm" /> {lp.trendBadge}
               </span>
             ) : null}
@@ -319,7 +319,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
           <section aria-labelledby="price-title" className="flex flex-col gap-2.5 rounded-xl bg-card p-4 shadow-raised">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h2 id="price-title" className="text-label-sm text-ink-muted uppercase">
+                <h2 id="price-title" className="text-label-sm text-ink-muted">
                   {live ? "Special promo price" : "Today's price"}
                 </h2>
                 <Price
@@ -366,7 +366,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
                 </span>
               )}
               <div className="min-w-0">
-                <p className="flex items-center gap-1 text-label-sm tracking-wider text-bronze uppercase">
+                <p className="flex items-center gap-1 text-label-sm text-bronze">
                   <Icon name="redeem" className="text-sm" /> Free bonus gift
                   {product.gift.valueKobo > 0 ? ` (worth ${formatNaira(product.gift.valueKobo)})` : ""}
                 </p>
@@ -380,7 +380,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
           <a
             href="#order-form"
-            className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-navy px-4 py-3.5 text-center text-label-lg text-on-dark uppercase shadow-raised active:scale-[0.99]"
+            className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-navy px-4 py-3.5 text-center text-label-lg text-on-dark shadow-raised active:scale-[0.99]"
           >
             <Icon name="inventory_2" className="text-gold-soft" /> Choose your package &amp; order now
           </a>
@@ -457,7 +457,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
           {product.bundles.length > 0 ? (
             <section id="packages" aria-labelledby="packages-title" className="flex scroll-mt-16 flex-col gap-2 pt-1">
               <div>
-                <p className="text-label-sm tracking-wider text-bronze uppercase">Step 1: Choose your money-saving package</p>
+                <p className="text-label-sm text-bronze">Step 1: Choose your money-saving package</p>
                 <h2 id="packages-title" className="text-headline-md font-bold text-navy">
                   Exclusive Bundle Discounts
                 </h2>
@@ -545,7 +545,6 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
             <section aria-labelledby="reviews-title" className="flex flex-col gap-2 pt-1">
               <div className="flex items-end justify-between gap-2">
                 <div>
-                  <p className="text-label-sm tracking-wider text-bronze uppercase">Honest feedback</p>
                   <h2 id="reviews-title" className="text-headline-md font-bold text-navy">
                     What Buyers Say
                   </h2>
@@ -569,7 +568,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
             className="flex scroll-mt-16 flex-col gap-3 rounded-xl bg-card p-4 shadow-float"
           >
             <div className="flex flex-col items-center text-center">
-              <span className="mb-1 rounded-full bg-navy px-3 py-1 text-label-sm text-on-dark uppercase">Fast one-page order form</span>
+              <span className="mb-1 rounded-full bg-navy px-3 py-1 text-label-sm text-on-dark">Fast one-page order form</span>
               <h2 id="order-form-title" className="text-headline-md font-bold text-navy">
                 Fill Your Delivery Information
               </h2>

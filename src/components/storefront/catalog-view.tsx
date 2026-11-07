@@ -103,12 +103,12 @@ export function CatalogView({
         </FilterChip>
         {visibleCategories.map((c) => (
           <FilterChip key={c.slug} href={categoryHref(c.slug)} active={currentCategory === c.slug} kind="category">
-            {c.emoji ? <span aria-hidden>{c.emoji}</span> : null}
+            <Icon name={c.icon} className="text-base" />
             {c.shortName ?? c.name}
           </FilterChip>
         ))}
         <FilterChip href={href({ gift: !state.gift })} active={state.gift} kind="gift" testId="gift-chip">
-          <span aria-hidden>🎁</span> Free Gift
+          <Icon name="redeem" className="text-base" /> Free Gift
           {state.gift ? <Icon name="close" className="text-sm" /> : null}
         </FilterChip>
       </nav>
@@ -118,11 +118,11 @@ export function CatalogView({
         <div className="flex items-center justify-between gap-2 rounded-xl bg-surface-container px-3 py-2.5">
           <span className="flex min-w-0 items-center gap-1.5">
             <Icon name="verified_user" className="shrink-0 text-lg text-bronze" />
-            <span className="text-label-sm text-navy-deep">Verified Direct Sourcing • Tested Before Dispatch</span>
+            <span className="text-label-sm text-navy-deep">Sourced direct, tested before dispatch</span>
           </span>
           <span className="flex shrink-0 items-center gap-1 text-emerald-ink">
             <span aria-hidden className="size-2 animate-pulse-soft rounded-full bg-emerald" />
-            <span className="text-label-sm font-extrabold uppercase">POD in chat</span>
+            <span className="text-label-sm font-extrabold">Pay on delivery</span>
           </span>
         </div>
       </div>

@@ -117,7 +117,7 @@ export function ProductRow({ product }: { product: ProductCardData }) {
         ) : null}
       </Link>
       <div className="flex min-w-0 flex-1 flex-col">
-        <h3 className="truncate text-label-lg font-bold text-navy">
+        <h3 className="line-clamp-2 text-label-lg leading-snug font-bold text-navy">
           <Link href={href} className="hover:underline">
             {product.name}
           </Link>

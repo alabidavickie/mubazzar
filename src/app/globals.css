@@ -35,14 +35,15 @@
   --color-coral-soft: #ffb3c0;
   --color-amber: #b45309;
 
-  /* Surfaces */
+  /* Surfaces — tints are drawn from the brand navy (hue ≈213°, low chroma) rather than the
+     Material-default lavender, so chips, panels and buttons sit with navy/gold/ivory. */
   --color-surface: #fbf9f5;
   --color-card: #ffffff;
-  --color-surface-low: #f1f3ff;
-  --color-surface-container: #e8eeff;
-  --color-surface-high: #e3e8f9;
-  --color-surface-highest: #dde2f3;
-  --color-surface-dim: #d4daea;
+  --color-surface-low: #f1f4f8;
+  --color-surface-container: #e9eef4;
+  --color-surface-high: #e2e8ef;
+  --color-surface-highest: #d9e0e9;
+  --color-surface-dim: #ced6e1;
 
   /* Ink */
   --color-ink: #161c27;
@@ -138,6 +139,28 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  /* Headings break into even lines; paragraphs avoid one-word last lines. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  /* No 300ms double-tap delay on controls; a soft navy tap flash instead of the default grey box. */
+  a,
+  button,
+  summary,
+  label,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+  html {
+    -webkit-tap-highlight-color: rgb(14 41 75 / 0.08);
   }
   :focus-visible {
     outline: 3px solid var(--color-gold);

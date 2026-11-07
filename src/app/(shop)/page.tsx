@@ -184,7 +184,6 @@ export default async function HomePage() {
         <section className="px-4 py-2" aria-labelledby="viral-title">
           <SectionHeader
             title={<span id="viral-title">Viral Problem Solvers</span>}
-            eyebrow={<span className="rounded bg-surface-high px-1.5 py-0.5 text-label-sm font-extrabold text-navy uppercase">Curated</span>}
             subtitle="Hard-to-find life hacks tested for durability"
             action={
               <Link href="/c/problem-solvers" className="flex min-h-11 items-center text-label-md font-bold text-bronze">

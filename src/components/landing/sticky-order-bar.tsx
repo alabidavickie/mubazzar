@@ -64,7 +64,7 @@ export function StickyOrderBar({ targetId = "order-form", compareAtKobo }: { tar
         <button
           type="button"
           onClick={goToForm}
-          className="flex min-h-12 shrink-0 items-center gap-1.5 rounded-lg border-t-2 border-gold bg-navy px-5 text-label-lg font-bold text-on-dark uppercase shadow-raised active:scale-[0.98]"
+          className="flex min-h-12 shrink-0 items-center gap-1.5 rounded-lg border-t-2 border-gold bg-navy px-5 text-label-lg font-bold text-on-dark shadow-raised active:scale-[0.98]"
         >
           <Icon name="shopping_cart_checkout" className="text-gold-soft" /> Order Now
         </button>

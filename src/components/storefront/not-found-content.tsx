@@ -43,7 +43,7 @@ export function NotFoundContent({
 }: {
   search: React.ReactNode;
   suggestsAsYouType?: boolean;
-  categories?: { slug: string; name: string; emoji: string | null }[];
+  categories?: { slug: string; name: string; icon: string }[];
 }) {
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-4 px-4 py-6" data-testid="not-found">
@@ -77,12 +77,12 @@ export function NotFoundContent({
       </nav>
       {categories.length ? (
         <nav aria-label="Categories">
-          <p className="mb-1 text-label-sm tracking-wider text-bronze uppercase">Browse categories</p>
+          <p className="mb-1 text-label-sm text-bronze">Browse categories</p>
           <ul className="flex flex-wrap gap-2">
             {categories.map((c) => (
               <li key={c.slug}>
                 <Link href={`/c/${c.slug}`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-surface-high px-3.5 text-label-md text-ink">
-                  {c.emoji ? <span aria-hidden>{c.emoji}</span> : null} {c.name}
+                  <Icon name={c.icon} className="text-base" /> {c.name}
                 </Link>
               </li>
             ))}

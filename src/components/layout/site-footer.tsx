@@ -10,7 +10,7 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
   const year = new Date().getFullYear();
   return (
     <footer className="bg-navy-deep text-on-dark">
-      <div className="mx-auto flex max-w-(--container-site) flex-col gap-4 px-4 pt-5 pb-28 lg:pb-10">
+      <div className="mx-auto flex max-w-(--container-site) flex-col gap-4 px-4 pt-5 pb-40 lg:pb-10">
         <a
           href={buildWhatsAppLink(support.whatsapp, "Hello MUBAZZAR, I need help ordering.")}
           target="_blank"
@@ -29,13 +29,13 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
 
         <div className="flex items-center justify-between gap-4 py-1">
           <div>
-            <p className="text-label-sm text-on-dark-muted uppercase">Official Helpline</p>
+            <p className="text-label-sm text-on-dark-muted">Official helpline</p>
             <a href={`tel:${support.phone}`} className="text-headline-sm font-bold text-gold-pale">
               {formatNgPhoneIntl(support.phone)}
             </a>
           </div>
           <div className="text-right">
-            <p className="text-label-sm text-on-dark-muted uppercase">Operating Hours</p>
+            <p className="text-label-sm text-on-dark-muted">Opening hours</p>
             <p className="text-body-sm">{support.hours}</p>
           </div>
         </div>

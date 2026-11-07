@@ -6,7 +6,7 @@ import { SearchBox } from "./search-box";
 
 /**
  * Catalog search bar with the "Filter" toggle (design: Shop Catalog) and the collapsible
- * "Fast Refinements" panel below it. The panel content is server-rendered links/forms.
+ * "Filter & sort" panel below it. The panel content is server-rendered links/forms.
  */
 export function FilterDisclosure({
   action,
@@ -61,8 +61,8 @@ export function FilterDisclosure({
         data-testid="filter-panel"
       >
         <div className="flex items-center justify-between">
-          <h2 id={`${panelId}-title`} className="text-label-md font-bold tracking-wider text-navy-deep uppercase">
-            Fast Refinements
+          <h2 id={`${panelId}-title`} className="text-label-md font-bold text-navy-deep">
+            Filter &amp; sort
           </h2>
           <button
             type="button"
