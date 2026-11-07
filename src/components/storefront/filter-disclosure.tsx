@@ -38,7 +38,7 @@ export function FilterDisclosure({
             aria-expanded={open}
             aria-controls={panelId}
             onClick={() => setOpen((o) => !o)}
-            className="flex min-h-11 items-center gap-1 rounded-lg px-1 text-label-md text-navy"
+            className="flex min-h-11 items-center gap-1 rounded-lg px-1 text-label-md text-navy lg:hidden"
           >
             <span className="flex items-center gap-1 rounded-lg bg-surface-container px-2.5 py-1.5">
               <Icon name="tune" className="text-sm" />
@@ -57,7 +57,7 @@ export function FilterDisclosure({
         id={panelId}
         hidden={!open}
         aria-labelledby={`${panelId}-title`}
-        className="flex flex-col gap-2 rounded-xl bg-surface-low p-3 shadow-[inset_0_2px_4px_rgb(14_41_75/0.05)]"
+        className="flex flex-col gap-2 rounded-xl bg-surface-low p-3 shadow-[inset_0_2px_4px_rgb(14_41_75/0.05)] lg:!flex lg:gap-3 lg:border lg:border-line-soft lg:bg-card lg:p-4 lg:shadow-none"
         data-testid="filter-panel"
       >
         <div className="flex items-center justify-between">
@@ -68,7 +68,7 @@ export function FilterDisclosure({
             type="button"
             onClick={() => setOpen(false)}
             aria-controls={panelId}
-            className="-mr-2 min-h-11 px-2 text-label-sm font-bold text-bronze"
+            className="-mr-2 min-h-11 px-2 text-label-sm font-bold text-bronze lg:hidden"
           >
             Done
           </button>

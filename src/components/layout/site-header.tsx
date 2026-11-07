@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/icons/icon";
 import { CartLink } from "./cart-link";
@@ -29,9 +30,10 @@ export function SiteHeader({
         <p className="truncate text-label-sm tracking-tight">{promoStrip}</p>
       </div>
 
-      <div className="mx-auto flex h-12 max-w-(--container-site) items-center justify-between gap-2 px-4">
+      <div className="mx-auto flex h-14 max-w-(--container-site) items-center justify-between gap-2 px-4">
         <div className="flex min-w-0 items-center gap-2">
-          <Link href="/" className="font-sans text-headline-sm font-extrabold tracking-wider text-navy" aria-label="MUBAZZAR home">
+          <Link href="/" className="flex items-center gap-2 font-display text-label-lg font-extrabold whitespace-nowrap text-navy-deep sm:text-headline-sm sm:tracking-wide" aria-label="MUBAZZAR home">
+            <Image src="/brand/emblem.webp" alt="" width={30} height={30} className="rounded-md" loading="eager" />
             MUBAZZAR
           </Link>
           {pageLabel ? (
@@ -55,7 +57,7 @@ export function SiteHeader({
             target="_blank"
             rel="noopener"
             aria-label="Chat with MUBAZZAR on WhatsApp"
-            className="flex size-11 items-center justify-center text-emerald-ink hover:opacity-80"
+            className="hidden size-11 items-center justify-center text-emerald-ink hover:opacity-80 sm:flex"
           >
             <Icon name="chat" />
           </a>
@@ -70,10 +72,10 @@ export function SiteHeader({
         </nav>
       </div>
 
-      <nav aria-label="Categories" className="no-scrollbar flex h-10 items-center gap-2 overflow-x-auto px-4 pb-1 md:justify-center">
+      <nav aria-label="Categories" className="no-scrollbar mx-auto flex h-11 max-w-(--container-site) items-center gap-1.5 overflow-x-auto border-t border-line-soft px-4 md:justify-center">
         <Link
           href="/deals"
-          className="flex shrink-0 items-center gap-0.5 rounded-full bg-gold-soft px-3 py-1 text-label-md text-bronze-ink"
+          className="flex shrink-0 items-center gap-1 rounded-full bg-gold-soft px-3 py-1.5 text-label-md text-bronze-ink hover:bg-gold-pale"
         >
           <Icon name="local_fire_department" className="text-sm" /> Hot Deals
         </Link>
@@ -81,7 +83,7 @@ export function SiteHeader({
           <Link
             key={c.slug}
             href={`/c/${c.slug}`}
-            className="shrink-0 rounded-full bg-surface-high px-3 py-1 text-label-md text-ink-muted hover:bg-surface-container"
+            className="shrink-0 rounded-full px-3 py-1.5 text-label-md text-ink-muted transition-colors hover:bg-surface-container hover:text-navy-deep"
           >
             {c.shortName ?? c.name}
           </Link>

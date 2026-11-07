@@ -61,6 +61,10 @@
   --font-display: var(--font-syne), "Syne", ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
+  --text-display-xl: 3.25rem; /* home hero on md+ */
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.025em;
+  --text-display-xl--font-weight: 800;
   --text-display: 2rem;
   --text-display--line-height: 2.5rem;
   --text-display--letter-spacing: -0.015em;

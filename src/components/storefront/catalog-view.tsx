@@ -83,7 +83,8 @@ export function CatalogView({
     <div className="flex flex-col">
       {header}
 
-      <div className="px-4 py-1.5">
+      <div className="lg:grid lg:grid-cols-[17.5rem_minmax(0,1fr)] lg:items-start lg:gap-6 lg:px-4 lg:pt-2">
+      <aside className="px-4 py-1.5 lg:sticky lg:top-32 lg:px-0 lg:py-0" aria-label="Search and filters">
         <FilterDisclosure
           action={pathname}
           q={state.q ?? ""}
@@ -93,10 +94,11 @@ export function CatalogView({
         >
           <RefinementPanel state={state} href={href} pathname={pathname} priceHidden={priceHidden} />
         </FilterDisclosure>
-      </div>
+      </aside>
 
+      <div className="min-w-0">
       {/* Category carousel */}
-      <nav aria-label="Filter by category" className="no-scrollbar flex items-center gap-2 -my-1 overflow-x-auto px-4">
+      <nav aria-label="Filter by category" className="no-scrollbar flex items-center gap-2 -my-1 overflow-x-auto px-4 lg:flex-wrap lg:overflow-visible lg:px-0">
         <FilterChip href={categoryHref(null)} active={!currentCategory} kind="category">
           All
           <span className="rounded-full bg-bronze px-1.5 text-[0.625rem] leading-4 font-bold text-on-dark">{allCount}</span>
@@ -114,7 +116,7 @@ export function CatalogView({
       </nav>
 
       {/* Trust micro-banner */}
-      <div className="px-4 py-1.5">
+      <div className="px-4 py-1.5 lg:px-0 lg:pt-3">
         <div className="flex items-center justify-between gap-2 rounded-xl bg-surface-container px-3 py-2.5">
           <span className="flex min-w-0 items-center gap-1.5">
             <Icon name="verified_user" className="shrink-0 text-lg text-bronze" />
@@ -128,14 +130,14 @@ export function CatalogView({
       </div>
 
       {/* Results */}
-      <div className="px-4 py-1.5">
+      <div className="px-4 py-1.5 lg:px-0">
         {state.q ? (
           <p className="mb-2 text-body-sm text-ink-muted" role="status">
             {total} {total === 1 ? "result" : "results"} for <strong className="text-ink">&ldquo;{state.q}&rdquo;</strong>
           </p>
         ) : null}
         {items.length > 0 ? (
-          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4" data-testid="catalog-grid">
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 xl:grid-cols-4" data-testid="catalog-grid">
             {items.map((p, i) => (
               <li key={p.id} className="flex min-w-0">
                 <ProductCard product={p} priority={i < 2} className="w-full" />
@@ -168,7 +170,7 @@ export function CatalogView({
 
       {/* Live count + Load More */}
       {total > 0 ? (
-        <div className="flex flex-col items-center gap-3 px-4 py-3 text-center">
+        <div className="flex flex-col items-center gap-3 px-4 py-3 text-center lg:px-0">
           <div className="flex w-full max-w-xs flex-col gap-1">
             <div className="flex items-center justify-between gap-2">
               <span className="text-label-sm text-ink-muted" data-testid="catalog-count">
@@ -202,7 +204,7 @@ export function CatalogView({
       ) : null}
 
       {/* Quality promise */}
-      <div className="px-4 pt-1 pb-5">
+      <div className="px-4 pt-1 pb-5 lg:px-0">
         <div className="flex items-start gap-3 rounded-xl bg-surface-low p-3 shadow-card">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold-soft text-bronze-ink">
             <Icon name="verified_user" className="text-xl" />
@@ -223,6 +225,8 @@ export function CatalogView({
             </div>
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );
@@ -247,7 +251,7 @@ function RefinementPanel({
         <span className="text-label-sm text-ink-muted" id="price-range-label">
           Price Range
         </span>
-        <div className="no-scrollbar -mx-1 -my-2 flex items-center gap-1.5 overflow-x-auto px-1" role="group" aria-labelledby="price-range-label">
+        <div className="no-scrollbar -mx-1 -my-2 flex items-center gap-1.5 overflow-x-auto px-1 lg:my-0 lg:flex-wrap lg:overflow-visible" role="group" aria-labelledby="price-range-label">
           <FilterChip href={href({ price: null })} active={!state.price && !custom}>
             All Prices
           </FilterChip>
@@ -283,7 +287,7 @@ function RefinementPanel({
       </div>
 
       {/* Delivery & payment refinements */}
-      <div className="grid grid-cols-2 gap-2 pt-0.5">
+      <div className="grid grid-cols-2 gap-2 pt-0.5 lg:grid-cols-1">
         <ToggleCard
           href={href({ pod: !state.pod })}
           active={state.pod}
@@ -305,11 +309,11 @@ function RefinementPanel({
       </div>
 
       {/* Sort */}
-      <div className="-my-1.5 flex items-center gap-2">
+      <div className="-my-1.5 flex items-center gap-2 lg:my-0 lg:flex-col lg:items-start">
         <span className="shrink-0 text-label-sm text-ink-muted" id="sort-label">
           Sort by:
         </span>
-        <div className="no-scrollbar -mr-3 flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto pr-3" role="group" aria-labelledby="sort-label">
+        <div className="no-scrollbar -mr-3 flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto pr-3 lg:mr-0 lg:flex-wrap lg:overflow-visible lg:pr-0" role="group" aria-labelledby="sort-label">
           {SORT_OPTIONS.map((o) => (
             <FilterChip key={o.key} href={href({ sort: o.key })} active={state.sort === o.key} kind="sort" testId={`sort-${o.key}`}>
               {o.label}

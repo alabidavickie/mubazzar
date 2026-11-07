@@ -204,7 +204,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
       {/* Minimal header: logo + WhatsApp only */}
       <header className="sticky top-0 z-40 bg-surface/90 shadow-[0_1px_8px_rgb(0_0_0/0.04)] backdrop-blur-xl pt-safe">
-        <div className="mx-auto flex h-14 max-w-2xl items-center justify-between gap-2 px-4">
+        <div className="mx-auto flex h-14 max-w-2xl items-center justify-between gap-2 px-4 lg:max-w-6xl lg:px-6">
           <span className="flex min-w-0 items-center gap-2">
             {back ? (
               <Link
@@ -230,7 +230,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
         </div>
       </header>
 
-      <main id="main" className="mx-auto w-full max-w-2xl pb-28">
+      <main id="main" className="mx-auto w-full max-w-2xl pb-28 lg:max-w-6xl">
         {res.preview ? (
           <p role="status" className="bg-gold-soft px-4 py-2 text-center text-label-md text-bronze-ink" data-testid="lp-preview-banner">
             {res.data.isDraft
@@ -257,15 +257,19 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
           </span>
         </div>
 
-        <div className="flex flex-col gap-4 px-4 pt-3">
+        <div className="flex flex-col gap-4 px-4 pt-3 lg:px-6 lg:pt-8 lg:*:not-first:mx-auto lg:*:not-first:w-full lg:*:not-first:max-w-3xl">
+          {/* Buy box: on desktop the gallery sits left (sticky) and the offer right; on phones the
+              right column is display:contents so the original order (headline, gallery, price…) holds. */}
+          <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start lg:gap-x-10 lg:gap-y-4">
+          <div className="contents lg:col-start-2 lg:row-start-1 lg:flex lg:flex-col lg:gap-4">
           {/* Headline */}
-          <div className="flex flex-col gap-1.5">
+          <div className="order-1 flex flex-col gap-1.5">
             {lp.trendBadge ? (
               <span className="flex items-center gap-1 self-start rounded bg-gold-soft/30 px-2 py-0.5 text-label-sm text-bronze">
                 <Icon name="trending_up" className="text-sm" /> {lp.trendBadge}
               </span>
             ) : null}
-            <h1 className="font-display text-headline-xl leading-tight font-extrabold tracking-tight text-navy-deep">
+            <h1 className="font-display text-headline-xl leading-tight font-extrabold tracking-tight text-navy-deep lg:text-display">
               {renderMarkup(lp.headline)}
             </h1>
             {lp.subheadline ? <p className="text-body-md leading-snug text-ink-muted">{renderMarkup(lp.subheadline)}</p> : null}
@@ -273,7 +277,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
           {/* Rating (real reviews only) + regions */}
           {rating.count > 0 || lp.regionsText ? (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="order-2 flex flex-wrap items-center gap-2">
               {rating.count > 0 ? (
                 <span className="flex items-center gap-1 rounded-full bg-surface-container px-2.5 py-1" data-testid="lp-rating">
                   <Stars rating={rating.average} className="text-sm" />
@@ -291,7 +295,10 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
             </div>
           ) : null}
 
+          </div>
+
           {/* Gallery */}
+          <div className="order-3 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:sticky lg:top-20">
           <LandingGallery slides={slides} thumbs={thumbs}>
             <DiscountBadge
               priceKobo={promo.priceKobo}
@@ -314,9 +321,12 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
               </span>
             ) : null}
           </LandingGallery>
+          </div>
+
+          <div className="contents lg:col-start-2 lg:row-start-2 lg:flex lg:flex-col lg:gap-4">
 
           {/* Price module */}
-          <section aria-labelledby="price-title" className="flex flex-col gap-2.5 rounded-xl bg-card p-4 shadow-raised">
+          <section aria-labelledby="price-title" className="order-4 flex flex-col gap-2.5 rounded-xl bg-card p-4 shadow-raised">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <h2 id="price-title" className="text-label-sm text-ink-muted">
@@ -355,7 +365,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
           {/* Free gift */}
           {product.gift ? (
-            <section aria-labelledby="gift-title" className="flex items-center gap-3 rounded-xl bg-gold-soft/25 p-4 shadow-card">
+            <section aria-labelledby="gift-title" className="order-5 flex items-center gap-3 rounded-xl bg-gold-soft/25 p-4 shadow-card">
               {product.gift.imageUrl ? (
                 <span className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-card">
                   <StaticImg src={product.gift.imageUrl} alt="" fill sizes="56px" className="object-cover" />
@@ -380,11 +390,13 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
 
           <a
             href="#order-form"
-            className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-navy px-4 py-3.5 text-center text-label-lg text-on-dark shadow-raised active:scale-[0.99]"
+            className="order-6 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-navy px-4 py-3.5 text-center text-label-lg text-on-dark shadow-raised transition-colors hover:bg-navy-deep active:scale-[0.99]"
           >
             <Icon name="inventory_2" className="text-gold-soft" /> Choose your package &amp; order now
           </a>
-          {product.bundles.length === 0 ? cartBlock : null}
+          {product.bundles.length === 0 ? <div className="order-7">{cartBlock}</div> : null}
+          </div>
+          </div>
 
           {/* Features */}
           {product.features.length > 0 ? (

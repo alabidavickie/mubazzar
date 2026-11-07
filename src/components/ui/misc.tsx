@@ -29,11 +29,11 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <div className={cx("mb-3 flex items-end justify-between gap-3", className)}>
+    <div className={cx("mb-4 flex items-end justify-between gap-3", className)}>
       <div className="min-w-0">
-        {eyebrow ? <div className="mb-0.5">{eyebrow}</div> : null}
-        <Tag className="text-headline-sm font-bold text-navy">{title}</Tag>
-        {subtitle ? <p className="text-body-sm text-ink-muted">{subtitle}</p> : null}
+        {eyebrow ? <div className="mb-1">{eyebrow}</div> : null}
+        <Tag className="font-display text-headline-md leading-tight font-bold tracking-tight text-navy-deep md:text-headline-xl">{title}</Tag>
+        {subtitle ? <p className="mt-0.5 text-body-md text-ink-muted">{subtitle}</p> : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>

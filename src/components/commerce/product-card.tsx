@@ -32,19 +32,22 @@ export function ProductCard({
 
   return (
     <article
-      className={cn("flex flex-col justify-between rounded-xl bg-card p-1 shadow-card", className)}
+      className={cn(
+        "group/card flex flex-col justify-between overflow-hidden rounded-xl border border-line-soft bg-card transition-shadow hover:shadow-raised",
+        className,
+      )}
       data-testid="product-card"
       data-slug={product.slug}
     >
       <div>
-        <Link href={href} className="relative mb-1 block aspect-square overflow-hidden rounded-lg bg-surface-high">
+        <Link href={href} className="relative block aspect-square overflow-hidden bg-surface-high">
           {product.imageUrl ? (
             <Image
               src={product.imageUrl}
               alt={product.imageAlt}
               fill
               sizes="(min-width: 1024px) 280px, (min-width: 640px) 33vw, 50vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-500 group-hover/card:scale-[1.03]"
               // Next 16: `priority` is deprecated and no longer sets fetchpriority. Above-the-fold cards are the LCP.
               preload={priority}
               loading={priority ? "eager" : undefined}
@@ -73,9 +76,9 @@ export function ProductCard({
             </span>
           ) : null}
         </Link>
-        <div className="flex flex-col gap-1 px-1">
+        <div className="flex flex-col gap-1 px-2.5 pt-2.5">
           <RatingInline rating={product.ratingAvg} count={product.reviewCount} soldCount={product.soldCount} />
-          <h3 className="line-clamp-2 min-h-[2.25rem] text-label-md leading-tight font-bold text-ink">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-label-lg leading-snug font-bold text-navy-deep">
             <Link href={href} className="hover:underline">
               {product.name}
             </Link>
@@ -94,7 +97,7 @@ export function ProductCard({
           <Price priceKobo={product.priceKobo} compareAtKobo={product.compareAtKobo} className="pt-0.5" />
         </div>
       </div>
-      <div className="pt-1.5">
+      <div className="p-2.5 pt-2">
         <QuickOrderButton productId={product.id} productName={product.name} label={ctaLabel} icon={ctaIcon} disabled={soldOut} />
       </div>
     </article>
@@ -105,7 +108,7 @@ export function ProductCard({
 export function ProductRow({ product }: { product: ProductCardData }) {
   const href = `/lp/${product.slug}`;
   return (
-    <article className="flex min-w-0 items-center gap-3 rounded-xl bg-card p-3 shadow-card" data-testid="product-row">
+    <article className="flex min-w-0 items-center gap-3 rounded-xl border border-line-soft bg-card p-3 transition-shadow hover:shadow-raised" data-testid="product-row">
       <Link href={href} className="relative size-24 shrink-0 overflow-hidden rounded-lg bg-surface-high">
         {product.imageUrl ? (
           <Image src={product.imageUrl} alt={product.imageAlt} fill sizes="96px" className="object-cover" />
@@ -155,7 +158,7 @@ export function ProductRow({ product }: { product: ProductCardData }) {
 
 export function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col gap-2 rounded-xl bg-card p-1 shadow-card" aria-hidden>
+    <div className="flex flex-col gap-2 rounded-xl border border-line-soft bg-card p-1" aria-hidden>
       <div className="aspect-square animate-pulse rounded-lg bg-surface-high" />
       <div className="mx-1 h-3 w-1/2 animate-pulse rounded bg-surface-high" />
       <div className="mx-1 h-4 w-5/6 animate-pulse rounded bg-surface-high" />
