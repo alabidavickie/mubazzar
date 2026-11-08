@@ -14,7 +14,7 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
       <div className="mx-auto flex max-w-(--container-site) flex-col gap-8 px-4 pt-8 pb-40 lg:pb-10">
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr] md:items-center">
           <div className="flex flex-col gap-2">
-            <Link href="/" className="flex w-fit items-center gap-2 font-display text-headline-md font-bold tracking-wide text-on-dark">
+            <Link href="/" className="flex min-h-11 w-fit items-center gap-2 font-display text-headline-md font-bold tracking-wide text-on-dark">
               <Image src="/brand/emblem.webp" alt="" width={36} height={36} className="rounded-lg" />
               MUBAZZAR
             </Link>
@@ -36,16 +36,17 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
               </span>
             </a>
             <div className="flex flex-col justify-center rounded-xl border border-on-dark/15 px-4 py-2">
-              <span className="text-label-sm text-on-dark-muted">Official helpline · {support.hours}</span>
-              <a href={`tel:${support.phone}`} className="text-headline-sm font-bold text-gold-pale tabular hover:underline">
+              <span className="text-label-sm text-on-dark-muted">Official helpline</span>
+              <a href={`tel:${support.phone}`} className="flex min-h-11 items-center text-headline-sm font-bold whitespace-nowrap text-gold-pale tabular hover:underline">
                 {formatNgPhoneIntl(support.phone)}
               </a>
+              <span className="text-body-sm text-on-dark-muted">{support.hours}</span>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-6 border-t border-on-dark/10 pt-6 md:grid-cols-3">
-          <nav aria-label="Help and policies" className="flex flex-col gap-1">
+          <nav aria-label="Help and policies" className="flex flex-col">
             <p className="mb-1 text-label-md text-gold-pale">Help & Policies</p>
             <FooterLink href="/track">Track My Order</FooterLink>
             <FooterLink href="/delivery">Delivery & Pay on Delivery</FooterLink>
@@ -54,7 +55,7 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
             <FooterLink href="/privacy">Privacy Policy</FooterLink>
             <FooterLink href="/terms">Terms of Service</FooterLink>
           </nav>
-          <nav aria-label="Company" className="flex flex-col gap-1">
+          <nav aria-label="Company" className="flex flex-col">
             <p className="mb-1 text-label-md text-gold-pale">MUBAZZAR</p>
             <FooterLink href="/about">The MUBAZZAR Standard</FooterLink>
             <FooterLink href="/shop">Shop All Gadgets</FooterLink>
@@ -66,7 +67,7 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
             <p className="text-body-sm text-on-dark-muted">{business.legalName}</p>
             <p className="text-body-sm text-on-dark-muted">{business.address}</p>
             {business.cac ? <p className="text-body-sm text-on-dark-muted">CAC: {business.cac}</p> : null}
-            <a href={`mailto:${support.email}`} className="w-fit text-body-sm text-on-dark-muted underline-offset-2 hover:text-on-dark hover:underline">
+            <a href={`mailto:${support.email}`} className="flex min-h-11 w-fit items-center text-body-sm text-on-dark-muted underline-offset-2 hover:text-on-dark hover:underline">
               {support.email}
             </a>
           </div>
@@ -92,7 +93,7 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
 
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="w-fit py-1 text-body-sm text-on-dark-muted hover:text-on-dark hover:underline">
+    <Link href={href} className="flex min-h-11 w-fit min-w-11 items-center text-body-sm text-on-dark-muted hover:text-on-dark hover:underline">
       {children}
     </Link>
   );

@@ -41,6 +41,8 @@ export default async function HomePage() {
   const [before, after] = highlight && headline.includes(highlight) ? headline.split(highlight) : [headline, ""];
   const dealsEnd = deals.length ? deals.map((d) => d.endsAt).sort()[0]! : null;
   const fewDeals = deals.length <= 2;
+  // The default button points at /deals; with no deal running that page lists the biggest real discounts.
+  const ctaLabel = deals.length === 0 && hero.ctaHref === "/deals" ? "See the Biggest Discounts" : hero.ctaLabel;
 
   // Real products with photos for the hero collage: live deals first, then curated picks.
   const seen = new Set<string>();
@@ -59,15 +61,18 @@ export default async function HomePage() {
             aria-hidden
             className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(var(--color-gold-pale)_1px,transparent_1px)] [background-size:18px_18px]"
           />
-          <div className="relative grid gap-6 p-5 md:grid-cols-[1.15fr_1fr] md:items-center md:gap-10 md:p-10">
+          <div className="relative grid gap-6 p-5 md:p-8 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-10 lg:p-10">
             <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="flex items-center gap-1 rounded-full bg-gold-soft px-2.5 py-1 text-label-sm text-bronze-ink">
-                  <Icon name="bolt" className="text-xs" /> {hero.badge}
-                </span>
-                {hero.badgeNote ? <span className="text-label-sm text-gold-pale">{hero.badgeNote}</span> : null}
-              </div>
-              <h2 id="hero-title" className="font-display text-display leading-[1.08] font-bold tracking-tight text-on-dark md:text-display-xl md:font-extrabold">
+              {/* Honesty rule: "flash sale / limited stock" only while a real deal is running. */}
+              {deals.length > 0 ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-1 rounded-full bg-gold-soft px-2.5 py-1 text-label-sm text-bronze-ink">
+                    <Icon name="bolt" className="text-xs" /> {hero.badge}
+                  </span>
+                  {hero.badgeNote ? <span className="text-label-sm text-gold-pale">{hero.badgeNote}</span> : null}
+                </div>
+              ) : null}
+              <h2 id="hero-title" className="font-display text-display leading-[1.08] font-bold text-on-dark lg:text-display-xl lg:font-extrabold">
                 {before}
                 {highlight && after !== undefined ? <span className="text-gold-soft">{highlight}</span> : null}
                 {after}
@@ -96,7 +101,7 @@ export default async function HomePage() {
                   href={hero.ctaHref}
                   className="inline-flex min-h-12 items-center gap-1.5 rounded-xl bg-gold-soft px-5 text-label-lg text-bronze-ink shadow-card transition-colors hover:bg-gold-pale active:scale-[0.98]"
                 >
-                  {hero.ctaLabel} <Icon name="arrow_forward" className="text-lg" />
+                  {ctaLabel} <Icon name="arrow_forward" className="text-lg" />
                 </Link>
                 <Link href="/shop" className="inline-flex min-h-11 items-center text-label-lg text-on-dark underline-offset-4 hover:underline">
                   Browse all gadgets
@@ -106,26 +111,26 @@ export default async function HomePage() {
 
             {heroPicks.length > 0 ? (
               <div className="relative">
-                <TestedSeal className="absolute -top-3 -left-2 z-10 size-16 -rotate-12 drop-shadow-lg md:-top-6 md:-left-6 md:size-24" />
-                <ul className="grid grid-cols-3 gap-2 md:grid-cols-2 md:grid-rows-2 md:gap-3">
+                <TestedSeal className="absolute -top-3 -left-2 z-10 size-16 -rotate-12 drop-shadow-lg md:size-20 lg:-top-6 lg:-left-6 lg:size-24" />
+                <ul className="grid grid-cols-3 gap-2 md:gap-3 lg:grid-cols-2 lg:grid-rows-2">
                   {heroPicks.map((p, i) => (
-                    <li key={p.slug} className={i === 0 ? "md:row-span-2" : undefined}>
+                    <li key={p.slug} className={i === 0 ? "lg:row-span-2" : undefined}>
                       <Link
                         href={`/lp/${p.slug}`}
-                        className="group relative block aspect-square overflow-hidden rounded-xl bg-navy md:h-full md:aspect-auto md:min-h-36"
+                        className="group relative block aspect-square overflow-hidden rounded-xl bg-navy lg:aspect-auto lg:h-full lg:min-h-36"
                       >
                         <Image
                           src={p.imageUrl!}
                           alt={p.imageAlt}
                           fill
-                          sizes="(min-width: 768px) 280px, 33vw"
+                          sizes="(min-width: 1024px) 280px, 33vw"
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                           preload={i === 0}
                           loading={i === 0 ? "eager" : undefined}
                           fetchPriority={i === 0 ? "high" : undefined}
                         />
                         <span className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-navy-deep/90 to-transparent" aria-hidden />
-                        <span className="absolute bottom-1.5 left-1.5 rounded-md bg-card px-1.5 py-0.5 text-label-sm text-navy-deep tabular md:bottom-2.5 md:left-2.5 md:text-label-md">
+                        <span className="absolute bottom-1.5 left-1.5 rounded-md bg-card px-1.5 py-0.5 text-label-sm text-navy-deep tabular lg:bottom-2.5 lg:left-2.5 lg:text-label-md">
                           {formatNaira(p.priceKobo)}
                         </span>
                         <span className="sr-only">{p.name}</span>
@@ -138,7 +143,7 @@ export default async function HomePage() {
           </div>
 
           {settings.trustBar.length ? (
-            <ul className="relative grid grid-cols-2 gap-x-4 gap-y-2 border-t border-on-dark/10 px-5 py-3 md:flex md:justify-center md:gap-8 md:px-10" aria-label="Why shop with MUBAZZAR">
+            <ul className="relative grid grid-cols-2 gap-x-4 gap-y-2 border-t border-on-dark/10 px-5 py-3 md:px-8 lg:flex lg:justify-center lg:gap-8 lg:px-10" aria-label="Why shop with MUBAZZAR">
               {settings.trustBar.map((t) => (
                 <li key={t.text} className="flex items-center gap-1.5">
                   <Icon name={t.icon} className={t.tone === "gold" ? "shrink-0 text-base text-gold-pale" : "shrink-0 text-base text-emerald-mint"} />
@@ -160,7 +165,7 @@ export default async function HomePage() {
             </Link>
           }
         />
-        <ul className="grid grid-cols-4 gap-2 sm:grid-cols-8 md:gap-3">
+        <ul className="grid grid-cols-4 gap-2 md:gap-3 lg:grid-cols-8">
           {categories.map((c) => (
             <li key={c.slug} className="min-w-0">
               <Link
@@ -196,7 +201,7 @@ export default async function HomePage() {
         >
           <div className={cx("mb-4 flex flex-wrap items-end justify-between gap-3", fewDeals && "lg:mb-0 lg:flex-col lg:items-start lg:gap-4")}>
             <div>
-              <h2 id="flash-title" className="flex items-center gap-1.5 font-display text-headline-md leading-tight font-bold tracking-tight text-on-dark md:text-headline-xl">
+              <h2 id="flash-title" className="flex items-center gap-1.5 font-display text-headline-md leading-tight font-bold text-on-dark md:text-headline-xl">
                 <Icon name="flash_on" className="text-gold-soft" />
                 {settings.flashSection.title}
               </h2>

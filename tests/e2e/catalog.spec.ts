@@ -23,6 +23,8 @@ test.describe("shop catalog", () => {
     await page.goto("/shop");
     await expect(page.getByRole("heading", { level: 1, name: /Uncommon Finds/ })).toBeVisible();
     const panel = page.getByTestId("filter-panel");
+    // Phones start with the panel collapsed so products are on the first screen; desktop shows it as a sidebar.
+    if (!(await panel.isVisible())) await page.getByRole("button", { name: /^Filter/ }).click();
     await expect(panel).toBeVisible();
     const countText = page.getByTestId("catalog-count");
     await expect(countText).toContainText(/Showing 12 of \d+ verified products/);

@@ -36,7 +36,7 @@ export function BottomNav({ whatsappHref, maxDiscount }: { whatsappHref: string;
               <Icon name={it.icon} />
               <span className="text-label-sm">{it.label}</span>
               {it.deal && maxDiscount > 0 ? (
-                <span className="absolute -top-1 rounded-full bg-gold-soft px-1.5 py-0.5 text-[0.5625rem] leading-none font-extrabold text-bronze-ink">
+                <span className="absolute -top-1 rounded-full bg-gold-soft px-1.5 py-0.5 text-[0.6875rem] leading-none font-extrabold text-bronze-ink">
                   -{maxDiscount}%
                 </span>
               ) : null}

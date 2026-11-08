@@ -38,7 +38,6 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       total={total}
       categories={categories}
       allCount={allCount}
-      defaultFiltersOpen
       returnsDays={settings.business.returnsDays}
       header={
         <BrandShowcase

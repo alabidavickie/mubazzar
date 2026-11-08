@@ -23,7 +23,7 @@ export function StandardSection({ detailed = false }: { detailed?: boolean }) {
         <div className="grid gap-5 p-5 md:grid-cols-[auto_1fr] md:items-center md:gap-8 md:p-8">
           <TestedSeal className="size-24 md:size-32" />
           <div>
-            <h2 id="standard-title" className="font-display text-headline-md leading-tight font-bold tracking-tight text-navy-deep md:text-headline-xl">
+            <h2 id="standard-title" className="font-display text-headline-md leading-tight font-bold text-navy-deep md:text-headline-xl">
               The MUBAZZAR Standard
             </h2>
             <p className="mt-0.5 text-label-md text-bronze">Tested. Vetted. Delivered.</p>

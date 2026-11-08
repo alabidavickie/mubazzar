@@ -27,12 +27,14 @@ export function SiteHeader({
     <header className="sticky top-0 z-40 bg-surface/90 shadow-[0_1px_8px_rgb(0_0_0/0.04)] backdrop-blur-xl pt-safe">
       <div className="flex items-center justify-center gap-1 overflow-hidden bg-navy-deep px-4 py-0.5 whitespace-nowrap text-gold-pale">
         <Icon name="verified_user" className="shrink-0 text-sm" />
-        <p className="truncate text-label-sm tracking-tight">{promoStrip}</p>
+        {/* Phones show the first message only instead of cutting the whole line off mid-word. */}
+        <p className="truncate text-label-sm sm:hidden">{promoStrip.split("|")[0]!.trim()}</p>
+        <p className="hidden truncate text-label-sm sm:block">{promoStrip}</p>
       </div>
 
       <div className="mx-auto flex h-14 max-w-(--container-site) items-center justify-between gap-2 px-4">
         <div className="flex min-w-0 items-center gap-2">
-          <Link href="/" className="flex items-center gap-2 font-display text-label-lg font-extrabold whitespace-nowrap text-navy-deep sm:text-headline-sm sm:tracking-wide" aria-label="MUBAZZAR home">
+          <Link href="/" className="flex min-h-11 items-center gap-2 font-display text-label-lg font-extrabold whitespace-nowrap text-navy-deep sm:text-headline-sm sm:tracking-wide" aria-label="MUBAZZAR home">
             <Image src="/brand/emblem.webp" alt="" width={30} height={30} className="rounded-md" loading="eager" />
             MUBAZZAR
           </Link>
@@ -72,20 +74,17 @@ export function SiteHeader({
         </nav>
       </div>
 
-      <nav aria-label="Categories" className="no-scrollbar mx-auto flex h-11 max-w-(--container-site) items-center gap-1.5 overflow-x-auto border-t border-line-soft px-4 md:justify-center">
-        <Link
-          href="/deals"
-          className="flex shrink-0 items-center gap-1 rounded-full bg-gold-soft px-3 py-1.5 text-label-md text-bronze-ink hover:bg-gold-pale"
-        >
-          <Icon name="local_fire_department" className="text-sm" /> Hot Deals
+      <nav aria-label="Categories" className="no-scrollbar flex h-11 items-center gap-0.5 overflow-x-auto border-t border-line-soft px-4 lg:justify-center">
+        <Link href="/deals" className="group flex min-h-11 shrink-0 items-center">
+          <span className="flex items-center gap-1 rounded-full bg-gold-soft px-3 py-1.5 text-label-md text-bronze-ink group-hover:bg-gold-pale">
+            <Icon name="local_fire_department" className="text-sm" /> Hot Deals
+          </span>
         </Link>
         {categories.map((c) => (
-          <Link
-            key={c.slug}
-            href={`/c/${c.slug}`}
-            className="shrink-0 rounded-full px-3 py-1.5 text-label-md text-ink-muted transition-colors hover:bg-surface-container hover:text-navy-deep"
-          >
-            {c.shortName ?? c.name}
+          <Link key={c.slug} href={`/c/${c.slug}`} className="group flex min-h-11 shrink-0 items-center">
+            <span className="rounded-full px-3 py-1.5 text-label-md text-ink-muted transition-colors group-hover:bg-surface-container group-hover:text-navy-deep">
+              {c.shortName ?? c.name}
+            </span>
           </Link>
         ))}
       </nav>

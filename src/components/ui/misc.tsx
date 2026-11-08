@@ -32,7 +32,7 @@ export function SectionHeader({
     <div className={cx("mb-4 flex items-end justify-between gap-3", className)}>
       <div className="min-w-0">
         {eyebrow ? <div className="mb-1">{eyebrow}</div> : null}
-        <Tag className="font-display text-headline-md leading-tight font-bold tracking-tight text-navy-deep md:text-headline-xl">{title}</Tag>
+        <Tag className="font-display text-headline-md leading-tight font-bold text-navy-deep md:text-headline-xl">{title}</Tag>
         {subtitle ? <p className="mt-0.5 text-body-md text-ink-muted">{subtitle}</p> : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
@@ -55,7 +55,7 @@ export function Accordion({
             <span>{item.question}</span>
             <Icon name="expand_more" className="text-2xl transition-transform group-open:rotate-180" />
           </summary>
-          <p className="px-4 pb-4 text-body-md leading-relaxed text-ink-muted">{item.answer}</p>
+          <p className="max-w-prose px-4 pb-4 text-body-md leading-relaxed text-ink-muted">{item.answer}</p>
         </details>
       ))}
     </div>

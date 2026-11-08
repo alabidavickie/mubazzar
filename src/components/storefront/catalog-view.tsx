@@ -29,7 +29,6 @@ export interface CatalogViewProps {
   fixedCategory?: string | null;
   /** Rendered above the search bar (brand bar, page heading). */
   header: React.ReactNode;
-  defaultFiltersOpen?: boolean;
   returnsDays: number;
 }
 
@@ -49,7 +48,6 @@ export function CatalogView({
   allCount,
   fixedCategory,
   header,
-  defaultFiltersOpen = false,
   returnsDays,
 }: CatalogViewProps) {
   const href = (patch: Partial<CatalogState>) => catalogHref(pathname, state, patch);
@@ -90,7 +88,7 @@ export function CatalogView({
           q={state.q ?? ""}
           hidden={hidden}
           activeCount={activeFilterCount(state)}
-          defaultOpen={defaultFiltersOpen || activeFilterCount(state) > 0}
+          defaultOpen={activeFilterCount(state) > 0}
         >
           <RefinementPanel state={state} href={href} pathname={pathname} priceHidden={priceHidden} />
         </FilterDisclosure>
@@ -211,7 +209,7 @@ export function CatalogView({
           </span>
           <div className="min-w-0 flex-1">
             <h2 className="text-headline-sm font-bold text-navy-deep">Quality &amp; Testing Promise</h2>
-            <p className="pt-0.5 text-body-sm leading-snug text-ink-muted">
+            <p className="max-w-prose pt-0.5 text-body-sm leading-snug text-ink-muted">
               Every item is unboxed, checked and tested before dispatch. Arrived faulty? Tell us within {returnsDays} days and
               we swap it or refund you. Pay on Delivery can be arranged in chat.
             </p>
@@ -378,7 +376,7 @@ function ToggleCard({
     >
       <Icon name={icon} className={`shrink-0 text-base ${iconClass}`} />
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-label-sm text-ink">{title}</span>
+        <span className="block text-label-sm leading-tight text-ink">{title}</span>
         <span className="block truncate text-body-sm text-ink-muted">{subtitle}</span>
       </span>
       <Icon name={active ? "check_circle" : "radio_button_unchecked"} filled={active} className={active ? "text-lg text-navy" : "text-lg text-line-strong"} />

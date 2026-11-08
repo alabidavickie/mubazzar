@@ -103,7 +103,7 @@ export default async function DealsPage() {
         ) : (
           <EmptyState
             icon="schedule"
-            title="The next flash deal is loading"
+            title="No flash deal is running right now"
             body="We only run deals with real end times. Meanwhile, these products already carry their biggest discounts."
           />
         )}

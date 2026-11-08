@@ -103,7 +103,7 @@ export function HelpCard({ settings, message = "Hello MUBAZZAR, I have a questio
 export function OnThisPage({ links }: { links: { href: string; label: string }[] }) {
   return (
     <nav aria-label="On this page" className="rounded-xl bg-card p-3 shadow-card">
-      <p className="mb-1 text-label-sm tracking-wider text-bronze uppercase">On this page</p>
+      <p className="mb-1 text-label-sm text-bronze">On this page</p>
       <ul className="flex flex-wrap gap-x-3">
         {links.map((l) => (
           <li key={l.href}>

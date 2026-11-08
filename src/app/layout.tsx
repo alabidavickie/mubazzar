@@ -10,9 +10,10 @@ const syne = localFont({
   variable: "--font-syne",
   weight: "600 800",
   // Display face for headings only. "optional": never swaps after first paint (a late Syne swap reflowed
-  // the LP headline: CLS 0.111); on a cold slow-4G visit the metric-matched fallback stays, cached views get Syne.
+  // the LP headline: CLS 0.111). Preloaded since the redesign: Syne carries every section title, so without
+  // it a first-time visitor (all ad traffic) saw only the fallback.
   display: "optional",
-  preload: false,
+  preload: true,
 });
 
 const jakarta = localFont({

@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { Icon } from "@/components/icons/icon";
+import { cx } from "@/lib/cx";
 import { SearchBox } from "./search-box";
 
 /**
@@ -55,9 +56,12 @@ export function FilterDisclosure({
       />
       <section
         id={panelId}
-        hidden={!open}
         aria-labelledby={`${panelId}-title`}
-        className="flex flex-col gap-2 rounded-xl bg-surface-low p-3 shadow-[inset_0_2px_4px_rgb(14_41_75/0.05)] lg:!flex lg:gap-3 lg:border lg:border-line-soft lg:bg-card lg:p-4 lg:shadow-none"
+        // Classes, not the `hidden` attribute: Tailwind's base [hidden] rule is !important and would beat lg:flex.
+        className={cx(
+          open ? "flex" : "hidden",
+          "flex-col gap-2 rounded-xl bg-surface-low p-3 shadow-[inset_0_2px_4px_rgb(14_41_75/0.05)] lg:flex lg:gap-3 lg:border lg:border-line-soft lg:bg-card lg:p-4 lg:shadow-none",
+        )}
         data-testid="filter-panel"
       >
         <div className="flex items-center justify-between">

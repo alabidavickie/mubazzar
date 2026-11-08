@@ -404,7 +404,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
               <h2 id="features-title" className="text-headline-md font-bold text-navy">
                 {lp.featuresTitle ?? `Why customers love the ${product.name}`}
               </h2>
-              {lp.featuresSubtitle ? <p className="text-body-md text-ink-muted">{lp.featuresSubtitle}</p> : null}
+              {lp.featuresSubtitle ? <p className="max-w-prose text-body-md text-ink-muted">{lp.featuresSubtitle}</p> : null}
               <ul className="mt-1 grid grid-cols-1 gap-2">
                 {product.features.map((f, i) => (
                   <li key={f.title} className="flex items-start gap-3 rounded-xl bg-card p-4 shadow-card">
