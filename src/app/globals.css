@@ -149,6 +149,8 @@
   h2,
   h3 {
     text-wrap: balance;
+    /* Syne is wide: one long word in a product name must wrap, not push the page sideways. */
+    overflow-wrap: break-word;
   }
   p {
     text-wrap: pretty;
