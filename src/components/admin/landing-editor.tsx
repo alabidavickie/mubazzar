@@ -153,7 +153,7 @@ export function LandingEditor({ initial, products }: { initial: LandingInput; pr
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {text("featuresTitle", "Features title", { placeholder: "Why Nigerian Drivers Love This" })}
           {text("featuresSubtitle", "Features subtitle")}
-          {text("videoUrl", "Video link (YouTube or .mp4)", { placeholder: "https://…" })}
+          {text("videoUrl", "Video link (Facebook, Instagram, TikTok, X, YouTube or .mp4)", { placeholder: "https://…" })}
           {text("videoTitle", "Video title")}
           {text("videoSubtitle", "Video subtitle")}
           <div className="flex flex-col gap-1">

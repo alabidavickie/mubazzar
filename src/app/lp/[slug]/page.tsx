@@ -30,7 +30,8 @@ import { buildWhatsAppLink, CHANNEL_LABEL } from "@/lib/chat/links";
 import { formatNaira, koboToNairaInput, savingsKobo } from "@/lib/money";
 import { formatNgPhoneIntl } from "@/lib/phone";
 import { internalBackLink } from "@/lib/referrer";
-import { landingTimer, nearestHubFromGeo, promoPricing, youTubeEmbedUrl } from "@/lib/landing";
+import { landingTimer, nearestHubFromGeo, promoPricing } from "@/lib/landing";
+import { parseVideoLink } from "@/lib/video-embed";
 import { markupToPlainText, renderMarkup } from "@/lib/markup";
 import { absoluteUrl } from "@/lib/site";
 
@@ -132,7 +133,9 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
   const trust = lp.sections.filter((s) => s.kind === "trust_matrix");
   const customText = lp.sections.filter((s) => s.kind === "custom_text");
   const supportHref = buildWhatsAppLink(settings.support.whatsapp, `Hello MUBAZZAR, I have a question about the ${product.name}.`);
-  const embedUrl = youTubeEmbedUrl(lp.videoUrl);
+  const parsedVideo = parseVideoLink(lp.videoUrl);
+  // No player at all unless it can really play (honest: no dead play buttons).
+  const video = parsedVideo.ok && (parsedVideo.video.embedUrl || parsedVideo.video.platform === "direct") ? parsedVideo.video : null;
   const shownReviews = reviews.slice(0, 4);
   // Visitors who arrived from another page of this site get a way back; ad traffic does not.
   const back = res.preview ? null : internalBackLink(h.get("referer"), h.get("x-forwarded-host") ?? h.get("host"), `/lp/${slug}`);
@@ -430,13 +433,13 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
           ) : null}
 
           {/* Video teaser — play button only when a real video exists */}
-          {lp.videoUrl || lp.videoPosterUrl ? (
+          {video || lp.videoPosterUrl ? (
             <figure className="overflow-hidden rounded-xl bg-navy shadow-raised" data-testid="lp-video">
-              <div className="relative aspect-video w-full">
-                {lp.videoUrl ? (
+              <div className={video?.vertical ? "relative mx-auto aspect-[9/16] w-full max-w-sm" : "relative aspect-video w-full"}>
+                {video ? (
                   <VideoPlayer
-                    videoUrl={lp.videoUrl}
-                    embedUrl={embedUrl}
+                    videoUrl={video.url}
+                    embedUrl={video.embedUrl}
                     title={lp.videoTitle ?? `${product.name} demo`}
                     poster={
                       lp.videoPosterUrl ? (

@@ -1,4 +1,5 @@
 import { parseCsv } from "./csv";
+import { videoLinkProblem } from "./video-embed";
 import { parseNairaInput, type Kobo } from "./money";
 import { SLUG_RE } from "./slug";
 
@@ -207,7 +208,9 @@ export function parseProductImport(text: string): ParsedImport {
     if (seoDescription !== undefined) values.seoDescription = seoDescription;
     const videoUrl = cell("video_url");
     if (videoUrl !== undefined) {
+      const videoProblem = videoLinkProblem(videoUrl);
       if (videoUrl && !isImportableImageUrl(videoUrl)) errors.push('video_url: must be a valid https:// link.');
+      else if (videoProblem) errors.push(`video_url: ${videoProblem}`);
       else values.videoUrl = videoUrl || undefined;
     }
     return { line, slug, values, errors };

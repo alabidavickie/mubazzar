@@ -96,35 +96,4 @@ export function landingTimer(
   return { kind: "none" };
 }
 
-/** Safe embed URL for YouTube and Vimeo URLs, else null (use native <video>). */
-export function videoEmbedUrl(url: string | null | undefined): string | null {
-  if (!url) return null;
-  let u: URL;
-  try {
-    u = new URL(url);
-  } catch {
-    return null;
-  }
-  const host = u.hostname.replace(/^www\.|^m\./, "");
-  let id: string | null = null;
-  if (host === "youtu.be") id = u.pathname.slice(1).split("/")[0] ?? null;
-  else if (host === "youtube.com" || host === "youtube-nocookie.com") {
-    if (u.pathname === "/watch") id = u.searchParams.get("v");
-    else {
-      const m = /^\/(?:embed|shorts|live)\/([^/?#]+)/.exec(u.pathname);
-      id = m?.[1] ?? null;
-    }
-  }
-  if (id && /^[A-Za-z0-9_-]{6,20}$/.test(id)) {
-    return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
-  }
-  if (host === "vimeo.com" || host === "player.vimeo.com") {
-    const m = /(?:\/video\/|\/|^)(\d{6,12})/.exec(u.pathname);
-    if (m?.[1]) {
-      return `https://player.vimeo.com/video/${m[1]}?autoplay=1&dnt=1`;
-    }
-  }
-  return null;
-}
-
-export const youTubeEmbedUrl = videoEmbedUrl;
+export { videoEmbedUrl, videoEmbedUrl as youTubeEmbedUrl } from "./video-embed";

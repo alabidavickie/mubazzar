@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { videoLinkProblem } from "@/lib/video-embed";
 import { parseNairaInput } from "../money";
 import { SLUG_RE } from "../slug";
 import { lagosLocalToUtc } from "../time";
@@ -128,9 +129,14 @@ export const productInput = z
         try {
           const u = new URL(v);
           if (u.protocol !== "https:" && u.protocol !== "http:") throw new Error("http/https only");
+          const problem = videoLinkProblem(v);
+          if (problem) {
+            ctx.addIssue({ code: "custom", message: problem });
+            return z.NEVER;
+          }
           return u.toString();
         } catch {
-          ctx.addIssue({ code: "custom", message: "Enter a valid video URL (e.g. YouTube or direct video link)." });
+          ctx.addIssue({ code: "custom", message: "Paste the full video link, starting with https:// (Facebook, Instagram, TikTok, X or YouTube)." });
           return z.NEVER;
         }
       }),

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { videoLinkProblem } from "@/lib/video-embed";
 import { SLUG_RE } from "../slug";
 import { lagosLocalToUtc } from "../time";
 
@@ -67,7 +68,10 @@ export const landingInput = z.object({
     }),
   featuresTitle: optText(120),
   featuresSubtitle: optText(240),
-  videoUrl: optUrl,
+  videoUrl: optUrl.superRefine((v, ctx) => {
+    const problem = videoLinkProblem(v);
+    if (problem) ctx.addIssue({ code: "custom", message: problem });
+  }),
   videoPosterUrl: optUrl,
   videoTitle: optText(80),
   videoSubtitle: optText(120),

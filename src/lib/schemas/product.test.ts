@@ -38,6 +38,13 @@ describe("productInput", () => {
     expect(twoPopular.error!.issues[0]!.message).toMatch(/Only one bundle/);
   });
 
+  it("accepts social media video links and explains the ones that cannot play", () => {
+    expect(productInput.parse({ ...base, videoUrl: "https://www.facebook.com/shop/videos/1234567890/" }).videoUrl).toContain("facebook.com");
+    const page = productInput.safeParse({ ...base, videoUrl: "https://www.facebook.com/shop" });
+    expect(page.success).toBe(false);
+    expect(page.error!.issues[0]!.message).toMatch(/isn't a post or video/);
+  });
+
   it("accepts valid video URLs and normalises empty ones", () => {
     const p = productInput.parse({ ...base, videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" });
     expect(p.videoUrl).toBe("https://www.youtube.com/watch?v=dQw4w9WgXcQ");

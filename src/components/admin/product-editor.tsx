@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
 import { Icon } from "@/components/icons/icon";
+import { VideoLinkStatus } from "./video-link-status";
 import { saveProductAction, uploadCatalogImageAction, uploadProductImageAction, type SaveProductResult } from "@/app/actions/admin-catalog";
 import type { ProductInput } from "@/lib/schemas/product";
 import { slugify } from "@/lib/slug";
@@ -278,24 +279,25 @@ export function ProductEditor({
 
       <Section
         title="Demo video"
-        hint="Embed a video demonstration on the product's landing page. Paste a YouTube link or direct video link."
+        hint="Already posted the video on social media? Just paste its link here. There's no need to upload it again."
       >
         <Field
-          label="Video link (YouTube or direct video)"
-          hint="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/... (or a direct .mp4 link). Displayed on the product's landing page."
+          label="Video link (Facebook, Instagram, TikTok, X or YouTube)"
+          hint="On the post, tap Share, then Copy link, and paste it here. The post must be Public, or customers won't be able to play it."
           error={err("videoUrl")}
         >
           {({ id, describedBy, invalid }) => (
             <Input
               id={id}
               value={v.videoUrl ?? ""}
-              placeholder="https://www.youtube.com/watch?v=..."
+              placeholder="https://www.facebook.com/yourpage/videos/..."
               aria-describedby={describedBy}
               aria-invalid={invalid}
               onChange={(e) => set("videoUrl", e.target.value)}
             />
           )}
         </Field>
+        <VideoLinkStatus url={v.videoUrl ?? ""} />
       </Section>
 
       <Section title="Bundles (multi-packs)" hint="Each bundle is priced in the database and recomputed at checkout. A promo price needs a real end date; after it, the regular price applies automatically.">

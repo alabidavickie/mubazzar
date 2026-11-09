@@ -6,6 +6,7 @@ import { asUser } from "@/server/db";
 import { requireRole } from "@/server/session";
 import { auditAdmin } from "@/server/services/admin-audit";
 import { landingInput, type LandingInput } from "@/lib/schemas/landing";
+import { normalizeVideoLink } from "@/server/services/video-link";
 
 export type SaveLandingResult = { ok: true; id: string; slug: string; message: string } | { ok: false; error: string; fieldErrors?: Record<string, string> };
 
@@ -18,7 +19,9 @@ export async function saveLandingAction(input: LandingInput): Promise<SaveLandin
     for (const i of parsed.error.issues) fieldErrors[i.path.join(".")] ??= i.message;
     return { ok: false, error: Object.values(fieldErrors)[0] ?? "Please check the form.", fieldErrors };
   }
-  const d = parsed.data;
+  const video = await normalizeVideoLink(parsed.data.videoUrl);
+  if (!video.ok) return { ok: false, error: video.message, fieldErrors: { videoUrl: video.message } };
+  const d = { ...parsed.data, videoUrl: video.url };
   let id: string;
   try {
     id = await asUser(session.userId, async (q) => {

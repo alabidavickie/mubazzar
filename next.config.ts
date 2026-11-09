@@ -19,7 +19,8 @@ const csp = [
   "font-src 'self' data:",
   `connect-src 'self' https://www.facebook.com https://connect.facebook.net${supabaseHost ? ` https://${supabaseHost}` : ""}`,
   "media-src 'self' blob: https:",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com",
+  // Demo videos only: keep in step with src/lib/video-embed.ts.
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com https://www.facebook.com https://web.facebook.com https://m.facebook.com https://www.instagram.com https://www.tiktok.com https://platform.twitter.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

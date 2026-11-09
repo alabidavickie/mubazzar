@@ -1,4 +1,5 @@
 import "server-only";
+import { normalizeVideoLink } from "@/server/services/video-link";
 import { asUser, type Queryable } from "../db";
 import type { SqlParam } from "../db/types-core";
 import { parseAppError } from "../db/types-core";
@@ -123,7 +124,11 @@ async function importRow(
   set("is_active", v.isActive);
   set("seo_title", v.seoTitle);
   set("seo_description", v.seoDescription);
-  set("video_url", v.videoUrl);
+  if (v.videoUrl !== undefined) {
+    const video = await normalizeVideoLink(v.videoUrl);
+    if (!video.ok) throw new RowError(video.message);
+    set("video_url", video.url);
+  }
 
   let productId: string;
   let action: "create" | "update";

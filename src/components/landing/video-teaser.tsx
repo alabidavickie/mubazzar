@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Icon } from "@/components/icons/icon";
 
 /**
- * Click-to-load demo video. Nothing heavy loads until the visitor taps play: YouTube URLs become a
- * privacy-enhanced (youtube-nocookie) iframe, anything else a native <video>. Rendered only when the
- * landing page actually has a video_url (no fake play buttons).
+ * Click-to-load demo video. Nothing heavy loads until the visitor taps play: social and YouTube links
+ * become an iframe built by parseVideoLink, a direct file a native <video>. Rendered only when the
+ * landing page actually has a playable video (no fake play buttons).
  */
 export function VideoPlayer({
   videoUrl,
@@ -27,7 +27,7 @@ export function VideoPlayer({
         src={embedUrl}
         title={title}
         className="absolute inset-0 size-full"
-        allow="autoplay; encrypted-media; picture-in-picture"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
         allowFullScreen
         referrerPolicy="strict-origin-when-cross-origin"
       />

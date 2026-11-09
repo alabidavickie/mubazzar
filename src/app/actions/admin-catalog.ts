@@ -7,6 +7,7 @@ import { uploadImage, validateImage } from "@/server/adapters/storage";
 import { productInput, type ProductInput } from "@/lib/schemas/product";
 import { auditAdmin, revalidateCatalog } from "@/server/services/admin-audit";
 import { getProductForEdit } from "@/server/services/admin-catalog";
+import { normalizeVideoLink } from "@/server/services/video-link";
 
 export type SaveProductResult =
   | { ok: true; id: string; slug: string; message: string; values?: ProductInput; images?: { id: string; url: string; alt: string }[] }
@@ -30,7 +31,9 @@ export async function saveProductAction(input: ProductInput): Promise<SaveProduc
     const fieldErrors = fieldErrorsOf(parsed.error.issues);
     return { ok: false, error: Object.values(fieldErrors)[0] ?? "Please check the form.", fieldErrors };
   }
-  const p = parsed.data;
+  const video = await normalizeVideoLink(parsed.data.videoUrl);
+  if (!video.ok) return { ok: false, error: video.message, fieldErrors: { videoUrl: video.message } };
+  const p = { ...parsed.data, videoUrl: video.url };
   let id: string;
   try {
     id = await asUser(session.userId, async (q) => {
