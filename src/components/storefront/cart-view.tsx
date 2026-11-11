@@ -5,6 +5,7 @@ import { useState } from "react";
 import { cartCount, cartSubtotal, MAX_PACKS, useCart } from "@/lib/client/cart-store";
 import { formatNaira } from "@/lib/money";
 import { quoteDelivery, type DeliveryZone } from "@/lib/delivery";
+import { deliveryFeeText } from "@/lib/delivery";
 import { formatCutoff } from "@/lib/time";
 import { optimizedImageProps } from "@/lib/image";
 import { Icon } from "@/components/icons/icon";
@@ -152,7 +153,7 @@ export function CartView({ zones, cutoff }: { zones: DeliveryZone[]; cutoff: str
             <div className="flex flex-wrap justify-between">
               <dt className="text-ink-muted">Delivery</dt>
               <dd className="font-bold tabular" data-testid="cart-delivery">
-                {quote ? (quote.feeKobo === 0 ? "Free" : formatNaira(quote.feeKobo)) : "Choose state"}
+                {quote ? deliveryFeeText(quote.feeKobo) : "Choose state"}
               </dd>
               {quote ? (
                 <dd className="flex w-full items-center gap-1 text-body-sm font-semibold text-emerald-ink">
@@ -194,7 +195,7 @@ export function EmptyCart() {
         <Icon name="shopping_bag" className="text-3xl" />
       </span>
       <h2 className="text-headline-sm font-bold text-navy">Your cart is empty</h2>
-      <p className="max-w-sm text-body-md text-ink-muted">Find something uncommon — every gadget is tested before it leaves our hub.</p>
+      <p className="max-w-sm text-body-md text-ink-muted">Find something uncommon. Order now and pay on delivery.</p>
       <div className="flex flex-wrap justify-center gap-2">
         <Link href="/shop" className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-navy px-5 text-label-md text-on-dark shadow-card">
           Shop all gadgets <Icon name="arrow_forward" className="text-sm" />

@@ -6,6 +6,7 @@ import { cn } from "@/lib/cn";
 import { formatNaira } from "@/lib/money";
 import { Field, Input } from "@/components/ui/field";
 import { Icon } from "@/components/icons/icon";
+import { deliveryFeeText } from "@/lib/delivery";
 import { WhatsAppIcon } from "@/components/icons/whatsapp";
 import { trackOrderAction, type TrackState, type TrackedOrder } from "@/app/actions/track";
 import { logChatClickClient } from "@/lib/client/chat-click";
@@ -133,7 +134,7 @@ function TrackResult({ order }: { order: TrackedOrder }) {
         ))}
         <p className="flex justify-between text-body-md text-ink-muted">
           <span>Delivery</span>
-          <span className="tabular">{order.deliveryFeeKobo === 0 ? "Free" : formatNaira(order.deliveryFeeKobo)}</span>
+          <span className="tabular">{deliveryFeeText(order.deliveryFeeKobo)}</span>
         </p>
         <p className="flex items-baseline justify-between border-t border-line pt-1.5">
           <span className="font-bold text-navy">Total</span>

@@ -1,4 +1,5 @@
 import "server-only";
+import { loginCodeMessage } from "@/lib/email-messages";
 import { createHash, randomInt, scryptSync, timingSafeEqual, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
@@ -175,8 +176,7 @@ export async function requestOtp(identifier: string): Promise<{ ok: true; devCod
     channel: isEmail ? "email" : "sms",
     to: identifier,
     template: "otp",
-    subject: "Your MUBAZZAR login code",
-    body: `Your MUBAZZAR code is ${code}. It expires in 10 minutes. Never share it with anyone — MUBAZZAR staff will never ask for it.`,
+    ...loginCodeMessage(code),
   });
   return { ok: true, devCode: env.isProd ? undefined : code };
 }

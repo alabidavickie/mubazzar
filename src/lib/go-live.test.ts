@@ -8,7 +8,6 @@ const ready: GoLiveInput = {
   bankAccounts: [{ accountNumber: "0123456789" }],
   adminAlerts: { emails: ["owner@mubazzar.ng"], phones: ["+2348033334444"] },
   showSampleReviews: false,
-  cac: "RC1234567",
   siteUrl: "https://mubazzar.ng",
   services: { supabaseAuth: true, email: true, metaCapi: true },
 };
@@ -34,7 +33,7 @@ describe("goLiveChecks", () => {
     expect(r.map((x) => [x.key, x.severity])).toEqual([["site-url", "blocker"], ["supabase", "blocker"]]);
   });
   it("lists blockers before recommendations", () => {
-    const r = goLiveChecks({ ...ready, showSampleReviews: true, cac: null, bankAccounts: [] });
+    const r = goLiveChecks({ ...ready, showSampleReviews: true, services: { ...ready.services, email: false }, bankAccounts: [] });
     expect(r.map((x) => x.severity)).toEqual(["blocker", "recommended", "recommended"]);
   });
   it("the seed's demo numbers are exactly the ones this check knows about", () => {

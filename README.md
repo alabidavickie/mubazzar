@@ -55,7 +55,7 @@ Copy `.env.example` to `.env.local` and fill what you need. Everything is option
 
 | Variable | Required in production | Purpose |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | ✅ | Canonical URLs, sitemap, OG images (e.g. `https://mubazzar.ng`) |
+| `NEXT_PUBLIC_SITE_URL` | ✅ | Canonical URLs, sitemap, OG images (e.g. `https://www.mubazzar.com`) |
 | `AUTH_SECRET` | ✅ | Signs session cookies — 32+ random characters |
 | `CRON_SECRET` | ✅ | Protects `/api/cron/*` (Vercel Cron sends it as a Bearer token) |
 | `IP_HASH_SALT` | ✅ | Salt for hashing IPs used in rate limiting |
@@ -153,7 +153,7 @@ pnpm lhci
 
 ## 6. Setting your real WhatsApp numbers and social handles
 
-The seed uses **placeholder** numbers (`+234 812 000 8899` Lagos desk, `+234 812 000 8900` Abuja desk) and handles (`mubazzar.ng` on Instagram). Replace them before launch:
+The seed uses **placeholder** numbers (`+234 812 000 8899` Lagos desk, `+234 812 000 8900` Abuja desk) and handles (`mubazzar.ng` on Instagram, a placeholder). Replace them before launch:
 
 1. Sign in as admin → **Chat & payments**.
 2. Edit each WhatsApp number (international format, e.g. `+2348012345678`), choose which hub it serves, and set routing: **By hub** (Lagos orders → Lagos desk), **Round robin** (spread across staff, weighted) or **First** (always the first number).

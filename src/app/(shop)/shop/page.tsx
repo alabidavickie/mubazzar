@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { CatalogView } from "@/components/storefront/catalog-view";
-import { BrandShowcase, hubCities } from "@/components/storefront/catalog-headers";
+import { BrandShowcase } from "@/components/storefront/catalog-headers";
 import { countActiveProducts, getCategories } from "@/server/services/catalog";
-import { getPublicSettings } from "@/server/services/settings";
-import { getHubs, listCatalog } from "@/server/services/storefront";
+import { listCatalog } from "@/server/services/storefront";
 import { hasActiveFilters, parseCatalogParams, type RawSearchParams } from "@/lib/catalog-params";
 
 export const revalidate = 60;
@@ -13,7 +12,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   return {
     title: "Shop Uncommon Gadgets",
     description:
-      "Browse tested gadgets, car tech, kitchen hacks and solar backups. Filter by price, Pay on Delivery and same-day hubs in Lagos & Abuja.",
+      "Browse gadgets, car tech, kitchen tools and solar backups. Pay on Delivery available, arranged in chat.",
     alternates: { canonical: "/shop" },
     // Filtered permutations are for shoppers, not search engines.
     robots: hasActiveFilters(state) || state.sort !== "popular" || state.page > 1 ? { index: false, follow: true } : undefined,
@@ -22,14 +21,11 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<RawSearchParams> }) {
   const state = parseCatalogParams(await searchParams);
-  const [{ items, total }, categories, allCount, hubs, settings] = await Promise.all([
+  const [{ items, total }, categories, allCount] = await Promise.all([
     listCatalog(state),
     getCategories(),
     countActiveProducts(),
-    getHubs(),
-    getPublicSettings(),
   ]);
-  const cities = hubCities(hubs);
   return (
     <CatalogView
       pathname="/shop"
@@ -38,12 +34,11 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       total={total}
       categories={categories}
       allCount={allCount}
-      returnsDays={settings.business.returnsDays}
       header={
         <BrandShowcase
           title="Uncommon Finds"
           srTitle="shop all MUBAZZAR gadgets"
-          subtitle={cities ? `Direct dispatch from ${cities} hubs` : "Tested before dispatch"}
+          subtitle="Pay on Delivery, arranged in chat"
         />
       }
     />

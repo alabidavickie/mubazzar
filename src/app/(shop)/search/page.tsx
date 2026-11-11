@@ -4,7 +4,6 @@ import { CatalogView } from "@/components/storefront/catalog-view";
 import { ListingHeading } from "@/components/storefront/catalog-headers";
 import { Icon } from "@/components/icons/icon";
 import { countActiveProducts, getCategories } from "@/server/services/catalog";
-import { getPublicSettings } from "@/server/services/settings";
 import { listCatalog } from "@/server/services/storefront";
 import { parseCatalogParams, type RawSearchParams } from "@/lib/catalog-params";
 
@@ -24,12 +23,7 @@ const POPULAR = ["vacuum", "solar", "fan", "car charger", "chopper", "security c
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<RawSearchParams> }) {
   const state = parseCatalogParams(await searchParams);
-  const [{ items, total }, categories, allCount, settings] = await Promise.all([
-    listCatalog(state),
-    getCategories(),
-    countActiveProducts(),
-    getPublicSettings(),
-  ]);
+  const [{ items, total }, categories, allCount] = await Promise.all([listCatalog(state), getCategories(), countActiveProducts()]);
   return (
     <CatalogView
       pathname="/search"
@@ -38,7 +32,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       total={total}
       categories={categories}
       allCount={allCount}
-      returnsDays={settings.business.returnsDays}
       header={
         <>
           <ListingHeading

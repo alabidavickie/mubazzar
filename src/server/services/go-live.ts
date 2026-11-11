@@ -14,14 +14,12 @@ export async function getGoLiveChecks(session: Session): Promise<GoLiveItem[]> {
   ]);
   const support = (s.support ?? {}) as { whatsapp?: string };
   const alerts = (s.admin_alerts ?? {}) as { emails?: string[]; phones?: string[] };
-  const business = (s.business ?? {}) as { cac?: string | null };
   return goLiveChecks({
     supportWhatsapp: support.whatsapp ?? "",
     enabledChannelHandles: channels.map((c) => c.handle),
     bankAccounts: Array.isArray(s.bank_accounts) ? (s.bank_accounts as { accountNumber: string }[]) : [],
     adminAlerts: { emails: alerts.emails ?? [], phones: alerts.phones ?? [] },
     showSampleReviews: s.show_sample_reviews === true,
-    cac: business.cac ?? null,
     siteUrl: env.siteUrl,
     services,
   });

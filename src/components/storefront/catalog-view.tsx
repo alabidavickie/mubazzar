@@ -29,7 +29,6 @@ export interface CatalogViewProps {
   fixedCategory?: string | null;
   /** Rendered above the search bar (brand bar, page heading). */
   header: React.ReactNode;
-  returnsDays: number;
 }
 
 function activeFilterCount(s: CatalogState): number {
@@ -48,7 +47,6 @@ export function CatalogView({
   allCount,
   fixedCategory,
   header,
-  returnsDays,
 }: CatalogViewProps) {
   const href = (patch: Partial<CatalogState>) => catalogHref(pathname, state, patch);
   const shown = items.length;
@@ -117,8 +115,8 @@ export function CatalogView({
       <div className="px-4 py-1.5 lg:px-0 lg:pt-3">
         <div className="flex items-center justify-between gap-2 rounded-xl bg-surface-container px-3 py-2.5">
           <span className="flex min-w-0 items-center gap-1.5">
-            <Icon name="verified_user" className="shrink-0 text-lg text-bronze" />
-            <span className="text-label-sm text-navy-deep">Sourced direct, tested before dispatch</span>
+            <Icon name="chat" className="shrink-0 text-lg text-bronze" />
+            <span className="text-label-sm text-navy-deep">Order on the site, confirm on WhatsApp</span>
           </span>
           <span className="flex shrink-0 items-center gap-1 text-emerald-ink">
             <span aria-hidden className="size-2 animate-pulse-soft rounded-full bg-emerald" />
@@ -201,29 +199,6 @@ export function CatalogView({
         </div>
       ) : null}
 
-      {/* Quality promise */}
-      <div className="px-4 pt-1 pb-5 lg:px-0">
-        <div className="flex items-start gap-3 rounded-xl bg-surface-low p-3 shadow-card">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold-soft text-bronze-ink">
-            <Icon name="verified_user" className="text-xl" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <h2 className="text-headline-sm font-bold text-navy-deep">Quality &amp; Testing Promise</h2>
-            <p className="max-w-prose pt-0.5 text-body-sm leading-snug text-ink-muted">
-              Every item is unboxed, checked and tested before dispatch. Arrived faulty? Tell us within {returnsDays} days and
-              we swap it or refund you. Pay on Delivery can be arranged in chat.
-            </p>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-2">
-              <Link href="/delivery" className="flex min-h-11 items-center gap-1 text-label-sm text-emerald-ink">
-                <Icon name="local_shipping" className="text-sm" /> Fast State Dispatch
-              </Link>
-              <Link href="/returns" className="flex min-h-11 items-center gap-1 text-label-sm text-navy">
-                <Icon name="currency_exchange" className="text-sm" /> {returnsDays}-Day Swap Guarantee
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
       </div>
       </div>
     </div>
@@ -285,7 +260,7 @@ function RefinementPanel({
       </div>
 
       {/* Delivery & payment refinements */}
-      <div className="grid grid-cols-2 gap-2 pt-0.5 lg:grid-cols-1">
+      <div className="grid grid-cols-1 gap-2 pt-0.5">
         <ToggleCard
           href={href({ pod: !state.pod })}
           active={state.pod}
@@ -294,15 +269,6 @@ function RefinementPanel({
           title="Pay on Delivery"
           subtitle="Arrange in chat"
           testId="toggle-pod"
-        />
-        <ToggleCard
-          href={href({ sameday: !state.sameday })}
-          active={state.sameday}
-          icon="bolt"
-          iconClass="text-bronze"
-          title="Same-Day Hub"
-          subtitle="Lagos & Abuja"
-          testId="toggle-sameday"
         />
       </div>
 

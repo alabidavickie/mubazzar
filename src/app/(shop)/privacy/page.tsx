@@ -24,7 +24,7 @@ export default async function PrivacyPage() {
         updated="4 October 2026"
         intro={
           <p>
-            This policy explains what personal data {business.legalName} (&ldquo;MUBAZZAR&rdquo;, &ldquo;we&rdquo;) collects, why, and
+            This policy explains what personal data MUBAZZAR (&ldquo;we&rdquo;) collects, why, and
             your rights under the Nigeria Data Protection Act 2023 (NDPA).
           </p>
         }
@@ -119,7 +119,7 @@ export default async function PrivacyPage() {
 
         <ProseSection id="contact" title="Contact us" icon="mail">
           <p>
-            {business.legalName}, {business.address}. Email <a href={`mailto:${support.email}`}>{support.email}</a> with the
+            MUBAZZAR, {business.address}. Email <a href={`mailto:${support.email}`}>{support.email}</a> with the
             subject &ldquo;Data request&rdquo;, or chat with us on WhatsApp. See also our <Link href="/terms">Terms of Service</Link>.
           </p>
         </ProseSection>

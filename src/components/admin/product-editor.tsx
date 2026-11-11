@@ -224,9 +224,6 @@ export function ProductEditor({
               <Input id={id} inputMode="decimal" value={v.compareAt ?? ""} aria-describedby={describedBy} aria-invalid={invalid} onChange={(e) => set("compareAt", e.target.value)} />
             )}
           </Field>
-          <Field label="Warranty (months)" error={err("warrantyMonths")}>
-            {({ id }) => <Input id={id} type="number" min={0} value={String(v.warrantyMonths ?? 0)} onChange={(e) => set("warrantyMonths", Number(e.target.value))} />}
-          </Field>
         </div>
       </Section>
 

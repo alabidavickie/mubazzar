@@ -87,7 +87,7 @@ test("admin: product + bundles → landing page → publish → live", async ({ 
   // Multi-buy saving is computed from live prices: 2 × ₦12,000 − ₦21,000.
   await expect(page.locator('[data-testid="bundle-option"][data-bundle-qty="2"]')).toContainText("SAVE EXTRA ₦3,000");
   await expect(page.getByTestId("lp-gallery").locator("img").first()).toHaveAttribute("alt", "Smart mini fan on an office desk");
-  await expect(page.getByText("In stock — ships from Lagos Hub")).toBeVisible();
+  await expect(page.getByTestId("stock-meter")).toHaveText("In stock");
 
   // The landing page IS the product page: the old /p/ address and the product address both lead to it.
   const pdp = await page.goto(`/p/smart-mini-fan-${stamp}`);

@@ -1,4 +1,7 @@
 import "server-only";
+import { customerOrderReceivedSms, newOrderEmail, newOrderSms, type NewOrderInfo } from "@/lib/email-messages";
+import { absoluteUrl } from "@/lib/site";
+import { formatNgPhoneLocal } from "@/lib/phone";
 import { asService, parseAppError } from "../db";
 import { hashIp, rateLimit } from "../adapters/rate-limit";
 import { notify } from "../adapters/notify";
@@ -10,7 +13,6 @@ import { generateOrderNumber } from "@/lib/order-number";
 import { findDuplicateOrder } from "@/lib/duplicates";
 import { pickWhatsAppChannel, buildChannelLink, type ChatChannel, type ChatChannelKind, type WhatsAppRouting } from "@/lib/chat/links";
 import { buildCustomerOrderMessage, buildMessage, type OrderMessageData, type TemplateSet } from "@/lib/chat/templates";
-import { formatNaira } from "@/lib/money";
 import { env } from "../env";
 
 export interface RequestContext {
@@ -214,22 +216,33 @@ async function afterOrderCreated(orderId: string, eventId: string, ctx: RequestC
     ),
   );
   const alerts = await getPrivateSetting<{ emails?: string[]; phones?: string[] }>("admin_alerts", {});
-  const summary = `New order ${view.orderNumber}: ${view.lines
-    .filter((l) => !l.isFreeGift)
-    .map((l) => l.bundleLabel ?? `${l.units}x ${l.name}`)
-    .join(", ")} — ${formatNaira(view.totalKobo)} to ${view.state}. ${view.isDuplicateSuspect ? "⚠️ Possible duplicate." : ""}`;
+  const info: NewOrderInfo = {
+    orderNumber: view.orderNumber,
+    customerName: view.customerName,
+    phoneLocal: formatNgPhoneLocal(view.phoneE164),
+    waLink: `https://wa.me/${view.phoneE164.replace(/\D/g, "")}`,
+    items: view.lines.filter((l) => !l.isFreeGift).map((l) => l.bundleLabel ?? `${l.units}x ${l.name}`),
+    subtotalKobo: view.subtotalKobo,
+    deliveryFeeKobo: view.deliveryFeeKobo,
+    totalKobo: view.totalKobo,
+    address: view.address,
+    city: view.city,
+    state: view.state,
+    landmark: view.landmark,
+    adminUrl: absoluteUrl(`/admin/orders/${view.id}`),
+    possibleDuplicate: view.isDuplicateSuspect,
+  };
+  const email = newOrderEmail(info);
   await Promise.all([
     ...(alerts.emails ?? []).map((to) =>
-      notify({ channel: "email", to, template: "admin_new_order", subject: `New order ${view.orderNumber}`, body: summary, orderId }),
+      notify({ channel: "email", to, template: "admin_new_order", subject: email.subject, body: email.body, orderId }),
     ),
-    ...(alerts.phones ?? []).map((to) => notify({ channel: "sms", to, template: "admin_new_order", body: summary, orderId })),
+    ...(alerts.phones ?? []).map((to) => notify({ channel: "sms", to, template: "admin_new_order", body: newOrderSms(info), orderId })),
     notify({
       channel: "sms",
       to: view.phoneE164,
       template: "customer_order_received",
-      body: `MUBAZZAR: we received order ${view.orderNumber} (${formatNaira(view.totalKobo)}). Continue on ${
-        view.chatChannel === "whatsapp" ? "WhatsApp" : "chat"
-      } to confirm & pay. We never ask for card PINs or OTPs.`,
+      body: customerOrderReceivedSms(view.orderNumber, view.totalKobo),
       orderId,
     }),
     sendCapiEvent({

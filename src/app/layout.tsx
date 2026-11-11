@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s | MUBAZZAR",
   },
   description:
-    "Nigeria's home of uncommon gadgets, life-hack tools and viral problem solvers. Tested before dispatch, same-day delivery in Lagos & Abuja, Pay on Delivery available — order and chat with us on WhatsApp.",
+    "Nigeria's home of uncommon gadgets, life-hack tools and viral problem solvers. Delivered across Nigeria, Pay on Delivery available. Order on the site and chat with us on WhatsApp.",
   applicationName: "MUBAZZAR",
   manifest: "/manifest.webmanifest",
   openGraph: { type: "website", siteName: "MUBAZZAR", locale: "en_NG" },

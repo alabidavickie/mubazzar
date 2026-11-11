@@ -13,7 +13,6 @@ export interface GoLiveInput {
   bankAccounts: { accountNumber: string }[];
   adminAlerts: { emails: string[]; phones: string[] };
   showSampleReviews: boolean;
-  cac: string | null;
   siteUrl: string;
   services: { supabaseAuth: boolean; email: boolean; metaCapi: boolean };
 }
@@ -63,9 +62,6 @@ export function goLiveChecks(i: GoLiveInput): GoLiveItem[] {
   }
   if (!i.services.metaCapi) {
     add({ key: "meta", severity: "recommended", title: "Meta Pixel / Conversions API keys are missing", detail: "Facebook and Instagram ads can't see which orders came from them.", href: null });
-  }
-  if (!i.cac) {
-    add({ key: "cac", severity: "recommended", title: "CAC registration number is not set", detail: "It is shown in the footer only when it is a real RC/BN number.", href: "/admin/homepage" });
   }
   return out.sort((a, b) => Number(b.severity === "blocker") - Number(a.severity === "blocker"));
 }

@@ -27,7 +27,10 @@ const pgError = (err: unknown, fallback: string): SettingsResult => {
   return { ok: false, error: fallback };
 };
 
-/** Saves one settings row after validating it with its own schema. */
+/** Settings customers can read; everything else (bank details, templates, routing, alerts) stays private. */
+const PUBLIC_SETTING_KEYS = new Set(["promo_strip", "hero", "trust_bar", "flash_section", "social_links", "show_sample_reviews", "same_day_cutoff", "support", "business"]);
+
+/** Saves one settings row after validating it with its own schema. A setting with no row yet is created. */
 export async function saveSettingAction(input: { key: string; value: unknown }): Promise<SettingsResult> {
   const session = await requireRole(["admin"], "/admin");
   if (!isSettingKey(input.key)) return { ok: false, error: "Unknown setting." };
@@ -35,11 +38,11 @@ export async function saveSettingAction(input: { key: string; value: unknown }):
   if (!parsed.success) return invalid(parsed.error.issues);
   try {
     const rows = await asUser(session.userId, (q) =>
-      q.query("update public.settings set value = $2::jsonb, updated_by = $3, updated_at = now() where key = $1 returning key", [
-        input.key,
-        JSON.stringify(parsed.data),
-        session.userId,
-      ]),
+      q.query(
+        `insert into public.settings (key, value, is_public, updated_by, updated_at) values ($1, $2::jsonb, $4, $3, now())
+         on conflict (key) do update set value = excluded.value, updated_by = excluded.updated_by, updated_at = now() returning key`,
+        [input.key, JSON.stringify(parsed.data), session.userId, PUBLIC_SETTING_KEYS.has(input.key)],
+      ),
     );
     if (!rows[0]) return { ok: false, error: "Setting not found." };
   } catch (err) {
@@ -73,7 +76,7 @@ export async function saveChannelAction(input: z.input<typeof channelSchema>): P
     if (!ph.ok) return { ok: false, error: ph.error, fieldErrors: { handle: ph.error } };
     handle = ph.e164;
   } else if (!/^[A-Za-z0-9._-]{2,60}$/.test(handle)) {
-    return { ok: false, error: "Enter just the username/page name, e.g. mubazzar.ng", fieldErrors: { handle: "Invalid handle" } };
+    return { ok: false, error: "Enter just the username/page name, e.g. mubazzar", fieldErrors: { handle: "Invalid handle" } };
   }
   try {
     await asUser(session.userId, (q) =>

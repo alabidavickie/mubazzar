@@ -5,7 +5,6 @@ const PAGES: { path: string; h1: RegExp }[] = [
   { path: "/about", h1: /Uncommon gadgets/ },
   { path: "/faq", h1: /Frequently Asked Questions/ },
   { path: "/delivery", h1: /Delivery & Pay on Delivery/ },
-  { path: "/returns", h1: /Returns & Refund Policy/ },
   { path: "/privacy", h1: /Privacy Policy/ },
   { path: "/terms", h1: /Terms of Service/ },
   { path: "/deals", h1: /deals|Save up to/i },

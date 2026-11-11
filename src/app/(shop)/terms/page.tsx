@@ -7,7 +7,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "The terms for ordering from MUBAZZAR: orders, pricing, payment in chat, delivery, returns and liability.",
+  description: "The terms for ordering from MUBAZZAR: orders, pricing, payment in chat, delivery and liability.",
   alternates: { canonical: "/terms" },
 };
 
@@ -23,8 +23,7 @@ export default async function TermsPage() {
         updated="4 October 2026"
         intro={
           <p>
-            These terms apply when you browse or order from MUBAZZAR, operated by {business.legalName}. By placing an order you agree
-            to them.
+            These terms apply when you browse or order from MUBAZZAR. By placing an order you agree to them.
           </p>
         }
       />
@@ -40,33 +39,29 @@ export default async function TermsPage() {
 
         <ProseSection title="2. Prices" icon="sell">
           <p>
-            Prices are in Nigerian Naira (₦) and include applicable taxes. The delivery fee for your state is shown before you place
-            your order. Flash-deal prices apply until the end time shown on the page. Our system recalculates every price at order
+            Prices are in Nigerian Naira (₦) and include applicable taxes. The delivery fee depends on your address and is confirmed with you in chat before you pay. Flash-deal prices apply until the end time shown on the page. Our system recalculates every price at order
             time, and the confirmed price in chat is final.
           </p>
         </ProseSection>
 
         <ProseSection title="3. Payment" icon="payments">
           <p>
-            We do not take payment on this website. Our staff share official payment details in chat; pay only into accounts in our
-            registered business name. Pay on Delivery may be offered for eligible orders and addresses. We will never ask for your
+            We do not take payment on this website. Our staff share official payment details in chat; pay only into the account details sent from our official WhatsApp number. Pay on Delivery may be offered for eligible orders and addresses. We will never ask for your
             card PIN, OTP or BVN.
           </p>
         </ProseSection>
 
         <ProseSection title="4. Delivery" icon="local_shipping">
           <p>
-            Delivery times are estimates in working days from confirmation. Same-day delivery applies only to the cities and cut-off
-            time shown on our <Link href="/delivery">Delivery page</Link>. Risk passes to you when the item is handed over at your
+            The delivery time depends on your address and is confirmed with you in chat. See our <Link href="/delivery">Delivery page</Link>. Risk passes to you when the item is handed over at your
             address.
           </p>
         </ProseSection>
 
-        <ProseSection title="5. Returns, warranty and refunds" icon="currency_exchange">
+        <ProseSection title="5. Problems with an order" icon="currency_exchange">
           <p>
-            Faulty, wrong or damaged items can be returned within {business.returnsDays} days of delivery as set out in our{" "}
-            <Link href="/returns">Returns & Refund Policy</Link>. Nothing in these terms limits your rights under the Federal
-            Competition and Consumer Protection Act 2018.
+            If an item arrives faulty, damaged or is the wrong one, tell us in the chat with your order number and we will sort it
+            out with you. Nothing in these terms limits your rights under the Federal Competition and Consumer Protection Act 2018.
           </p>
         </ProseSection>
 
@@ -87,8 +82,7 @@ export default async function TermsPage() {
 
         <ProseSection title="8. Governing law and contact" icon="mail">
           <p>
-            These terms are governed by the laws of the Federal Republic of Nigeria. {business.legalName}, {business.address}
-            {business.cac ? ` (CAC: ${business.cac})` : ""}. Questions? Contact us using the options below. Read how we handle your
+            These terms are governed by the laws of the Federal Republic of Nigeria. MUBAZZAR, {business.address}. Questions? Contact us using the options below. Read how we handle your
             data in our <Link href="/privacy">Privacy Policy</Link>.
           </p>
         </ProseSection>

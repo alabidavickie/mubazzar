@@ -43,7 +43,7 @@ export const env = {
   metaTestEventCode: process.env.META_TEST_EVENT_CODE ?? "",
 
   resendApiKey: process.env.RESEND_API_KEY ?? "",
-  emailFrom: process.env.EMAIL_FROM ?? "MUBAZZAR <orders@mubazzar.ng>",
+  emailFrom: process.env.EMAIL_FROM ?? "MUBAZZAR <orders@mubazzar.com>",
   waCloudToken: process.env.WHATSAPP_CLOUD_TOKEN ?? "",
   waCloudPhoneId: process.env.WHATSAPP_CLOUD_PHONE_NUMBER_ID ?? "",
 };

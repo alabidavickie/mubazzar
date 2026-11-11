@@ -7,11 +7,8 @@ describe("setting schemas", () => {
     expect(a).toEqual({ emails: ["a@x.ng", "b@x.ng"], phones: ["+2348030000001", "+2348120008899"] });
     expect(SETTING_SCHEMAS.support.parse({ whatsapp: "08120008899", phone: "+2348120008899", hours: "8-8", email: "s@x.ng" }).whatsapp).toBe("+2348120008899");
   });
-  it("only accepts real CAC numbers and NUBAN accounts", () => {
-    const biz = { legalName: "MUBAZZAR Nigeria Ltd.", address: "Lekki, Lagos", returnsDays: 7 };
-    expect(SETTING_SCHEMAS.business.parse({ ...biz, cac: "RC 1234567" }).cac).toBe("RC 1234567");
-    expect(SETTING_SCHEMAS.business.parse({ ...biz, cac: "" }).cac).toBeNull();
-    expect(SETTING_SCHEMAS.business.safeParse({ ...biz, cac: "pending" }).success).toBe(false);
+  it("keeps only the business address and accepts only NUBAN accounts", () => {
+    expect(SETTING_SCHEMAS.business.parse({ legalName: "X Ltd", address: "Ibadan, Nigeria", cac: "RC 1234567" })).toEqual({ address: "Ibadan, Nigeria" });
     expect(SETTING_SCHEMAS.bank_accounts.safeParse([{ bank: "GTB", accountName: "MUBAZZAR", accountNumber: "12345" }]).success).toBe(false);
   });
   it("validates times, hours and drops empty template overrides", () => {

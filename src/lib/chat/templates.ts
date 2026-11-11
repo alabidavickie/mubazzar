@@ -9,7 +9,7 @@ export const DEFAULT_TEMPLATES = {
   customer_order:
     "Hello MUBAZZAR, I just placed order {order_number}: {items} — {subtotal} + {delivery} to {state} = {total}. My name is {customer_name}. Please send payment details.",
   staff_greeting:
-    "Hello {first_name}, this is MUBAZZAR 👋 Thank you for order {order_number}: {items}. Total: {total} (incl. {delivery} to {state}). I'll share our official payment details here. Please note: we will never ask for your card PIN or OTP.",
+    "Hello {first_name}, this is MUBAZZAR 👋 Thank you for order {order_number}: {items}. Total: {total}, with {delivery} to {state}. I'll share our official payment details here. Please note: we will never ask for your card PIN or OTP.",
   staff_confirmation:
     "Hi {first_name}, please confirm your MUBAZZAR order {order_number}:\n{items}\nTotal: {total}\nDeliver to: {address}, {city}, {state}\nPhone: {phone}\nReply YES to confirm ✅",
   dispatch_contact:
@@ -66,8 +66,8 @@ export function orderTemplateVars(data: OrderMessageData, itemSeparator = ", "):
     first_name: firstName(data.customerName),
     items: describeItems(data.lines, itemSeparator),
     subtotal: formatNaira(data.subtotalKobo),
-    delivery: data.deliveryFeeKobo === 0 ? "free delivery" : `${formatNaira(data.deliveryFeeKobo)} delivery`,
-    delivery_fee: formatNaira(data.deliveryFeeKobo),
+    delivery: data.deliveryFeeKobo === 0 ? "delivery (fee to be agreed)" : `${formatNaira(data.deliveryFeeKobo)} delivery`,
+    delivery_fee: data.deliveryFeeKobo === 0 ? "to be agreed" : formatNaira(data.deliveryFeeKobo),
     state: data.state === "FCT" ? "Abuja (FCT)" : data.state,
     city: data.city ?? "",
     address: data.address ?? "",

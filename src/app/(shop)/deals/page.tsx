@@ -12,7 +12,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Flash Deals & Biggest Discounts",
   description:
-    "Today's MUBAZZAR flash deals with real end times, plus the biggest discounts on tested gadgets. Same-day delivery in Lagos & Abuja.",
+    "Today's MUBAZZAR flash deals with real end times, plus the biggest discounts. Pay on Delivery available.",
   alternates: { canonical: "/deals" },
 };
 

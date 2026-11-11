@@ -4,8 +4,6 @@ import { Icon } from "@/components/icons/icon";
 import { Countdown } from "@/components/commerce/countdown";
 import { ProductCard, ProductRow } from "@/components/commerce/product-card";
 import { ReviewCard } from "@/components/commerce/review-card";
-import { StandardSection } from "@/components/commerce/standard-section";
-import { TestedSeal } from "@/components/commerce/seal";
 import { SectionHeader } from "@/components/ui/misc";
 import { Stars } from "@/components/commerce/rating";
 import { formatNaira } from "@/lib/money";
@@ -111,7 +109,6 @@ export default async function HomePage() {
 
             {heroPicks.length > 0 ? (
               <div className="relative">
-                <TestedSeal className="absolute -top-3 -left-2 z-10 size-16 -rotate-12 drop-shadow-lg md:size-20 lg:-top-6 lg:-left-6 lg:size-24" />
                 <ul className="grid grid-cols-3 gap-2 md:gap-3 lg:grid-cols-2 lg:grid-rows-2">
                   {heroPicks.map((p, i) => (
                     <li key={p.slug} className={i === 0 ? "lg:row-span-2" : undefined}>
@@ -286,7 +283,6 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <StandardSection detailed />
     </>
   );
 }

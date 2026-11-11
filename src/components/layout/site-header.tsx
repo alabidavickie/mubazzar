@@ -7,7 +7,7 @@ import type { CategoryData } from "@/server/services/catalog";
 
 /**
  * Sticky storefront header (design: Home/Catalog): navy promo strip, brand row with search,
- * same-day delivery badge, WhatsApp, cart count and account, then category quick pills.
+ * WhatsApp, cart count and account, then category quick pills.
  */
 export function SiteHeader({
   promoStrip,
@@ -45,12 +45,6 @@ export function SiteHeader({
           ) : null}
         </div>
         <nav aria-label="Quick actions" className="flex items-center gap-0.5">
-          <Link
-            href="/delivery"
-            className="mr-1 hidden items-center gap-1 rounded-full bg-emerald-soft px-2.5 py-1 text-label-sm text-emerald-ink md:flex"
-          >
-            <Icon name="bolt" className="text-sm" /> Same-day Lagos & Abuja
-          </Link>
           <Link href="/search" aria-label="Search products" className="flex size-11 items-center justify-center text-ink hover:text-navy">
             <Icon name="search" />
           </Link>

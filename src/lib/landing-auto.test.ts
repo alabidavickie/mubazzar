@@ -22,12 +22,12 @@ describe("autoLandingPage", () => {
     expect(lp.hookLabel).toBe("ORDER TODAY");
   });
 
-  it("claims a warranty only when the product has one, with its real length", () => {
-    expect(autoLandingPage(base).warrantyBadge).toBeNull();
-    expect(autoLandingPage(base).sections[0]!.items.map((i) => i.icon)).not.toContain("verified_user");
+  it("never claims a warranty, a delivery time or a dispatch city", () => {
     const lp = autoLandingPage({ ...base, warrantyMonths: 6 });
-    expect(lp.warrantyBadge).toBe("6-Month Warranty");
-    expect(lp.sections[0]!.items.at(-1)!.title).toBe("6-Month MUBAZZAR Warranty");
+    expect(lp.warrantyBadge).toBeNull();
+    const text = JSON.stringify(lp.sections);
+    expect(text).not.toMatch(/warranty|same-day|working days|Lagos|Abuja/i);
+    expect(lp.sections[0]!.items.map((i) => i.title)).toEqual(["Pay On Delivery (Arrange in Chat)", "Delivery Across Nigeria"]);
   });
 
   it("says PROMO only while a promo is live, and mentions a live free gift", () => {
@@ -38,7 +38,7 @@ describe("autoLandingPage", () => {
   });
 
   it("leaves out a trust point the product's features already show", () => {
-    const lp = autoLandingPage({ ...base, features: [{ title: "Fast Nationwide Delivery " }] });
+    const lp = autoLandingPage({ ...base, features: [{ title: "Delivery Across Nigeria " }] });
     expect(lp.sections[0]!.items.map((i) => i.title)).toEqual(["Pay On Delivery (Arrange in Chat)"]);
   });
 

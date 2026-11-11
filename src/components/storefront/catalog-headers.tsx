@@ -1,13 +1,4 @@
 import Image from "next/image";
-import { Icon } from "@/components/icons/icon";
-import type { HubSummary } from "@/server/services/storefront";
-
-/** Cities of the same-day hubs, e.g. "Ikeja & Wuse II" (from the hubs table, never hard-coded). */
-export function hubCities(hubs: HubSummary[]): string {
-  const cities = hubs.filter((h) => h.code !== "warehouse" && h.city).map((h) => h.city as string);
-  if (cities.length <= 1) return cities[0] ?? "";
-  return `${cities.slice(0, -1).join(", ")} & ${cities[cities.length - 1]}`;
-}
 
 /** Brand showcase bar at the top of /shop (design: "Uncommon Finds"). */
 export function BrandShowcase({ title, subtitle, srTitle }: { title: string; subtitle: string; srTitle?: string }) {
@@ -21,7 +12,6 @@ export function BrandShowcase({ title, subtitle, srTitle }: { title: string; sub
               {title}
               {srTitle ? <span className="sr-only"> — {srTitle}</span> : null}
             </h1>
-            <Icon name="verified" filled className="shrink-0 text-sm text-bronze" />
           </div>
           {subtitle ? <p className="truncate text-body-sm text-ink-muted">{subtitle}</p> : null}
         </div>

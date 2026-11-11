@@ -36,12 +36,12 @@ test.describe("admin settings", () => {
     await row.getByRole("button", { name: "Save" }).click();
     await expect(row.getByRole("status")).toContainText("Zamfara saved");
 
-    // Invalid settings are rejected server-side (fake CAC numbers never show in the footer).
+    // Invalid settings are rejected server-side (an address that is too short).
     await admin.goto("/admin/homepage");
     const biz = admin.getByTestId("setting-business");
-    await biz.getByLabel("CAC number").fill("pending registration");
+    await biz.getByLabel("Address").fill("Ib");
     await biz.getByRole("button", { name: "Save" }).click();
-    await expect(biz.getByRole("alert").first()).toContainText("real CAC number");
+    await expect(biz.getByRole("alert").first()).toBeVisible();
 
     const email = `rider.${Date.now()}@mubazzar.test`;
     await admin.goto("/admin/team");

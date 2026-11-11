@@ -14,7 +14,7 @@ describe("stockStatus", () => {
     // 9 in Lagos is below Lagos' threshold, but 154 units can ship overall.
     const s = stockStatus([hub("lagos", 9), hub("abuja", 25), hub("warehouse", 120)], "lagos", eta);
     expect(s).toEqual({ kind: "nearest", hubName: "Lagos Hub" });
-    expect(stockStatusText(s)).toBe("In stock — ships from Lagos Hub");
+    expect(stockStatusText(s)).toBe("In stock");
   });
 
   it("says 'only N left' with the TOTAL when the total is at/below the threshold", () => {
@@ -32,11 +32,11 @@ describe("stockStatus", () => {
     expect(stockStatus([hub("lagos", 6, 20), hub("abuja", 0, 20)], "lagos", eta)).toEqual({ kind: "low", units: 6 });
   });
 
-  it("falls back to the central warehouse with real delivery days when the nearest hub is empty", () => {
+  it("says only 'In stock' (no dispatch city or delivery days) wherever the stock is", () => {
     const s = stockStatus([hub("lagos", 0), hub("abuja", 30), hub("warehouse", 50)], "lagos", { etaMinDays: 1, etaMaxDays: 2 });
-    expect(stockStatusText(s)).toBe("In stock — ships from our central warehouse in 1–2 days");
+    expect(stockStatusText(s)).toBe("In stock");
     const other = stockStatus([hub("lagos", 0), hub("abuja", 30), hub("warehouse", 0)], "lagos", eta);
-    expect(stockStatusText(other)).toBe("In stock — ships from Abuja Hub in 2–4 days");
+    expect(stockStatusText(other)).toBe("In stock");
   });
 
   it("is out of stock only when nothing can ship", () => {

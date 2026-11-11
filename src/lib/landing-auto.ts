@@ -36,18 +36,11 @@ export function autoLandingPage(p: AutoLandingProduct) {
       body: "Agree Pay on Delivery with our team on WhatsApp, then inspect before paying the rider by cash, POS or transfer.",
     },
     {
-      icon: "rocket_launch",
-      title: "Fast Nationwide Delivery",
-      body: "Same-day in Lagos & Abuja before the daily cut-off. 2 to 4 working days across all 36 states.",
+      icon: "local_shipping",
+      title: "Delivery Across Nigeria",
+      body: "We confirm your delivery fee and delivery time with you on WhatsApp before you pay.",
     },
   ];
-  if (p.warrantyMonths > 0) {
-    trust.push({
-      icon: "verified_user",
-      title: `${p.warrantyMonths}-Month MUBAZZAR Warranty`,
-      body: "Any factory fault within the warranty? We replace it free.",
-    });
-  }
   const shown = new Set(p.features.map((f) => f.title.trim().toLowerCase()));
   const items = trust.filter((t) => !shown.has(t.title.toLowerCase()));
   return {
@@ -61,7 +54,7 @@ export function autoLandingPage(p: AutoLandingProduct) {
     subheadline: p.shortDescription,
     heroOverlayText: null,
     heroOverlayIcon: null,
-    warrantyBadge: p.warrantyMonths > 0 ? `${p.warrantyMonths}-Month Warranty` : null,
+    warrantyBadge: null,
     regionsText: null,
     campaignEndsAt: null,
     featuresTitle: null,

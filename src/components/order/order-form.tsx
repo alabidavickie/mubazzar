@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DELIVERY_FIELDS, deliveryDetailsSchema, type DeliveryDetailsInput, type DeliveryDetails } from "@/lib/schemas/order";
 import { NG_STATES, stateDisplayName } from "@/lib/ng-states";
 import { quoteDelivery, type DeliveryZone } from "@/lib/delivery";
+import { deliveryFeeText } from "@/lib/delivery";
 import { formatNaira } from "@/lib/money";
 import { formatCutoff } from "@/lib/time";
 import { cn } from "@/lib/cn";
@@ -370,7 +371,7 @@ export function OrderForm(props: OrderFormProps) {
         <div className="flex justify-between">
           <span className="text-ink-muted">Delivery{zone ? ` to ${stateDisplayName(zone.state)}` : ""}</span>
           <span className="font-bold tabular" data-testid="summary-delivery">
-            {quote ? (quote.feeKobo === 0 ? "Free" : formatNaira(quote.feeKobo)) : "Choose state"}
+            {quote ? deliveryFeeText(quote.feeKobo) : "Choose state"}
           </span>
         </div>
         {quote ? (

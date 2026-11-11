@@ -52,9 +52,9 @@ describe("chat templates", () => {
     ).toBe("2x Solar Wall Light, 2 × 3x Turbo Family Pack");
   });
 
-  it("says free delivery and expands FCT", () => {
+  it("says the delivery fee is still to be agreed when the zone has none, and expands FCT", () => {
     const msg = buildCustomerOrderMessage({ ...order, state: "FCT", deliveryFeeKobo: 0, totalKobo: 3_500_000 });
-    expect(msg).toContain("₦35,000 + free delivery to Abuja (FCT) = ₦35,000");
+    expect(msg).toContain("₦35,000 + delivery (fee to be agreed) to Abuja (FCT) = ₦35,000");
   });
 
   it("uses admin overrides and leaves unknown placeholders intact", () => {

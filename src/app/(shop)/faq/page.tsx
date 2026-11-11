@@ -2,21 +2,18 @@ import type { Metadata } from "next";
 import { Accordion } from "@/components/ui/misc";
 import { HelpCard, OnThisPage, StaticBody, StaticHero } from "@/components/storefront/static-page";
 import { getPublicSettings } from "@/server/services/settings";
-import { formatCutoff } from "@/lib/time";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
   description:
-    "How ordering, payment in WhatsApp chat, Pay on Delivery, delivery times, returns and warranties work at MUBAZZAR.",
+    "How ordering, payment in WhatsApp chat, Pay on Delivery and delivery work at MUBAZZAR.",
   alternates: { canonical: "/faq" },
 };
 
 export default async function FaqPage() {
   const settings = await getPublicSettings();
-  const cutoff = formatCutoff(settings.sameDayCutoff);
-  const days = settings.business.returnsDays;
 
   const groups: { id: string; title: string; items: { question: string; answer: string }[] }[] = [
     {
@@ -56,12 +53,12 @@ export default async function FaqPage() {
         {
           question: "Is Pay on Delivery available?",
           answer:
-            "Pay on Delivery can be arranged in chat for most addresses, especially in Lagos and Abuja. For some states or high-value orders we may ask for a part payment first — our team will tell you before anything is dispatched.",
+            "Yes. Ask for Pay on Delivery in the chat and we will confirm whether it is available for your address before anything is sent.",
         },
         {
           question: "How do I know I'm paying the real MUBAZZAR?",
           answer:
-            "Only pay to an account name that matches our registered business name, shared by our official WhatsApp numbers. MUBAZZAR staff will never ask for your card PIN, OTP or BVN.",
+            "Only pay to the account details sent from our official WhatsApp number shown on this website. MUBAZZAR staff will never ask for your card PIN, OTP or BVN.",
         },
       ],
     },
@@ -70,12 +67,12 @@ export default async function FaqPage() {
       title: "Delivery",
       items: [
         {
-          question: "How fast is delivery?",
-          answer: `Lagos and Abuja orders confirmed before ${cutoff} can be delivered the same day. Other states usually take 2–5 working days. The exact fee and time for your state show in the order form.`,
+          question: "How much is delivery, and how long does it take?",
+          answer: "Both depend on your address. We tell you the delivery fee and the delivery time on WhatsApp when we confirm your order, before you pay.",
         },
         {
           question: "Do you deliver to every state?",
-          answer: "Yes — all 36 states and the FCT, through our hubs and partner dispatch riders. See the Delivery page for fees by state.",
+          answer: "We deliver across Nigeria. Tell us your address in the chat and we will confirm.",
         },
         {
           question: "Can I check the item before paying the rider?",
@@ -85,17 +82,12 @@ export default async function FaqPage() {
       ],
     },
     {
-      id: "returns",
-      title: "Returns & warranty",
+      id: "problems",
+      title: "If something is wrong",
       items: [
         {
-          question: "What if my item arrives faulty?",
-          answer: `Tell us within ${days} days of delivery with a short video of the fault. We'll swap it or refund you after inspection — see our Returns & Refund Policy.`,
-        },
-        {
-          question: "Do products have a warranty?",
-          answer:
-            "Some products carry a warranty from 6 to 12 months; it's shown on the product page. Every item is tested by our team before dispatch.",
+          question: "What if my item arrives faulty or is the wrong one?",
+          answer: "Message us on WhatsApp with your order number and a short video or photo, and we will sort it out with you.",
         },
       ],
     },
@@ -116,7 +108,7 @@ export default async function FaqPage() {
         eyebrow="Help centre"
         icon="help"
         title="Frequently Asked Questions"
-        intro={<p>Quick answers about ordering, paying in chat, delivery and returns.</p>}
+        intro={<p>Quick answers about ordering, paying in chat and delivery.</p>}
       />
       <StaticBody>
         <OnThisPage links={groups.map((g) => ({ href: `#${g.id}`, label: g.title }))} />

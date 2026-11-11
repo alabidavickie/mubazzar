@@ -4,7 +4,6 @@ import { CatalogView } from "@/components/storefront/catalog-view";
 import { ListingHeading } from "@/components/storefront/catalog-headers";
 import { Icon } from "@/components/icons/icon";
 import { countActiveProducts, getCategories } from "@/server/services/catalog";
-import { getPublicSettings } from "@/server/services/settings";
 import { listCatalog } from "@/server/services/storefront";
 import { hasActiveFilters, parseCatalogParams, type RawSearchParams } from "@/lib/catalog-params";
 
@@ -22,7 +21,7 @@ export async function generateMetadata({ params, searchParams }: { params: Param
   const { category } = await findCategory(slug);
   if (!category) return { title: "Category not found", robots: { index: false, follow: true } };
   const state = parseCatalogParams(await searchParams);
-  const description = `${category.description ?? ""} Shop ${category.name.toLowerCase()} tested by MUBAZZAR — delivered nationwide, same-day in Lagos & Abuja.`.trim();
+  const description = `${category.description ?? ""} Shop ${category.name.toLowerCase()} from MUBAZZAR, delivered across Nigeria. Pay on Delivery available.`.trim();
   return {
     title: category.name,
     description,
@@ -37,11 +36,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   const { categories, category } = await findCategory(slug);
   if (!category) notFound();
   const state = { ...parseCatalogParams(await searchParams), category: category.slug };
-  const [{ items, total }, allCount, settings] = await Promise.all([
-    listCatalog(state, { category: category.slug }),
-    countActiveProducts(),
-    getPublicSettings(),
-  ]);
+  const [{ items, total }, allCount] = await Promise.all([listCatalog(state, { category: category.slug }), countActiveProducts()]);
   return (
     <CatalogView
       pathname={`/c/${category.slug}`}
@@ -51,7 +46,6 @@ export default async function CategoryPage({ params, searchParams }: { params: P
       categories={categories}
       allCount={allCount}
       fixedCategory={category.slug}
-      returnsDays={settings.business.returnsDays}
       header={
         <ListingHeading
           eyebrow="Category"

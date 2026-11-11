@@ -181,7 +181,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
       availability: product.availableUnits > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
       ...(live && endsAt ? { priceValidUntil: endsAt.slice(0, 10) } : {}),
-      seller: { "@type": "Organization", name: settings.business.legalName },
+      seller: { "@type": "Organization", name: "MUBAZZAR" },
     },
     // Only real (non-sample) reviews ever feed structured data.
     ...(rating.count > 0
@@ -256,7 +256,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
         <div className="flex items-center justify-between gap-2 bg-surface-low px-4 py-1.5 shadow-card">
           <span className="text-label-sm text-navy">Official MUBAZZAR store</span>
           <span className="flex items-center gap-1 rounded-full bg-surface-highest px-2 py-0.5 text-label-sm text-ink">
-            <Icon name="verified" filled className="text-xs text-emerald-ink" /> Tested before dispatch
+            <Icon name="payments" className="text-xs text-emerald-ink" /> Pay on Delivery
           </span>
         </div>
 
@@ -615,11 +615,10 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
         {/* Footer trust mark */}
         <footer className="mt-6 flex flex-col items-center gap-2 border-t border-line px-4 pt-5 text-center">
           <p className="flex items-center gap-1 text-label-md text-navy">
-            <Icon name="verified_user" className="text-base text-emerald-ink" /> {settings.business.legalName}
+            MUBAZZAR
           </p>
           <p className="text-body-sm text-ink-muted">
             {settings.business.address}
-            {settings.business.cac ? ` · CAC: ${settings.business.cac}` : ""}
           </p>
           <p className="text-body-sm text-ink-muted">
             Helpline:{" "}

@@ -71,9 +71,9 @@ export function stockStatusText(s: StockStatus): string {
     case "low":
       return `Only ${s.units} left`;
     case "nearest":
-      return `In stock — ships from ${s.hubName}`;
+      return "In stock";
     case "fallback":
-      return `In stock — ships from ${s.isWarehouse ? "our central warehouse" : s.hubName} in ${formatDayRange(s.etaMinDays, s.etaMaxDays)}`;
+      return "In stock";
   }
 }
 

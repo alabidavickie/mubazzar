@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { requireRole } from "@/server/session";
 import { getSettingsMap } from "@/server/services/admin-settings";
 import { SettingForm } from "@/components/admin/setting-form";
+import { DEFAULT_SOCIAL } from "@/lib/social";
 
 export const metadata: Metadata = { title: "Homepage & store info" };
 
 export default async function HomepageSettings() {
   const session = await requireRole(["admin"], "/admin/homepage");
-  const s = await getSettingsMap(session, ["promo_strip", "hero", "trust_bar", "flash_section", "show_sample_reviews", "support", "business"]);
+  const s = await getSettingsMap(session, ["promo_strip", "hero", "trust_bar", "flash_section", "show_sample_reviews", "support", "business", "social_links"]);
   const tone = [{ value: "emerald", label: "emerald" }, { value: "gold", label: "gold" }];
   return (
     <div className="flex flex-col gap-4">
@@ -48,15 +49,23 @@ export default async function HomepageSettings() {
         initial={s.support}
       />
       <SettingForm
-        settingKey="business"
-        title="Business details (footer)"
+        settingKey="social_links"
+        title="Social pages (footer)"
+        hint="Shown as “Follow us” links in the footer. Open the page, tap Share, then Copy link. Leave a box empty to hide it."
         kind="object"
         fields={[
-          { name: "legalName", label: "Legal name" },
-          { name: "address", label: "Address" },
-          { name: "cac", label: "CAC number", hint: "Only a real RC/BN number; leave empty until registered" },
-          { name: "returnsDays", label: "Returns window (days)", type: "number" },
+          { name: "facebook", label: "Facebook page link" },
+          { name: "whatsappChannel", label: "WhatsApp channel link" },
+          { name: "instagram", label: "Instagram link" },
+          { name: "tiktok", label: "TikTok link" },
         ]}
+        initial={{ ...DEFAULT_SOCIAL, ...((s.social_links as object) ?? {}) }}
+      />
+      <SettingForm
+        settingKey="business"
+        title="Business address (footer)"
+        kind="object"
+        fields={[{ name: "address", label: "Address" }]}
         initial={s.business}
       />
     </div>

@@ -7,7 +7,7 @@ import { HandoffPanel } from "@/components/handoff/handoff-panel";
 import { ClaimPaymentButton } from "@/components/handoff/claim-payment";
 import { buildHandoff, getOrderViewByToken, type OrderLine } from "@/server/services/orders";
 import { formatNaira } from "@/lib/money";
-import { etaLabel } from "@/lib/delivery";
+import { deliveryFeeText, etaLabel } from "@/lib/delivery";
 import { stateDisplayName } from "@/lib/ng-states";
 import { CHANNEL_LABEL } from "@/lib/chat/links";
 import {
@@ -133,7 +133,7 @@ export default async function OrderThankYouPage({ params }: { params: Promise<{ 
           <div className="flex justify-between">
             <dt className="text-ink-muted">Delivery to {stateDisplayName(order.state)}</dt>
             <dd className="font-bold tabular" data-testid="order-delivery">
-              {order.deliveryFeeKobo === 0 ? "Free" : formatNaira(order.deliveryFeeKobo)}
+              {deliveryFeeText(order.deliveryFeeKobo)}
             </dd>
           </div>
           <div className="mt-1 flex items-baseline justify-between border-t border-line pt-2">
@@ -160,7 +160,7 @@ export default async function OrderThankYouPage({ params }: { params: Promise<{ 
           <Icon name="local_shipping" className="mt-0.5 text-emerald-ink" />
           <span>
             <strong className="text-ink">{eta}</strong>
-            {order.sameDay ? " — ordered before today's cut-off." : " after your order is confirmed in chat."}
+            {order.sameDay ? " — ordered before today's cut-off." : order.etaMaxDays === 0 ? "." : " after your order is confirmed in chat."}
             <span className="block text-body-sm text-ink-muted">
               {order.address}, {order.city}, {stateDisplayName(order.state)}
               {order.landmark ? ` (near ${order.landmark})` : ""}

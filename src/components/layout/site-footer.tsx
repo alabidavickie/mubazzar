@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/icons/icon";
+import { FacebookIcon } from "@/components/icons/facebook";
+import { WhatsAppIcon } from "@/components/icons/whatsapp";
+import { socialLinkList } from "@/lib/social";
 import { formatNgPhoneIntl } from "@/lib/phone";
 import { buildWhatsAppLink } from "@/lib/chat/links";
 import type { PublicSettings } from "@/server/services/settings";
@@ -9,6 +12,7 @@ import type { PublicSettings } from "@/server/services/settings";
 export function SiteFooter({ settings }: { settings: PublicSettings }) {
   const { support, business } = settings;
   const year = new Date().getFullYear();
+  const social = socialLinkList(settings.social);
   return (
     <footer className="mt-4 bg-navy-deep text-on-dark">
       <div className="mx-auto flex max-w-(--container-site) flex-col gap-8 px-4 pt-8 pb-40 lg:pb-10">
@@ -19,8 +23,24 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
               MUBAZZAR
             </Link>
             <p className="max-w-md text-body-md text-on-dark-muted">
-              Uncommon gadgets and viral problem solvers, tested by our team before they leave the hub.
+              Uncommon gadgets and viral problem solvers, delivered across Nigeria. Pay on delivery.
             </p>
+            {social.length > 0 ? (
+              <nav aria-label="Follow MUBAZZAR" className="mt-1 flex flex-wrap gap-2">
+                {social.map((l) => (
+                  <a
+                    key={l.key}
+                    href={l.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-11 items-center gap-1.5 rounded-full border border-on-dark/20 px-4 text-label-md text-on-dark transition-colors hover:bg-on-dark/10"
+                  >
+                    {l.key === "facebook" ? <FacebookIcon className="text-base" /> : l.key === "whatsappChannel" ? <WhatsAppIcon className="text-base" /> : <Icon name="open_in_new" className="text-sm" />}
+                    {l.label}
+                  </a>
+                ))}
+              </nav>
+            ) : null}
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch md:justify-end">
             <a
@@ -32,7 +52,7 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
               <Icon name="chat" className="shrink-0 text-2xl" />
               <span>
                 <span className="block text-label-lg">Need Help Ordering?</span>
-                <span className="block text-body-sm text-emerald-soft">Chat with our Nigerian support desk on WhatsApp</span>
+                <span className="block text-body-sm text-emerald-soft">Chat with us on WhatsApp</span>
               </span>
             </a>
             <div className="flex flex-col justify-center rounded-xl border border-on-dark/15 px-4 py-2">
@@ -50,23 +70,20 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
             <p className="mb-1 text-label-md text-gold-pale">Help & Policies</p>
             <FooterLink href="/track">Track My Order</FooterLink>
             <FooterLink href="/delivery">Delivery & Pay on Delivery</FooterLink>
-            <FooterLink href="/returns">{business.returnsDays}-Day Return Policy</FooterLink>
             <FooterLink href="/faq">Frequently Asked Questions</FooterLink>
             <FooterLink href="/privacy">Privacy Policy</FooterLink>
             <FooterLink href="/terms">Terms of Service</FooterLink>
           </nav>
           <nav aria-label="Company" className="flex flex-col">
             <p className="mb-1 text-label-md text-gold-pale">MUBAZZAR</p>
-            <FooterLink href="/about">The MUBAZZAR Standard</FooterLink>
+            <FooterLink href="/about">About MUBAZZAR</FooterLink>
             <FooterLink href="/shop">Shop All Gadgets</FooterLink>
             <FooterLink href="/deals">Flash Deals</FooterLink>
             <FooterLink href="/login">Sign In</FooterLink>
           </nav>
           <div className="col-span-2 flex flex-col gap-1 md:col-span-1">
-            <p className="mb-1 text-label-md text-gold-pale">Business details</p>
-            <p className="text-body-sm text-on-dark-muted">{business.legalName}</p>
+            <p className="mb-1 text-label-md text-gold-pale">Contact</p>
             <p className="text-body-sm text-on-dark-muted">{business.address}</p>
-            {business.cac ? <p className="text-body-sm text-on-dark-muted">CAC: {business.cac}</p> : null}
             <a href={`mailto:${support.email}`} className="flex min-h-11 w-fit items-center text-body-sm text-on-dark-muted underline-offset-2 hover:text-on-dark hover:underline">
               {support.email}
             </a>
@@ -75,7 +92,7 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
 
         <div className="flex flex-col items-center gap-2 border-t border-on-dark/10 pt-5 md:flex-row md:justify-between">
           <p className="text-center text-body-sm text-on-dark-muted">
-            © {year} {business.legalName} All rights reserved.
+            © {year} MUBAZZAR. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-on-dark-muted">
             <span className="flex items-center gap-1 text-label-sm">

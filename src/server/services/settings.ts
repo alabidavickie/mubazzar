@@ -3,7 +3,7 @@ import { cache } from "react";
 import { asAnon, asService } from "../db";
 import type { DeliveryZone } from "@/lib/delivery";
 import type { ChatChannel } from "@/lib/chat/links";
-import { displayCac } from "@/lib/business";
+import { DEFAULT_SOCIAL, type SocialLinks } from "@/lib/social";
 
 export interface HeroSettings {
   badge: string;
@@ -22,9 +22,9 @@ export interface PublicSettings {
   trustBar: { icon: string; text: string; tone: "emerald" | "gold" }[];
   sameDayCutoff: string;
   support: { whatsapp: string; phone: string; hours: string; email: string };
-  /** `cac` is null unless it is a real RC/BN registration number (never a placeholder). */
-  business: { legalName: string; address: string; cac: string | null; returnsDays: number };
+  business: { address: string };
   flashSection: { title: string; subtitle: string };
+  social: SocialLinks;
   showSampleReviews: boolean;
 }
 
@@ -42,9 +42,10 @@ const DEFAULTS: PublicSettings = {
   },
   trustBar: [],
   sameDayCutoff: "14:00",
-  support: { whatsapp: "+2348120008899", phone: "+2348120008899", hours: "Mon - Sat: 8AM - 8PM", email: "support@mubazzar.ng" },
-  business: { legalName: "MUBAZZAR Nigeria Ltd.", address: "Lagos, Nigeria", cac: null, returnsDays: 7 },
+  support: { whatsapp: "+2348135866735", phone: "+2348135866735", hours: "Mon - Sat: 8AM - 8PM", email: "support@mubazzar.com" },
+  business: { address: "Ibadan, Nigeria" },
   flashSection: { title: "Flash Deals", subtitle: "" },
+  social: DEFAULT_SOCIAL,
   showSampleReviews: false,
 };
 
@@ -53,15 +54,16 @@ export const getPublicSettings = cache(async (): Promise<PublicSettings> => {
     q.query<{ key: string; value: unknown }>("select key, value from public.settings where is_public"),
   );
   const map = new Map(rows.map((r) => [r.key, r.value]));
-  const business = { ...DEFAULTS.business, ...((map.get("business") as object) ?? {}) };
+  const business = (map.get("business") as { address?: string } | undefined) ?? {};
   return {
     promoStrip: (map.get("promo_strip") as string) ?? DEFAULTS.promoStrip,
     hero: { ...DEFAULTS.hero, ...((map.get("hero") as Partial<HeroSettings>) ?? {}) },
     trustBar: (map.get("trust_bar") as PublicSettings["trustBar"]) ?? DEFAULTS.trustBar,
     sameDayCutoff: (map.get("same_day_cutoff") as string) ?? DEFAULTS.sameDayCutoff,
     support: { ...DEFAULTS.support, ...((map.get("support") as object) ?? {}) },
-    business: { ...business, cac: displayCac(business.cac) },
+    business: { address: business.address || DEFAULTS.business.address },
     flashSection: { ...DEFAULTS.flashSection, ...((map.get("flash_section") as object) ?? {}) },
+    social: { ...DEFAULTS.social, ...((map.get("social_links") as Partial<SocialLinks>) ?? {}) },
     showSampleReviews: map.get("show_sample_reviews") === true,
   };
 });

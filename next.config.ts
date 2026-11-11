@@ -72,6 +72,7 @@ const nextConfig: NextConfig = {
       { source: "/shop/:category", destination: "/c/:category", permanent: true },
       // The product page is the product's landing page: old /p/<slug> links (shares, search results, bookmarks) still work.
       { source: "/p/:slug", destination: "/lp/:slug", permanent: true },
+      { source: "/returns", destination: "/faq", permanent: false },
     ];
   },
 };

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { normalizeNgPhone } from "../phone";
 import { parseCutoff } from "../time";
+import { socialLinkProblem, type SocialKey } from "../social";
 
 /** Server-side validation for every admin-editable `settings` row (key → schema). */
 
@@ -18,6 +19,17 @@ const phone = z.string().transform((v, ctx) => {
 const list = <T extends z.ZodType>(item: T) =>
   z.preprocess((v) => (typeof v === "string" ? v.split(/[\n,]/).map((s) => s.trim()).filter(Boolean) : v), z.array(item).max(10));
 
+const socialLink = (key: SocialKey) =>
+  z
+    .string()
+    .trim()
+    .max(300)
+    .default("")
+    .superRefine((v, ctx) => {
+      const problem = socialLinkProblem(key, v);
+      if (problem) ctx.addIssue({ code: "custom", message: problem });
+    });
+
 export const SETTING_SCHEMAS = {
   promo_strip: str(200, 3),
   hero: z.object({
@@ -32,21 +44,16 @@ export const SETTING_SCHEMAS = {
   }),
   trust_bar: z.array(z.object({ icon, text: str(60, 2), tone: z.enum(["emerald", "gold"]) })).max(6),
   flash_section: z.object({ title: str(60, 2), subtitle: str(120) }),
+  social_links: z.object({
+    facebook: socialLink("facebook"),
+    whatsappChannel: socialLink("whatsappChannel"),
+    instagram: socialLink("instagram"),
+    tiktok: socialLink("tiktok"),
+  }),
   show_sample_reviews: z.boolean(),
   same_day_cutoff: z.string().refine((v) => parseCutoff(v) !== null, "Use 24h time like 14:00."),
   support: z.object({ whatsapp: phone, phone, hours: str(80), email: z.email() }),
-  business: z.object({
-    legalName: str(120, 2),
-    address: str(240, 5),
-    cac: z
-      .string()
-      .trim()
-      .optional()
-      .nullable()
-      .transform((v) => v || null)
-      .refine((v) => v === null || /^(RC|BN)\s?\d{4,8}$/i.test(v), "Only a real CAC number (RC… or BN… followed by digits)."),
-    returnsDays: z.coerce.number().int().min(0).max(60),
-  }),
+  business: z.object({ address: str(240, 5) }),
   bank_accounts: z
     .array(z.object({ bank: str(60, 2), accountName: str(80, 2), accountNumber: z.string().trim().regex(/^\d{10}$/, "NUBAN account numbers have 10 digits.") }))
     .max(5),
