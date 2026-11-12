@@ -13,6 +13,8 @@ const channel = executablePath ? undefined : (process.env.PW_CHANNEL ?? (process
  */
 export default defineConfig({
   testDir: "tests/e2e",
+  // Fetches every resized image once before the tests: a cancelled first request would hang it for good.
+  globalSetup: "./tests/e2e/global-setup.ts",
   outputDir: "test-results",
   timeout: 90_000,
   expect: { timeout: 15_000 },
