@@ -119,8 +119,14 @@ export default async function PrivacyPage() {
 
         <ProseSection id="contact" title="Contact us" icon="mail">
           <p>
-            MUBAZZAR, {business.address}. Email <a href={`mailto:${support.email}`}>{support.email}</a> with the
-            subject &ldquo;Data request&rdquo;, or chat with us on WhatsApp. See also our <Link href="/terms">Terms of Service</Link>.
+            MUBAZZAR, {business.address}. {support.email ? (
+              <>
+                Email <a href={`mailto:${support.email}`}>{support.email}</a> with the subject &ldquo;Data request&rdquo;, or
+                chat with us on WhatsApp.
+              </>
+            ) : (
+              <>Message us on WhatsApp with the words &ldquo;Data request&rdquo;.</>
+            )} See also our <Link href="/terms">Terms of Service</Link>.
           </p>
         </ProseSection>
 

@@ -52,7 +52,7 @@ export const SETTING_SCHEMAS = {
   }),
   show_sample_reviews: z.boolean(),
   same_day_cutoff: z.string().refine((v) => parseCutoff(v) !== null, "Use 24h time like 14:00."),
-  support: z.object({ whatsapp: phone, phone, hours: str(80), email: z.email() }),
+  support: z.object({ whatsapp: phone, phone, hours: str(80), email: z.union([z.literal(""), z.email()]) }),
   business: z.object({ address: str(240, 5) }),
   bank_accounts: z
     .array(z.object({ bank: str(60, 2), accountName: str(80, 2), accountNumber: z.string().trim().regex(/^\d{10}$/, "NUBAN account numbers have 10 digits.") }))

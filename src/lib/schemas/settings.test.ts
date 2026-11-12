@@ -7,6 +7,12 @@ describe("setting schemas", () => {
     expect(a).toEqual({ emails: ["a@x.ng", "b@x.ng"], phones: ["+2348030000001", "+2348120008899"] });
     expect(SETTING_SCHEMAS.support.parse({ whatsapp: "08120008899", phone: "+2348120008899", hours: "8-8", email: "s@x.ng" }).whatsapp).toBe("+2348120008899");
   });
+  it("lets the admin leave the support email empty (it is then hidden on the site)", () => {
+    const base = { whatsapp: "08135866735", phone: "08135866735", hours: "8-8" };
+    expect(SETTING_SCHEMAS.support.parse({ ...base, email: "" }).email).toBe("");
+    expect(SETTING_SCHEMAS.support.parse({ ...base, email: "help@example.com" }).email).toBe("help@example.com");
+    expect(SETTING_SCHEMAS.support.safeParse({ ...base, email: "not an email" }).success).toBe(false);
+  });
   it("keeps only the business address and accepts only NUBAN accounts", () => {
     expect(SETTING_SCHEMAS.business.parse({ legalName: "X Ltd", address: "Ibadan, Nigeria", cac: "RC 1234567" })).toEqual({ address: "Ibadan, Nigeria" });
     expect(SETTING_SCHEMAS.bank_accounts.safeParse([{ bank: "GTB", accountName: "MUBAZZAR", accountNumber: "12345" }]).success).toBe(false);

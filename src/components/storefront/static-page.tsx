@@ -79,7 +79,7 @@ export function HelpCard({ settings, message = "Hello MUBAZZAR, I have a questio
         </h2>
         <p className="text-body-sm text-ink-muted">Real people on our Nigerian support desk · {support.hours}</p>
       </div>
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+      <div className={support.email ? "grid grid-cols-1 gap-2 sm:grid-cols-3" : "grid grid-cols-1 gap-2 sm:grid-cols-2"}>
         <a
           href={buildWhatsAppLink(support.whatsapp, message)}
           target="_blank"
@@ -91,9 +91,11 @@ export function HelpCard({ settings, message = "Hello MUBAZZAR, I have a questio
         <a href={`tel:${support.phone}`} className="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-card px-4 text-label-md text-navy shadow-card">
           <Icon name="call" className="text-base" /> {formatNgPhoneIntl(support.phone)}
         </a>
-        <a href={`mailto:${support.email}`} className="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-card px-4 text-label-md text-navy shadow-card">
-          <Icon name="mail" className="text-base" /> Email us
-        </a>
+        {support.email ? (
+          <a href={`mailto:${support.email}`} className="flex min-h-12 items-center justify-center gap-2 rounded-lg bg-card px-4 text-label-md text-navy shadow-card">
+            <Icon name="mail" className="text-base" /> Email us
+          </a>
+        ) : null}
       </div>
     </section>
   );

@@ -42,7 +42,7 @@ const DEFAULTS: PublicSettings = {
   },
   trustBar: [],
   sameDayCutoff: "14:00",
-  support: { whatsapp: "+2348135866735", phone: "+2348135866735", hours: "Mon - Sat: 8AM - 8PM", email: "support@mubazzar.com" },
+  support: { whatsapp: "+2348135866735", phone: "+2348135866735", hours: "Mon - Sat: 8AM - 8PM", email: "" },
   business: { address: "Ibadan, Nigeria" },
   flashSection: { title: "Flash Deals", subtitle: "" },
   social: DEFAULT_SOCIAL,

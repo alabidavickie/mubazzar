@@ -14,7 +14,7 @@ export function LoginTabs({ next }: { next: string }) {
         {(
           [
             ["customer", "Customer (code)"],
-            ["staff", "Staff & partners (email)"],
+            ["staff", "Staff & riders"],
           ] as const
         ).map(([key, label]) => (
           <button
@@ -80,8 +80,8 @@ function OtpForm({ next }: { next: string }) {
     return (
       <form action={requestAction} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-label-md font-semibold text-navy" htmlFor="otp-identifier">
-          Phone number or email
-          <Input id="otp-identifier" name="identifier" inputMode="email" autoComplete="tel" placeholder="0803 123 4567" required />
+          Email
+          <Input id="otp-identifier" name="identifier" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com" required />
         </label>
         <ErrorText state={requestState} />
         <Button type="submit" size="lg" block disabled={requesting}>

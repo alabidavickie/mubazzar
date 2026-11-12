@@ -14,7 +14,6 @@ import {
 import { hashIp, peekRateLimit, rateLimit, resetRateLimit } from "@/server/adapters/rate-limit";
 import { asService } from "@/server/db";
 import { homeForRole, type AppRole } from "@/server/session";
-import { normalizeNgPhone } from "@/lib/phone";
 import { safeRedirectPath } from "@/lib/safe-redirect";
 
 export type AuthState = { error?: string; step?: "code"; identifier?: string; devCode?: string } | null;
@@ -57,13 +56,9 @@ export async function passwordLoginAction(_prev: AuthState, form: FormData): Pro
 }
 
 function normaliseIdentifier(raw: string): { ok: true; value: string } | { ok: false; error: string } {
-  const v = raw.trim();
-  if (v.includes("@")) {
-    const email = z.email().safeParse(v.toLowerCase());
-    return email.success ? { ok: true, value: email.data } : { ok: false, error: "Enter a valid email address" };
-  }
-  const phone = normalizeNgPhone(v);
-  return phone.ok ? { ok: true, value: phone.e164 } : { ok: false, error: phone.error };
+  // Customers sign in with an email code only (no phone-number sign-in, so no SMS to pay for or abuse).
+  const email = z.email().safeParse(raw.trim().toLowerCase());
+  return email.success ? { ok: true, value: email.data } : { ok: false, error: "Enter a valid email address" };
 }
 
 export async function requestOtpAction(_prev: AuthState, form: FormData): Promise<AuthState> {
@@ -95,10 +90,9 @@ export async function verifyOtpAction(_prev: AuthState, form: FormData): Promise
   const role = await roleOf(res.userId);
   if (role !== "customer") {
     // Staff, riders and admins must use their password.
-    return { error: "This account signs in with email and password. Use the Staff & partners tab." };
+    return { error: "This account signs in with email and password. Use the Staff & riders tab." };
   }
-  // The per-number limit stops SMS-bombing someone else's phone; once the owner proves they hold the
-  // number, their request budget starts fresh (an attacker can't verify, so their requests keep counting).
+  // Once the owner proves they hold the email, their request budget starts fresh (an attacker can't verify, so their requests keep counting).
   await resetRateLimit(`otp:id:${id.value}`);
   await createSessionCookie({ sub: res.userId, email: res.email });
   redirect(safeNext(form.get("next")) ?? homeForRole(role));

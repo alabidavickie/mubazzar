@@ -26,7 +26,7 @@ test.describe("authentication", () => {
   test("customer signs in with a one-time code", async ({ page }) => {
     await page.goto("/login");
     await expectNoA11yViolations(page);
-    await page.getByLabel(/Phone number or email/).fill(ACCOUNTS.customer.phone);
+    await page.getByLabel("Email", { exact: true }).fill(ACCOUNTS.customer.email);
     await page.getByRole("button", { name: /Send login code/ }).click();
     await page.getByLabel("Login code").fill(MOCK_OTP);
     await page.getByRole("button", { name: /^sign in$/i }).click();

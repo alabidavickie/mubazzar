@@ -40,9 +40,9 @@ Useful database commands:
 
 | Role | Sign in at `/login` | Credentials |
 |---|---|---|
-| Admin (owner) | Staff & partners tab | `admin@mubazzar.test` / `Admin#2026!` |
-| Order staff | Staff & partners tab | `staff@mubazzar.test` / `Staff#2026!` |
-| Dispatcher | Staff & partners tab | `dispatch@mubazzar.test` / `Dispatch#2026!` |
+| Admin (owner) | Staff & riders tab | `admin@mubazzar.test` / `Admin#2026!` |
+| Order staff | Staff & riders tab | `staff@mubazzar.test` / `Staff#2026!` |
+| Dispatcher | Staff & riders tab | `dispatch@mubazzar.test` / `Dispatch#2026!` |
 | Customer | Customer tab (one-time code) | phone `0803 000 0005` or `customer@mubazzar.test` — the dev code is shown on screen (or set `MOCK_OTP_CODE=123456`) |
 
 These accounts are never included in the production seed.

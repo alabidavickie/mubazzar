@@ -45,7 +45,7 @@ export default async function HomepageSettings() {
         settingKey="support"
         title="Customer support"
         kind="object"
-        fields={[{ name: "whatsapp", label: "Support WhatsApp" }, { name: "phone", label: "Helpline" }, { name: "hours", label: "Hours" }, { name: "email", label: "Email" }]}
+        fields={[{ name: "whatsapp", label: "Support WhatsApp" }, { name: "phone", label: "Helpline" }, { name: "hours", label: "Hours" }, { name: "email", label: "Email (optional)", hint: "Leave empty to hide it from the site" }]}
         initial={s.support}
       />
       <SettingForm

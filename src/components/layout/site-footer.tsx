@@ -84,9 +84,11 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
           <div className="col-span-2 flex flex-col gap-1 md:col-span-1">
             <p className="mb-1 text-label-md text-gold-pale">Contact</p>
             <p className="text-body-sm text-on-dark-muted">{business.address}</p>
-            <a href={`mailto:${support.email}`} className="flex min-h-11 w-fit items-center text-body-sm text-on-dark-muted underline-offset-2 hover:text-on-dark hover:underline">
-              {support.email}
-            </a>
+            {support.email ? (
+              <a href={`mailto:${support.email}`} className="flex min-h-11 w-fit items-center text-body-sm text-on-dark-muted underline-offset-2 hover:text-on-dark hover:underline">
+                {support.email}
+              </a>
+            ) : null}
           </div>
         </div>
 
