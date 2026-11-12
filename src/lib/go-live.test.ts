@@ -20,9 +20,9 @@ describe("goLiveChecks", () => {
     expect(keys({ supportWhatsapp: "+234 812 000 8899" })).toEqual(["support-whatsapp"]);
     expect(keys({ enabledChannelHandles: ["+2348120008900"] })).toEqual(["chat-channels"]);
   });
-  it("flags placeholder or missing bank accounts", () => {
+  it("flags a placeholder bank account but not a missing one (Pay on Delivery)", () => {
     expect(keys({ bankAccounts: [{ accountNumber: "0000000000" }] })).toEqual(["bank"]);
-    expect(keys({ bankAccounts: [] })).toEqual(["bank"]);
+    expect(keys({ bankAccounts: [] })).toEqual([]);
   });
   it("flags test or empty new-order alert recipients", () => {
     expect(keys({ adminAlerts: { emails: ["admin@mubazzar.test"], phones: [] } })).toEqual(["alerts-test"]);
@@ -33,7 +33,7 @@ describe("goLiveChecks", () => {
     expect(r.map((x) => [x.key, x.severity])).toEqual([["site-url", "blocker"], ["supabase", "blocker"]]);
   });
   it("lists blockers before recommendations", () => {
-    const r = goLiveChecks({ ...ready, showSampleReviews: true, services: { ...ready.services, email: false }, bankAccounts: [] });
+    const r = goLiveChecks({ ...ready, showSampleReviews: true, services: { ...ready.services, email: false }, adminAlerts: { emails: [], phones: [] } });
     expect(r.map((x) => x.severity)).toEqual(["blocker", "recommended", "recommended"]);
   });
   it("the seed's demo numbers are exactly the ones this check knows about", () => {

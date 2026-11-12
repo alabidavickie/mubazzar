@@ -48,7 +48,7 @@ export default async function InventoryPage({ searchParams }: { searchParams: Se
               <th className="p-2">Product</th>
               {hubs.map((h) => (
                 <th key={h.id} className="p-2">
-                  {h.name}
+                  {hubs.length > 1 ? h.name : "In stock"}
                 </th>
               ))}
               <th className="p-2 text-right">Can ship</th>

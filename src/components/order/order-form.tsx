@@ -50,7 +50,7 @@ export interface OrderFormProps {
 }
 
 const CHANNEL_CTA: Record<ChatChannelKind, string> = {
-  whatsapp: "Place Order & Pay on WhatsApp",
+  whatsapp: "Place Order & Confirm on WhatsApp",
   instagram: "Place Order & Continue on Instagram",
   messenger: "Place Order & Continue on Messenger",
   telegram: "Place Order & Continue on Telegram",
@@ -417,8 +417,8 @@ export function OrderForm(props: OrderFormProps) {
       <p className="flex items-start gap-1.5 text-body-sm text-ink-muted">
         <Icon name="lock" className="mt-0.5 text-sm text-emerald-ink" />
         <span>
-          After you place your order, our team shares MUBAZZAR&apos;s official payment details securely in chat. Pay on
-          Delivery can be arranged there too. <strong className="text-ink">We will never ask for your card PIN or OTP.</strong>
+          After you place your order, our team confirms it with you in chat. You pay when your order is delivered.{" "}
+          <strong className="text-ink">We will never ask for your card PIN or OTP.</strong>
         </span>
       </p>
     </form>

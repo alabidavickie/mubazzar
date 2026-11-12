@@ -29,7 +29,7 @@ export default async function DeliverySettings() {
               <th className="p-2">State</th>
               <th className="p-2">Fee (₦)</th>
               <th className="p-2">Days</th>
-              <th className="p-2">Ships from</th>
+              {hubs.length > 1 ? <th className="p-2">Ships from</th> : null}
               <th className="p-2">Same-day</th>
               <th className="p-2">Active</th>
               <th className="p-2" />

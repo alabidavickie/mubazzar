@@ -75,7 +75,7 @@ export const landingInput = z.object({
   videoPosterUrl: optUrl,
   videoTitle: optText(80),
   videoSubtitle: optText(120),
-  ctaLabel: z.string().trim().min(3).max(60).default("Place Order & Pay on WhatsApp"),
+  ctaLabel: z.string().trim().min(3).max(60).default("Place Order & Confirm on WhatsApp"),
   seoTitle: optText(70),
   seoDescription: optText(170),
   ogImageUrl: optUrl,

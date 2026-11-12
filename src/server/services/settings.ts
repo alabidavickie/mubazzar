@@ -29,7 +29,7 @@ export interface PublicSettings {
 }
 
 const DEFAULTS: PublicSettings = {
-  promoStrip: "🇳🇬 Fast Nationwide Delivery | Pay on Delivery available — arrange in chat | 24/7 WhatsApp Support",
+  promoStrip: "🇳🇬 Delivery across Nigeria | Pay on Delivery | WhatsApp support",
   hero: {
     badge: "FLASH SALE",
     badgeNote: "",

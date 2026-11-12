@@ -26,7 +26,7 @@ export const ORDER_STATUS_CUSTOMER_LABEL: Record<OrderStatus, string> = {
 };
 
 export const PAYMENT_STATUS_CUSTOMER_LABEL: Record<CustomerPaymentStatus, string> = {
-  unpaid: "Not paid yet — pay in chat",
+  unpaid: "Not paid yet — you pay on delivery",
   payment_claimed: "Payment sent — our team is verifying it",
   paid: "Paid (verified by our team)",
   pay_on_delivery: "Pay on Delivery agreed",

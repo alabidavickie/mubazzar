@@ -14,7 +14,7 @@ export default async function NewLandingPage({ searchParams }: { searchParams: P
     <div className="flex flex-col gap-4">
       <h1 className="text-headline-md font-bold text-navy">New landing page</h1>
       <LandingEditor
-        initial={{ slug: chosen ? chosen.slug.split("-").slice(0, 4).join("-") : "", productId: chosen?.id ?? "", headline: "", isPublished: false, hookLabel: "PROMO ALERT", ctaLabel: "Place Order & Pay on WhatsApp", sections: [] }}
+        initial={{ slug: chosen ? chosen.slug.split("-").slice(0, 4).join("-") : "", productId: chosen?.id ?? "", headline: "", isPublished: false, hookLabel: "PROMO ALERT", ctaLabel: "Place Order & Confirm on WhatsApp", sections: [] }}
         products={products}
       />
     </div>

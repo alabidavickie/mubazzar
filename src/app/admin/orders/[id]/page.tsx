@@ -47,7 +47,9 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
   const active = d.assignments.find((a) => a.status === "assigned") ?? null;
   const canAssign = o.status === "confirmed" || o.status === "dispatched";
   const canPay = o.status !== "cancelled";
-  const bankText = d.bankAccounts.map((b) => `${b.bank}\n${b.accountName}\n${b.accountNumber}`).join("\n\n");
+  // Placeholder accounts (all zeros) are never shown to staff: they could be copied to a customer by mistake.
+  const bankAccounts = d.bankAccounts.filter((b) => !/^0*$/.test(b.accountNumber.replace(/\D/g, "")));
+  const bankText = bankAccounts.map((b) => `${b.bank}\n${b.accountName}\n${b.accountNumber}`).join("\n\n");
 
   return (
     <div className="flex flex-col gap-4">
@@ -232,7 +234,7 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
               <div>
                 <dt className="text-label-sm text-ink-muted">Ships from</dt>
                 <dd>
-                  {o.hubName} · {o.sameDay ? "same-day" : `${o.etaMinDays}–${o.etaMaxDays} days`}
+                  {o.hubName} · {o.sameDay ? "same-day" : o.etaMaxDays === 0 ? "delivery time confirmed in chat" : `${o.etaMinDays}–${o.etaMaxDays} days`}
                 </dd>
               </div>
               <div>
@@ -252,9 +254,9 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
             </dl>
           </Section>
 
-          {d.bankAccounts.length > 0 ? (
+          {bankAccounts.length > 0 ? (
             <Section title="Bank details to send" icon="account_balance">
-              {d.bankAccounts.map((b) => (
+              {bankAccounts.map((b) => (
                 <p key={b.accountNumber} className="text-body-md">
                   <span className="font-semibold">{b.bank}</span>
                   <br />

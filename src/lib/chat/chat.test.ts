@@ -38,7 +38,7 @@ const decodeText = (href: string) => new URL(href).searchParams.get("text") ?? "
 describe("chat templates", () => {
   it("builds the brief's example customer message exactly", () => {
     expect(buildCustomerOrderMessage(order)).toBe(
-      "Hello MUBAZZAR, I just placed order MBZ-7K2QPA: 2x Turbo Car Vacuum (His & Hers) — ₦35,000 + ₦2,500 delivery to Lagos = ₦37,500. My name is Babatunde Adeyemi. Please send payment details.",
+      "Hello MUBAZZAR, I just placed order MBZ-7K2QPA: 2x Turbo Car Vacuum (His & Hers) — ₦35,000 + ₦2,500 delivery to Lagos = ₦37,500. My name is Babatunde Adeyemi. Please confirm my order.",
     );
   });
 

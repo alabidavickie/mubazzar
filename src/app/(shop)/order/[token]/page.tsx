@@ -4,7 +4,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/icons/icon";
 import { HandoffPanel } from "@/components/handoff/handoff-panel";
-import { ClaimPaymentButton } from "@/components/handoff/claim-payment";
 import { buildHandoff, getOrderViewByToken, type OrderLine } from "@/server/services/orders";
 import { formatNaira } from "@/lib/money";
 import { deliveryFeeText, etaLabel } from "@/lib/delivery";
@@ -46,8 +45,7 @@ export default async function OrderThankYouPage({ params }: { params: Promise<{ 
   const eta = etaLabel({ sameDay: order.sameDay, etaMinDays: order.etaMinDays, etaMaxDays: order.etaMaxDays });
   const items = order.lines.filter((l) => !l.isFreeGift);
   const gifts = order.lines.filter((l) => l.isFreeGift);
-  const canClaim = !cancelled && payment === "unpaid";
-  const payLabel = settled || cancelled ? "Chat with us on WhatsApp" : "Complete Payment on WhatsApp";
+  const payLabel = settled || cancelled ? "Chat with us on WhatsApp" : "Confirm Order on WhatsApp";
 
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-4 px-4 pt-4">
@@ -70,13 +68,13 @@ export default async function OrderThankYouPage({ params }: { params: Promise<{ 
       <section aria-labelledby="pay-title" className="flex flex-col gap-3 rounded-xl bg-card p-4 shadow-raised">
         <div>
           <h2 id="pay-title" className="text-headline-sm font-bold text-navy">
-            {cancelled ? "Need help with this order?" : settled ? "Questions about your order?" : "Next: confirm & pay in chat"}
+            {cancelled ? "Need help with this order?" : settled ? "Questions about your order?" : "Next: confirm your order in chat"}
           </h2>
           {!cancelled && !settled ? (
             <p className="text-body-sm text-ink-muted">
               {handoff.primary.kind === "whatsapp"
-                ? "Send us your order on WhatsApp. Our team confirms it and shares MUBAZZAR's official payment details — or arranges Pay on Delivery."
-                : `You chose ${CHANNEL_LABEL[handoff.primary.kind]}. Our team confirms your order there and shares MUBAZZAR's official payment details — or arranges Pay on Delivery.`}
+                ? "Send us your order on WhatsApp. Our team confirms it and arranges delivery. You pay when it arrives."
+                : `You chose ${CHANNEL_LABEL[handoff.primary.kind]}. Our team confirms your order there and arranges delivery. You pay when it arrives.`}
             </p>
           ) : null}
         </div>
@@ -187,14 +185,12 @@ export default async function OrderThankYouPage({ params }: { params: Promise<{ 
           <Icon name="lock" className="text-emerald-ink" /> How payment works
         </h2>
         <ul className="flex list-disc flex-col gap-1 pl-5 text-body-sm text-ink-muted">
-          <li>There is no payment on this website. Our team shares MUBAZZAR&apos;s official account details in chat, or agrees Pay on Delivery with you.</li>
+          <li>There is no payment on this website. You pay when your order is delivered to you.</li>
+          <li>Our team confirms your order, the delivery fee and the delivery time with you in chat first.</li>
           <li>
-            <strong className="text-ink">We will never ask for your card PIN, OTP or BVN.</strong> Only pay into an account our team sends in
-            this order&apos;s chat.
+            <strong className="text-ink">We will never ask for your card PIN, OTP or BVN.</strong>
           </li>
-          <li>Your payment is confirmed only after our team sees it in MUBAZZAR&apos;s bank account.</li>
         </ul>
-        {canClaim ? <ClaimPaymentButton token={order.publicToken} /> : null}
         {payment === "payment_claimed" ? (
           <p role="status" className="rounded-lg bg-emerald-soft p-3 text-body-sm text-emerald-ink">
             You told us you&apos;ve paid. Our team is verifying it and will confirm in chat.

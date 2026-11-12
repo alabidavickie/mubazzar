@@ -207,7 +207,7 @@ export function LandingEditor({ initial, products }: { initial: LandingInput; pr
         </div>
       </Box>
 
-      <Box title="Sharing" hint="The order button always reads like “Place Order & Pay on WhatsApp” (it follows the customer’s chosen channel).">
+      <Box title="Sharing" hint="The order button always reads like “Place Order & Confirm on WhatsApp” (it follows the customer’s chosen channel).">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {text("seoTitle", "Browser/share title")}
           <div className="sm:col-span-2">{text("seoDescription", "Share description", { area: true })}</div>

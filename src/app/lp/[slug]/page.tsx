@@ -56,7 +56,8 @@ export async function generateMetadata({ params, searchParams }: { params: Param
   const res = await load(slug, preview === "1");
   if (!res) return { title: "Offer not found", robots: { index: false, follow: false } };
   const { lp, product } = res.data;
-  const title = lp.seoTitle ?? `${markupToPlainText(lp.headline)} — ${product.name}`;
+  const headline = markupToPlainText(lp.headline);
+  const title = lp.seoTitle ?? (headline && headline !== product.name ? `${headline} — ${product.name}` : product.name);
   const description = lp.seoDescription || markupToPlainText(lp.subheadline) || product.shortDescription || undefined;
   const image = lp.ogImageUrl ?? product.images[0]?.url ?? null;
   return {
@@ -630,7 +631,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pa
           <nav aria-label="Shop and policies" className="flex flex-wrap justify-center gap-x-1 text-body-sm">
             {[
               ["/shop", "Shop all gadgets"],
-              ["/returns", "Returns"],
+              ["/faq", "FAQ"],
               ["/delivery", "Delivery"],
               ["/privacy", "Privacy"],
               ["/terms", "Terms"],

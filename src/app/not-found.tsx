@@ -19,7 +19,7 @@ export default async function NotFound() {
     <>
       <header className="sticky top-0 z-40 bg-surface/90 shadow-[0_1px_8px_rgb(0_0_0/0.04)] backdrop-blur-xl pt-safe">
         <div className="bg-navy-deep px-4 py-0.5 text-center text-label-sm text-gold-pale">
-          Tested gadgets · Nationwide delivery · Pay on Delivery arranged in chat
+          Uncommon gadgets · Nationwide delivery · Pay on Delivery
         </div>
         <div className="mx-auto flex h-12 max-w-(--container-site) items-center px-4">
           <Link href="/" className="flex items-center gap-2 font-display text-headline-sm font-extrabold tracking-wider text-navy" aria-label="MUBAZZAR home">

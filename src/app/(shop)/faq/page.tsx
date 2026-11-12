@@ -8,7 +8,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
   description:
-    "How ordering, payment in WhatsApp chat, Pay on Delivery and delivery work at MUBAZZAR.",
+    "How ordering, WhatsApp confirmation, Pay on Delivery and delivery work at MUBAZZAR.",
   alternates: { canonical: "/faq" },
 };
 
@@ -28,7 +28,7 @@ export default async function FaqPage() {
         {
           question: "What happens after I place an order?",
           answer:
-            "You get an order number (like MBZ-7K2QPA) and we open a chat with you on WhatsApp — or the app you chose. Our team confirms the items, delivery fee and address, then shares payment details.",
+            "You get an order number (like MBZ-7K2QPA) and we open a chat with you on WhatsApp — or the app you chose. Our team confirms the items, delivery fee and address. You pay when your order is delivered.",
         },
         {
           question: "Can I change or cancel my order?",
@@ -48,17 +48,17 @@ export default async function FaqPage() {
         {
           question: "Why is there no card payment on the website?",
           answer:
-            "To protect you. We never collect card numbers, PINs or OTPs online. Our staff share MUBAZZAR's official payment details in chat, and record your payment against your order number.",
+            "To protect you. We never collect card numbers, PINs or OTPs online. You pay when your order is delivered, and our staff record your payment against your order number.",
         },
         {
           question: "Is Pay on Delivery available?",
           answer:
-            "Yes. Ask for Pay on Delivery in the chat and we will confirm whether it is available for your address before anything is sent.",
+            "Yes. Every order is Pay on Delivery. We confirm your order and delivery in chat first, and you pay when it arrives.",
         },
         {
           question: "How do I know I'm paying the real MUBAZZAR?",
           answer:
-            "Only pay to the account details sent from our official WhatsApp number shown on this website. MUBAZZAR staff will never ask for your card PIN, OTP or BVN.",
+            "You only pay when your order is delivered to you. Our official WhatsApp number is the one shown on this website. MUBAZZAR staff will never ask for your card PIN, OTP or BVN.",
         },
       ],
     },

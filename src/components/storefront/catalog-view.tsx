@@ -148,7 +148,7 @@ export function CatalogView({
               body={
                 filtered
                   ? "Try a wider price range or remove a filter. New uncommon finds land every week."
-                  : "We're restocking this shelf. Check back soon or chat with us on WhatsApp — we may have it in a hub."
+                  : "We're restocking this shelf. Check back soon or chat with us on WhatsApp — we may still have it."
               }
               action={
                 <Link

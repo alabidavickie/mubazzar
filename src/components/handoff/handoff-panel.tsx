@@ -32,7 +32,7 @@ function externalProps(href: string) {
 }
 
 /**
- * Thank-you page chat handoff. WhatsApp orders get a big prefilled "Complete Payment on WhatsApp"
+ * Thank-you page chat handoff. WhatsApp orders get a big prefilled "Confirm Order on WhatsApp"
  * button that auto-opens once per order on mobile (visible countdown + cancel; the button stays as the
  * fallback when the browser blocks it). Other channels can't prefill a message, so the customer copies
  * the order details first, then opens the chat and pastes them.
@@ -45,7 +45,7 @@ export function HandoffPanel({
   whatsappHref,
   others,
   autoOpen,
-  payLabel = "Complete Payment on WhatsApp",
+  payLabel = "Confirm Order on WhatsApp",
 }: {
   token: string;
   orderNumber: string;
@@ -255,7 +255,7 @@ export function HandoffPanel({
           </a>
           {primary.kind !== "phone" ? (
             <p className="text-body-sm text-ink-muted">
-              Tip: paste the copied message in the chat so our team can confirm your order and share payment details.
+              Tip: paste the copied message in the chat so our team can confirm your order.
             </p>
           ) : null}
         </li>

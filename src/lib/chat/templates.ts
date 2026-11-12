@@ -7,9 +7,9 @@ import { formatNgPhoneLocal } from "../phone";
  */
 export const DEFAULT_TEMPLATES = {
   customer_order:
-    "Hello MUBAZZAR, I just placed order {order_number}: {items} — {subtotal} + {delivery} to {state} = {total}. My name is {customer_name}. Please send payment details.",
+    "Hello MUBAZZAR, I just placed order {order_number}: {items} — {subtotal} + {delivery} to {state} = {total}. My name is {customer_name}. Please confirm my order.",
   staff_greeting:
-    "Hello {first_name}, this is MUBAZZAR 👋 Thank you for order {order_number}: {items}. Total: {total}, with {delivery} to {state}. I'll share our official payment details here. Please note: we will never ask for your card PIN or OTP.",
+    "Hello {first_name}, this is MUBAZZAR 👋 Thank you for order {order_number}: {items}. Total: {total}, with {delivery} to {state}. I'll confirm your delivery here, and you pay when it arrives. Please note: we will never ask for your card PIN or OTP.",
   staff_confirmation:
     "Hi {first_name}, please confirm your MUBAZZAR order {order_number}:\n{items}\nTotal: {total}\nDeliver to: {address}, {city}, {state}\nPhone: {phone}\nReply YES to confirm ✅",
   dispatch_contact:

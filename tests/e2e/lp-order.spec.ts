@@ -32,7 +32,7 @@ test.describe("ad landing page → WhatsApp handoff", () => {
     await expect(page.getByTestId("gift-line")).toContainText("Diffuser");
 
     const pay = page.getByTestId("whatsapp-pay");
-    await expect(pay).toHaveText(/Complete Payment on WhatsApp/i);
+    await expect(pay).toHaveText(/Confirm Order on WhatsApp/i);
     await expect(pay).toHaveAttribute("target", "_blank");
     const href = (await pay.getAttribute("href")) ?? "";
     expect(href.startsWith(`https://wa.me/${WHATSAPP_LAGOS}?text=`)).toBe(true);

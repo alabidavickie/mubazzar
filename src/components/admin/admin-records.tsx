@@ -88,18 +88,20 @@ export function ChannelForm({ initial, hubs }: { initial: ChannelValues; hubs: {
       <Field label={v.kind === "whatsapp" || v.kind === "phone" ? "Number" : "Username / page"}>
         {({ id }) => <Input id={id} value={v.handle} onChange={(e) => set({ handle: e.target.value })} />}
       </Field>
-      <Field label="Hub (WhatsApp routing)">
-        {({ id }) => (
-          <Select id={id} value={v.hubCode ?? ""} onChange={(e) => set({ hubCode: e.target.value || null })}>
-            <option value="">Any hub</option>
-            {hubs.map((h) => (
-              <option key={h.code} value={h.code}>
-                {h.name}
-              </option>
-            ))}
-          </Select>
-        )}
-      </Field>
+      {hubs.length > 1 ? (
+        <Field label="Hub (WhatsApp routing)">
+          {({ id }) => (
+            <Select id={id} value={v.hubCode ?? ""} onChange={(e) => set({ hubCode: e.target.value || null })}>
+              <option value="">Any hub</option>
+              {hubs.map((h) => (
+                <option key={h.code} value={h.code}>
+                  {h.name}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Field>
+      ) : null}
       <Field label="Weight">{({ id }) => <Input id={id} type="number" min={1} value={String(v.weight)} onChange={(e) => set({ weight: Number(e.target.value) })} />}</Field>
       <div className="flex flex-col justify-end">{check("Enabled", v.isEnabled, (b) => set({ isEnabled: b }))}</div>
       <div className="col-span-2 flex items-center gap-2 sm:col-span-6">
@@ -139,15 +141,17 @@ export function ZoneRow({ initial, hubs }: { initial: ZoneValues; hubs: { code: 
           <Input aria-label={`${v.state} max days`} type="number" min={0} value={String(v.etaMaxDays)} onChange={(e) => set({ etaMaxDays: Number(e.target.value) })} className="w-16 py-1.5" />
         </span>
       </td>
-      <td className="p-1">
-        <select aria-label={`${v.state} hub`} value={v.hubCode} onChange={(e) => set({ hubCode: e.target.value })} className="rounded-lg border border-line bg-card px-2 py-2">
-          {hubs.map((h) => (
-            <option key={h.code} value={h.code}>
-              {h.code}
-            </option>
-          ))}
-        </select>
-      </td>
+      {hubs.length > 1 ? (
+        <td className="p-1">
+          <select aria-label={`${v.state} hub`} value={v.hubCode} onChange={(e) => set({ hubCode: e.target.value })} className="rounded-lg border border-line bg-card px-2 py-2">
+            {hubs.map((h) => (
+              <option key={h.code} value={h.code}>
+                {h.code}
+              </option>
+            ))}
+          </select>
+        </td>
+      ) : null}
       <td className="p-1 text-center">
         <input type="checkbox" aria-label={`${v.state} same-day`} checked={v.sameDayEnabled} onChange={(e) => set({ sameDayEnabled: e.target.checked })} className="size-5 accent-navy" />
       </td>
@@ -233,14 +237,16 @@ export function MemberRow({ member, hubs }: { member: { id: string; role: string
           </option>
         ))}
       </select>
-      <select aria-label="Hub" value={v.hubCode ?? ""} onChange={(e) => setV({ ...v, hubCode: e.target.value || null })} className="rounded-lg border border-line bg-card px-2 py-2 text-label-md">
-        <option value="">No hub</option>
-        {hubs.map((h) => (
-          <option key={h.code} value={h.code}>
-            {h.code}
-          </option>
-        ))}
-      </select>
+      {hubs.length > 1 ? (
+        <select aria-label="Hub" value={v.hubCode ?? ""} onChange={(e) => setV({ ...v, hubCode: e.target.value || null })} className="rounded-lg border border-line bg-card px-2 py-2 text-label-md">
+          <option value="">No hub</option>
+          {hubs.map((h) => (
+            <option key={h.code} value={h.code}>
+              {h.code}
+            </option>
+          ))}
+        </select>
+      ) : null}
       <label className="flex items-center gap-1 text-label-md">
         <input type="checkbox" checked={v.isActive} onChange={(e) => setV({ ...v, isActive: e.target.checked })} className="size-5 accent-navy" /> Active
       </label>
@@ -279,18 +285,20 @@ export function NewMemberForm({ hubs }: { hubs: { code: string; name: string }[]
           </Select>
         )}
       </Field>
-      <Field label="Hub">
-        {({ id }) => (
-          <Select id={id} value={v.hubCode} onChange={(e) => setV({ ...v, hubCode: e.target.value })}>
-            <option value="">No hub</option>
-            {hubs.map((h) => (
-              <option key={h.code} value={h.code}>
-                {h.name}
-              </option>
-            ))}
-          </Select>
-        )}
-      </Field>
+      {hubs.length > 1 ? (
+        <Field label="Hub">
+          {({ id }) => (
+            <Select id={id} value={v.hubCode} onChange={(e) => setV({ ...v, hubCode: e.target.value })}>
+              <option value="">No hub</option>
+              {hubs.map((h) => (
+                <option key={h.code} value={h.code}>
+                  {h.name}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Field>
+      ) : null}
       <Field label="Temporary password" hint="10+ characters; share it privately" error={err("password")}>
         {({ id, describedBy }) => <Input id={id} type="text" autoComplete="new-password" value={v.password} aria-describedby={describedBy} onChange={(e) => setV({ ...v, password: e.target.value })} />}
       </Field>

@@ -6,7 +6,7 @@ const base = { slug: "car-vacuum-2", productId: "00000000-0000-4000-8000-0000000
 describe("landingInput", () => {
   it("accepts a minimal page and applies defaults", () => {
     const lp = landingInput.parse(base);
-    expect(lp).toMatchObject({ isPublished: false, hookLabel: "PROMO ALERT", ctaLabel: "Place Order & Pay on WhatsApp", sections: [], campaignEndsAt: null });
+    expect(lp).toMatchObject({ isPublished: false, hookLabel: "PROMO ALERT", ctaLabel: "Place Order & Confirm on WhatsApp", sections: [], campaignEndsAt: null });
   });
   it("rejects typed discount percentages, bad slugs and insecure links", () => {
     const r = landingInput.safeParse({ ...base, slug: "Car Vacuum", hookBanner: "⚡ 48% OFF today", videoUrl: "http://example.com/v.mp4" });

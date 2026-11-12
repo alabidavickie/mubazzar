@@ -37,7 +37,7 @@ const SOFT_GATED_CUSTOMER: Record<string, RegExp> = {
 
 /** Meant for visitors (checkout, tracking, login…); they validate and rate-limit their own input. */
 const PUBLIC = new Set([
-  "claimPaymentAction", "passwordLoginAction", "requestOtpAction", "verifyOtpAction",
+  "passwordLoginAction", "requestOtpAction", "verifyOtpAction",
   "submitOrderAction", "trackOrderAction", "logoutAction",
 ]);
 

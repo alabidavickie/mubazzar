@@ -28,7 +28,7 @@ test.describe("social channel handoff", () => {
     await copy.click();
     await expect(page.getByTestId("copied-toast")).toBeVisible();
 
-    const expected = `Hello MUBAZZAR, I just placed order ${order.orderNumber}: 1x Turbo Car Vacuum — ₦19,500 + ₦2,500 delivery to Lagos = ₦22,000. My name is Ada Lovelace. Please send payment details.`;
+    const expected = `Hello MUBAZZAR, I just placed order ${order.orderNumber}: 1x Turbo Car Vacuum — ₦19,500 + ₦2,500 delivery to Lagos = ₦22,000. My name is Ada Lovelace. Please confirm my order.`;
     const clipboard = await page.evaluate(() => navigator.clipboard.readText());
     expect(clipboard).toBe(expected);
     await expect(page.getByTestId("order-message")).toHaveText(expected);

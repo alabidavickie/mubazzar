@@ -234,7 +234,7 @@ export default async function HomePage() {
                 .filter((d) => d.lowStockUnits)
                 .map((d) => (
                   <li key={d.dealId} className="flex items-center gap-1 text-label-sm text-coral-soft">
-                    <Icon name="warning" className="text-sm" /> Only {d.lowStockUnits} left in one of our hubs: {d.name}
+                    <Icon name="warning" className="text-sm" /> Only {d.lowStockUnits} left: {d.name}
                   </li>
                 ))}
             </ul>

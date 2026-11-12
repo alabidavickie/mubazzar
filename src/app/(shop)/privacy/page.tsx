@@ -89,7 +89,7 @@ export default async function PrivacyPage() {
 
         <ProseSection title="How long we keep it" icon="history">
           <p>
-            Order records are kept for up to 6 years for accounting and warranty purposes. Unconfirmed orders that were cancelled are
+            Order records are kept for up to 6 years for accounting purposes. Unconfirmed orders that were cancelled are
             deleted or anonymised sooner. Abuse-prevention data (hashed IPs) is kept for a few days.
           </p>
         </ProseSection>

@@ -58,7 +58,7 @@ export function QuickOrderSheet({ productId, open, onClose }: { productId: strin
   const summaryLabel = bundle ? (packs > 1 ? `${packs} × ${bundle.label}` : bundle.label) : `${packs}x ${data?.product.name ?? ""}`;
 
   return (
-    <Sheet open={open} onClose={onClose} title="Quick Order" description="No account needed · Pay on WhatsApp after ordering">
+    <Sheet open={open} onClose={onClose} title="Quick Order" description="No account needed · Pay on delivery">
       {error ? <p className="py-6 text-center text-body-md text-urgent">{error}</p> : null}
       {!data && !error ? (
         <div className="flex flex-col gap-3 py-2">

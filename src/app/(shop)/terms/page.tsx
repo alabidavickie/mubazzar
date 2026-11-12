@@ -46,7 +46,7 @@ export default async function TermsPage() {
 
         <ProseSection title="3. Payment" icon="payments">
           <p>
-            We do not take payment on this website. Our staff share official payment details in chat; pay only into the account details sent from our official WhatsApp number. Pay on Delivery may be offered for eligible orders and addresses. We will never ask for your
+            We do not take payment on this website. You pay on delivery, after our staff confirm your order in chat. We will never ask for your
             card PIN, OTP or BVN.
           </p>
         </ProseSection>

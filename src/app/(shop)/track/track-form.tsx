@@ -163,7 +163,7 @@ function TrackResult({ order }: { order: TrackedOrder }) {
         </a>
       ) : null}
       <Link href={order.orderPath} className="flex min-h-11 items-center justify-center text-label-md font-bold text-navy underline underline-offset-2">
-        View full order &amp; payment details
+        View full order details
       </Link>
     </section>
   );

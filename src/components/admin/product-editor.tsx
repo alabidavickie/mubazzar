@@ -474,7 +474,7 @@ export function ProductEditor({
         </Button>
       </Section>
 
-      <Section title="Stock per hub" hint="On hand = physical units. Units reserved for open orders can't be removed.">
+      <Section title={hubs.length > 1 ? "Stock per hub" : "Stock"} hint="On hand = physical units. Units reserved for open orders can't be removed.">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           {hubs.map((h) => {
             const i = stock.findIndex((s) => s.hubId === h.id);
@@ -483,7 +483,7 @@ export function ProductEditor({
               set("stock", i >= 0 ? stock.map((s, j) => (j === i ? { ...s, ...patch } : s)) : [...stock, { ...row, ...patch }]);
             return (
               <fieldset key={h.id} className="flex flex-col gap-2 rounded-lg border border-line p-3">
-                <legend className="px-1 text-label-md font-bold text-navy">{h.name}</legend>
+                <legend className={hubs.length > 1 ? "px-1 text-label-md font-bold text-navy" : "sr-only"}>{h.name}</legend>
                 <Field label="On hand" hint={reserved[h.id] ? `${reserved[h.id]} reserved` : undefined}>
                   {({ id, describedBy }) => <Input id={id} type="number" min={reserved[h.id] ?? 0} value={String(row.onHand)} aria-describedby={describedBy} onChange={(e) => update({ onHand: Number(e.target.value) })} />}
                 </Field>

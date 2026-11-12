@@ -23,7 +23,7 @@ export default async function ChatPaymentsSettings() {
       <h1 className="text-headline-md font-bold text-navy">Chat &amp; payments</h1>
       <section className="flex flex-col gap-2 rounded-xl bg-card p-4 shadow-card" aria-label="Chat channels">
         <h2 className="text-label-lg font-bold text-navy">Chat channels</h2>
-        <p className="text-body-sm text-ink-muted">Customers only see enabled channels. WhatsApp numbers can be tied to a hub (routing below).</p>
+        <p className="text-body-sm text-ink-muted">Customers only see enabled channels.{hubs.length > 1 ? " WhatsApp numbers can be tied to a hub (routing below)." : ""}</p>
         {channels.map((c) => (
           <ChannelForm key={c.id} initial={c} hubs={hubs} />
         ))}
@@ -34,7 +34,7 @@ export default async function ChatPaymentsSettings() {
         settingKey="whatsapp_routing"
         title="WhatsApp routing"
         kind="scalar"
-        fields={[{ name: "_", label: "Which number gets each order", type: "select", options: [{ value: "by_hub", label: "By the hub that ships it" }, { value: "round_robin", label: "Round robin (weighted)" }, { value: "first", label: "Always the first enabled number" }] }]}
+        fields={[{ name: "_", label: "Which number gets each order", type: "select", options: [...(hubs.length > 1 ? [{ value: "by_hub", label: "By the hub that ships it" }] : []), { value: "round_robin", label: "Round robin (weighted)" }, { value: "first", label: "Always the first enabled number" }] }]}
         initial={s.whatsapp_routing}
       />
       <SettingForm

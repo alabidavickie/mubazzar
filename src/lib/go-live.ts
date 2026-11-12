@@ -38,10 +38,11 @@ export function goLiveChecks(i: GoLiveInput): GoLiveItem[] {
     add({ key: "support-whatsapp", severity: "blocker", title: "Support WhatsApp number is still the demo number", detail: "It is shown in the header, footer and error pages — customers would message a number that isn't yours.", href: "/admin/homepage" });
   }
   if (i.enabledChannelHandles.some(isPlaceholderPhone)) {
-    add({ key: "chat-channels", severity: "blocker", title: "Order chat channels use the demo WhatsApp number", detail: "Every order's \"Complete payment on WhatsApp\" button would open a chat with a number that isn't yours.", href: "/admin/chat-payments" });
+    add({ key: "chat-channels", severity: "blocker", title: "Order chat channels use the demo WhatsApp number", detail: "Every order's \"Confirm order on WhatsApp\" button would open a chat with a number that isn't yours.", href: "/admin/chat-payments" });
   }
-  if (i.bankAccounts.length === 0 || i.bankAccounts.some((b) => /^0+$/.test(b.accountNumber))) {
-    add({ key: "bank", severity: "blocker", title: "Bank account is a placeholder (0000000000)", detail: "Staff copy these details into the chat when asking for payment.", href: "/admin/chat-payments" });
+  // Customers pay on delivery, so having no bank account is fine; a placeholder one is only clutter (it is hidden from staff).
+  if (i.bankAccounts.some((b) => /^0+$/.test(b.accountNumber))) {
+    add({ key: "bank", severity: "recommended", title: "Bank account is a placeholder (0000000000)", detail: "Customers pay on delivery, so a bank account is optional. Enter your real one or remove it. The placeholder is hidden from staff.", href: "/admin/chat-payments" });
   }
   if (i.adminAlerts.emails.some((e) => /@mubazzar\.test$/i.test(e))) {
     add({ key: "alerts-test", severity: "blocker", title: "New-order alerts go to a test address", detail: "Replace it with your real email and phone so you hear about every order.", href: "/admin/chat-payments" });

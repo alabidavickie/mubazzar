@@ -51,7 +51,7 @@ export default async function DealsPage() {
             )}
           </h1>
           <p className="relative text-body-sm text-on-dark-muted">
-            Real prices, real end times. Order now and pay in chat — Pay on Delivery can be arranged.
+            Real prices, real end times. Order now and pay on delivery.
           </p>
         </div>
       </div>
@@ -113,7 +113,7 @@ export default async function DealsPage() {
               .filter((d) => d.lowStockUnits)
               .map((d) => (
                 <li key={d.dealId} className="flex items-center gap-1 text-label-sm text-urgent">
-                  <Icon name="warning" className="text-sm" /> Only {d.lowStockUnits} left in one of our hubs: {d.name}
+                  <Icon name="warning" className="text-sm" /> Only {d.lowStockUnits} left: {d.name}
                 </li>
               ))}
           </ul>
